@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>1.5 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="1.5 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1966 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1974 HREF="node12.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node12.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1972 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1976 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1977 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1975 HREF="node12.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node12.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html1973 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1967 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html">1.4 Parallel Algorithm Examples</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02250000000000000000>1.5 Summary</A></H1>
+<P>
+This chapter has introduced four desirable attributes of parallel
+algorithms and software: concurrency, scalability, locality, and
+modularity.  <em> Concurrency
+ </em> refers to the ability to perform
+many actions simultaneously; this is essential if a program is to
+execute on many processors.  <em> Scalability
+ </em> indicates
+resilience to increasing processor counts and is equally important, as
+processor counts appear likely to grow in most environments.  <em>
+Locality
+ </em> means a high ratio of local memory accesses to remote
+memory accesses (communication); this is the key to high performance
+on multicomputer architectures.  <em> Modularity
+ </em>---the
+decomposition of complex entities into simpler components---is an
+essential aspect of software engineering, in parallel computing as
+well as sequential computing.
+<P>
+The multicomputer parallel machine model and the task/channel
+programming model introduced in this chapter will be used in
+subsequent discussion of parallel algorithm design, analysis, and
+implementation.  The <em> multicomputer
+ </em> consists of one or more
+von Neumann computers connected by an interconnection network.  It is
+a simple and realistic machine model that provides a basis for the
+design of scalable and portable parallel programs.  A programming
+model based on <em> tasks
+ </em> and <em> channels
+ </em> simplifies the
+programming of multicomputers by providing abstractions that allow us
+to talk about concurrency, locality, and communication in a
+machine-independent fashion, and by providing a basis for the modular
+construction of parallel programs.
+<P>
+
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1966 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1974 HREF="node12.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node12.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1972 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1976 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1977 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1975 HREF="node12.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node12.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html1973 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1967 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html">1.4 Parallel Algorithm Examples</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "VAR1 Value: $VAR1"

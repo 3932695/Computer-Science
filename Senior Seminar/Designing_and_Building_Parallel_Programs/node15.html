@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.1 Methodical Design</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.1 Methodical Design">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2023 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2031 HREF="node16.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2029 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2033 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2034 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2032 HREF="node16.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html">2.2 Partitioning</A>
+<B>Up:</B> <A NAME=tex2html2030 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2024 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02310000000000000000>2.1 Methodical Design</A></H1>
+<P>
+Most programming problems have several parallel solutions.  The best
+solution may differ from that suggested by existing
+sequential algorithms.  The design methodology that we describe is
+intended to foster an exploratory approach to design in which
+machine-independent issues such as concurrency are considered early
+and machine-specific aspects of design are delayed until late in the
+design process.  This methodology structures the design process as
+four distinct stages: partitioning, communication, agglomeration, and
+<A NAME=1090>&#160;</A>
+mapping.  (The acronym PCAM may serve as a useful reminder of this
+structure.)  In the first two stages, we focus on concurrency
+and scalability and seek to discover algorithms with these
+qualities.  In the third and fourth stages, attention shifts to
+locality and other performance-related issues.  The four stages are
+illustrated in Figure <A HREF="node15.html#figpcam" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html#figpcam">2.1</A> and can be summarized as follows:
+<P>
+<OL><LI> <em> Partitioning.</em> The computation that is to be performed and
+the data operated on by this computation are decomposed into small
+tasks.  Practical issues such as the number of processors in the
+target computer are ignored, and attention is focused on recognizing
+opportunities for parallel execution.
+<P>
+<LI> <em> Communication.</em> The communication required to coordinate
+task execution is determined, and appropriate communication structures
+and algorithms are defined.
+<P>
+<A NAME=1095>&#160;</A>
+<LI> <em> Agglomeration.</em> The task and communication structures
+defined in the first two stages of a design are evaluated with respect
+to performance requirements and implementation costs.  If necessary,
+tasks are combined into larger tasks to improve performance or to
+reduce development costs.
+<P>
+<A NAME=1097>&#160;</A>
+<LI> <em> Mapping.</em> Each task is assigned to a processor in a manner
+that attempts to satisfy the competing goals of maximizing processor
+utilization and minimizing communication costs.  Mapping can be
+specified statically or determined at runtime by load-balancing
+algorithms.
+</OL>
+<P>
+<A NAME=1100>&#160;</A>
+<P>
+<P><A NAME=2356>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img160.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img160.gif">
+<BR><STRONG>Figure 2.1:</STRONG> <em> PCAM: a design methodology for parallel programs.
+Starting with a problem specification, we develop a partition,
+determine communication requirements, agglomerate tasks, and finally
+map tasks to processors.</em><A NAME=figpcam>&#160;</A><BR>
+<P>
+<P>
+<A NAME=1105>&#160;</A>
+The outcome of this design process can be a program that creates and
+destroys tasks dynamically, using load-balancing techniques to control
+the mapping of tasks to processors.  Alternatively, it can be an 
+<A NAME=1106>&#160;</A>
+SPMD program that creates exactly one task per
+processor.  The same process of algorithm discovery applies in both
+cases, although if the goal is to produce an SPMD program, issues
+associated with mapping are subsumed into the agglomeration phase of
+the design.
+<P>
+Algorithm design is presented here as a sequential activity.  
+In practice, however, it is a highly parallel process, with many concerns being
+considered simultaneously.  Also, although we seek to avoid
+backtracking, evaluation of a partial or complete design may require
+changes to design decisions made in previous steps.
+<P>
+The following sections provide a detailed examination of the four
+stages of the design process.  We present basic principles, use
+examples to illustrate the application of these principles, and
+include design checklists that can be used to evaluate designs as they
+are developed.  In the final sections of this chapter, we use three
+case studies to illustrate the application of these design techniques
+to realistic problems.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2023 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2031 HREF="node16.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2029 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2033 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2034 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2032 HREF="node16.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html">2.2 Partitioning</A>
+<B>Up:</B> <A NAME=tex2html2030 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2024 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

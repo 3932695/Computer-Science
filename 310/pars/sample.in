@@ -1,0 +1,115 @@
+
+int a;
+double b;
+bool c;
+string d;
+asdf e;
+int[] f;
+string[] g;
+
+/*
+class foo extends bar implements moo {
+	int i; 
+	void meh (){
+		break;
+	}
+}
+
+
+class asdf {}
+
+
+
+class aa extends bar implements moo {
+	int i;
+	void meh(int a, int b){
+		break;
+	}
+}
+
+
+interface bah {}
+
+interface a_4 {
+	int a(int j, int k, double l);
+	double b(int j, int k, double l);
+}
+
+void foo(){
+	int i;
+	break;
+}
+
+void nully(){}
+
+int main (int a, double b, bool c, string d, asdf e){
+	
+
+	int j;
+	double k;
+	string l;
+	bool m;
+	asdf a;
+	
+
+	
+	if(true)
+		blarg();
+	while(a == 5){
+		if(asdf >= asa + 5){
+			for(; i < asa;){
+				if(true)
+					Print(blarg(), 25);
+			}
+		}else{
+			a = ReadInteger();
+			b = ReadLine();
+			c = New(asdf);
+			d = NewArray(5, int);
+		}
+	}
+	
+	
+	for(i = 5; i != 0; i = i - this.blarg()){
+		bool a;
+		bool b;
+		bool c;
+		bool d;
+		int total;
+		total = total * a % (b + c) / -d;
+		a = !b && !c;
+		b = a || d;
+	}
+		
+	
+	
+
+
+
+
+	foo.asdf = 1+2;
+	asdf = foo.asdf(1, 2, 3, a+b);
+	asdf(1, ReadInteger());
+	New(asdf);
+	NewArray(5, int);
+	foo[asdf] = (1 + 2) / 3 * (4 - 5);
+	12+34;
+	
+	if(true){
+		int j;
+		if(false){
+			j = 0;
+		}
+	}else{
+		while(true){
+			int[] asdf;
+			for(i = 0; i < asdf; i = i + 1){
+				if(asdf[i] == 1) return asdf + i;
+				
+			}
+		}
+		Print(foo != asdf(1, 2));
+	}
+	
+}
+*/

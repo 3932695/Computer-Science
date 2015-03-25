@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.9 Modularity</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.9 Modularity">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2655 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2663 HREF="node61.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node61.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2661 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2665 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2666 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2664 HREF="node61.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node61.html">5.10 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html2662 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2656 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html">5.8 Mapping</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03290000000000000000>5.9 Modularity</A></H1>
+<P>
+<A NAME=secccmod>&#160;</A>
+<P>
+<A NAME=7589>&#160;</A>
+Example <A HREF="node59.html#exccmxc" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#exccmxc">5.5</A> showed how CC++
+  constructs can be used to
+<A NAME=7591>&#160;</A>
+implement parallel and concurrent composition.  The basic ideas are
+<A NAME=7592>&#160;</A>
+straightforward: each component
+<A NAME=7593>&#160;</A>
+of a multicomponent program is
+<A NAME=7594>&#160;</A>
+implemented as a distinct task.  Each such task is passed an array of
+<tt> proc_t</tt> objects representing its computational resources.  The
+task creates a distinct set of processor objects and performs mapping
+and communication with respect to these <tt> proc_t</tt> objects and
+processor objects.
+<P>
+<A NAME=7597>&#160;</A>
+In this section, we discuss the techniques used to implement <em>
+<A NAME=7598>&#160;</A>
+sequential
+ </em> composition in CC++
+  programs.  Recall that in
+sequential composition, different program components execute in
+sequence on all processors (Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>).  These
+program components may themselves communicate and synchronize, but
+they cannot create new tasks.  Hence, each process executes the same
+program, and the entire computation moves sequentially from one
+parallel operation to the next.  This is the single program multiple
+data (SPMD) programming model discussed in Section <A HREF="node9.html#sec1other" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#sec1other">1.3.2</A>.
+<P>
+A CC++
+  implementation of an SPMD program comprises two components.
+The <em> initialization
+ </em> component creates the processor objects
+in which computation will be performed and the communication
+structures (such as channels) required by the program components
+called in the sequential composition.  The <em> execution
+ </em>
+component performs the actual computation, using the structures
+created during the initialization phase.  The execution component can
+be structured in two different ways (Figure <A HREF="node60.html#figccseqc" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html#figccseqc">5.7</A>).  In
+the first approach, the top-level program is structured as a sequence
+of calls to routines that each use a <tt> parfor</tt> statement to create
+a thread on each processor object.  In the second approach a single
+<tt> parfor</tt> statement creates a set of long-lived threads (one per
+processor object) that each make a sequence of calls to the various
+routines involved in the sequential composition.  The first approach
+can lead to simpler programs, but the latter tends to be more
+efficient.
+<P>
+<P><A NAME=8486>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img859.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img859.gif">
+<BR><STRONG>Figure 5.7:</STRONG> <em> Two alternative approaches to the implementation of sequential
+<A NAME=8480>&#160;</A>
+composition in CC++
+ .  The two figures are timelines, with the parent
+<A NAME=8481>&#160;</A>
+thread shown as a solid dark line when active and a dashed dark line
+when suspended.  In both cases, an initialization phase creates the
+four processor objects in which computation will occur.  In the first
+approach, a set of long-lived threads is then created; each of these
+threads executes both components before terminating.  In the second
+approach, control returns to the parent thread after the first
+component executes; the parent thread then creates a new set of
+threads for the second component.</em><A NAME=figccseqc>&#160;</A><BR>
+<P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img861.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img861.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img860.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img860.gif">    Finite Difference</b>:<A NAME=exccfd>&#160;</A>
+<P>
+<A NAME=7613>&#160;</A>
+We apply the two approaches to the SPMD finite difference computation
+<A NAME=7614>&#160;</A>
+used to illustrate sequential composition in
+Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>.  This computation is structured as a
+sequence of calls to a finite difference routine that performs
+nearest-neighbor communication and a reduction routine used to detect
+termination; the latter routine performs global communication.
+<P>
+An implementation of this algorithm using the first approach is
+illustrated in Program <A HREF="node60.html#progccfd1" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html#progccfd1">5.13</A>.  The execution component is
+structured as a while loop containing a sequential composition of
+parallel <tt> finite_difference</tt> and <tt> global_maximum</tt> routines.
+Concurrency and communication are encapsulated in these routines,
+which use <tt> parfor</tt> and other parallel constructs to create threads
+of control within the processor objects created in the initialization
+phase.
+<P>
+The second approach is illustrated in Program <A HREF="node60.html#progccfd2" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html#progccfd2">5.14</A>.
+Here, a single <tt> parfor</tt> statement creates one thread of control in
+each processor object.  This thread makes a sequence of calls to
+routines that call local <tt> finite_difference</tt> and <tt>
+global_maximum</tt> routines.  The resulting program is more complex but
+potentially more efficient, as it avoids the cost of repeatedly
+creating and destroying the threads used to perform the SPMD
+computation.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progccfd1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img862.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img862.gif"><P>
+<P>
+<P><A NAME=progccfd2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img863.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img863.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2655 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2663 HREF="node61.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node61.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2661 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2665 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2666 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2664 HREF="node61.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node61.html">5.10 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html2662 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2656 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html">5.8 Mapping</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

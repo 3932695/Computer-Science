@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.7 Performance Issues</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.7 Performance Issues">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3177 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3185 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3183 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3187 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3188 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3186 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html">8.8 Case Study: Earth System Model</A>
+<B>Up:</B> <A NAME=tex2html3184 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3178 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html">8.6 Other MPI Features</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03570000000000000000>8.7 Performance Issues</A></H1>
+<P>
+<A NAME=13364>&#160;</A>
+<P>
+The performance analysis techniques developed in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> can be applied directly to MPI programs.  We
+discuss some relevant costs here.
+<P>
+An <tt> MPI_SEND</tt>/<tt> MPI_RECV</tt> pair communicates a single message.
+The cost of this communication can be modeled with
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A>.
+The cost
+of the blocking <tt> MPI_PROBE</tt> operation will normally be similar to
+that of an ordinary receive.  The cost of the nonblocking <tt>
+MPI_IPROBE</tt> operation can vary significantly according to
+implementation: in some implementations it may be negligible, while in
+others it can be higher than an ordinary receive.
+<P>
+The performance of global operations is less straightforward to
+analyze, as their execution can involve considerable internal
+communication.  Implementations of these functions can normally be
+expected to use efficient communication algorithms, such as the
+hypercube algorithms described in Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>.  In the
+absence of bandwidth limitations, these allow a barrier to complete in
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1047.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1047.gif"> steps on
+<em> P</em>
+ processors, a broadcast of <em> N</em>
+ words to proceed in
+time <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1048.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1048.gif"> if <em> N</em>
+ is small and in time <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1049.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1049.gif"> if <em> N</em>
+ is large, and so on.  The 
+costs associated with these algorithms are summarized in
+Table <A HREF="node101.html#tabmpicomm" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html#tabmpicomm">8.1</A>.  Remember that on many architectures,
+bandwidth limitations can increase actual costs, especially for larger
+messages (Section<A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>).
+<P>
+<P><A NAME=13843>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1052.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1052.gif">
+<BR><STRONG>Table 8.1:</STRONG>  Communication costs associated with various MPI global
+<A NAME=14216>&#160;</A>
+operations when implemented using hypercube communication algorithms
+on the idealized multicomputer architecture.  The term <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1051.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1051.gif">
+represents the cost of a single reduction
+operation.
+<A NAME=tabmpicomm>&#160;</A><BR>
+<P>
+<P>
+The <tt> MPI_COMM_DUP</tt>, <tt> MPI_COMM_SPLIT</tt>, and <tt>
+MPI_COMM_FREE</tt> operations should not normally involve communication.
+The cost of the <tt> MPI_INTERCOMM_CREATE</tt> operation is
+implementation dependent, but will normally involve at least one
+communication operation.  The cost of the <tt> MPI_INIT</tt> and <tt>
+MPI_FINALIZE</tt> operations is implementation dependent and can be high.
+However, these functions are called once only in a program execution.
+Other functions can normally be expected to execute without
+communication and with little local computation.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3177 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3185 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3183 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3187 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3188 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3186 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html">8.8 Case Study: Earth System Model</A>
+<B>Up:</B> <A NAME=tex2html3184 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3178 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html">8.6 Other MPI Features</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

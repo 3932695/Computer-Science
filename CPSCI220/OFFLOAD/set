@@ -1,0 +1,15 @@
+set `uname -a`
+echo "$1"
+
+set `ls /etc/*.conf`
+echo "$1"
+
+set one two three four five
+echo "$1"
+
+var="LA NY CA"
+set -- $var
+echo "$1"
+
+set --
+echo "$1"

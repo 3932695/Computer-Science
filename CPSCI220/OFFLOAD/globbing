@@ -1,0 +1,4 @@
+for i in /etc/[abcd]*.conf
+do
+ echo $i
+done

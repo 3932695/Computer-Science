@@ -1,0 +1,6 @@
+i=1
+files=(/etc/[abcd]*.conf)
+for item in ${files[@]}
+do
+ echo "$((i++)): $item"
+done

@@ -1,0 +1,20 @@
+name=${1}
+
+# 1. You can use pattern matching in [[ ]]
+if [ $name = bon* ]; then
+ echo "[test] command: Good Morning, Mr. Bond"
+fi
+
+if [[ $name = bon* ]]; then
+ echo "[[test]] command: Good Morning, Mr. Bond"
+fi
+
+# 2. You can use || && inside [[ ]]
+if [[ $name = super || $name = bon* ]]; then
+ echo "[[test]] command: Good Morning, Mr. Hero"
+fi
+
+# 3. You can use =~ for regular expression inside [[ ]]
+if [[ $name =~ ^b ]]; then
+ echo "[[test]] command: Mr. $name, your name starts with "b""
+fi

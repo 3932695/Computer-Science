@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>11.3 Matrix Transposition</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="11.3 Matrix Transposition">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3506 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3514 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3512 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3516 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3517 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3515 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html">11.4 Mergesort</A>
+<B>Up:</B> <A NAME=tex2html3513 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3507 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html">11.2 Vector Reduction</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04330000000000000000>11.3 Matrix Transposition</A></H1>
+<P>
+<A NAME=sectranspose>&#160;</A>
+<P>
+<A NAME=15071>&#160;</A>
+The transposition of a two-dimensional <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1137.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1137.gif"><em> N</em>
+ matrix
+<em> A</em>
+ yields a matrix <em> A'</em>
+ of the same size, in which <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1138.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1138.gif">.  If <em> A</em>
+ and/or <em> A'</em>
+ are distributed between multiple
+tasks, then execution of the transpose operation may involve
+communication.  We consider here a one-dimensional, columnwise
+decomposition of the input and output matrices among <em> P</em>
+ tasks.
+Notice that this transposition requires all-to-all communication.
+<P>
+One commonly used transposition algorithm proceeds in <em> P-1</em>
+ steps,
+with each task exchanging <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1139.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1139.gif"> data with another task in each
+step, for a per-processor communication cost of
+<P><A NAME=eqlatransP>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1140.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1140.gif"><P>
+<P>
+This algorithm was used in the convolution example in
+Section <A HREF="node43.html#eximage" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eximage">4.4</A>.  An alternative algorithm, described
+here, uses the hypercube communication template to reduce message
+startup costs at the expense
+<A NAME=15089>&#160;</A>
+of increased data transfer costs.  The basic idea is similar to that
+<A NAME=15090>&#160;</A>
+used in the recursive halving reduction algorithm, but because the
+operator used to combine messages in the transpose is ``append''
+rather than ``reduce,'' message sizes do not become smaller as the
+transpose proceeds.
+<P>
+<P><A NAME=15445>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1143.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1143.gif">
+<BR><STRONG>Figure 11.3:</STRONG> <em> The three steps of the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1142.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1142.gif"> matrix transpose
+algorithm when <b>P=N=8</b>.  Initially, each task has a single column of
+the matrix. After the transpose, each task has a single row.  In each
+step, each task exchanges one half of its data; this data is shaded in
+the upper part of the figure.  The lower part of the figure shows the
+origin of the eight values held by task 0 at each step of the algorithm.
+Task 0 sends elements 4--7 in its first message and receives four
+elements from task 4; these are stored in locations 4--7.  In the
+second step, task 0 exchanges both elements 2--3 (its own) and 6--7
+(from task 3) with task 2.  In the third step, it exchanges elements 1
+(its own), 3 (from task 2), 5 (from task 4), and 7 (from task 6) with
+task 1.</em><A NAME=figlatrans2>&#160;</A><BR>
+<P>
+<P>
+The algorithm proceeds as follows.  Tasks are partitioned into two
+sets.  Corresponding pairs of tasks in the two sets exchange the one
+half of their data that is destined for tasks in the other set.  Tasks
+<em> 0..(P/2)-1</em>
+ communicate the lower half of their data, while tasks
+<em> (P/2)..P-1</em>
+ communicate the upper half.  This partitioning and
+exchange process is repeated until each set contains a single task.
+See Figure <A HREF="node126.html#figlatrans2" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html#figlatrans2">11.3</A> for more details.
+<P>
+As each of the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1144.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1144.gif"> messages has size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1145.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1145.gif">, the
+communication cost is:
+<P>
+<P><A NAME=eqlatransL>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1146.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1146.gif"><P>
+<P>
+A comparison of Equations <A HREF="node126.html#eqlatransP" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html#eqlatransP">11.3</A> and <A HREF="node126.html#eqlatransL" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html#eqlatransL">11.4</A>
+shows that the hypercube algorithm sends about <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1147.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1147.gif"> fewer
+messages but <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1148.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1148.gif"> times more data.  In most situations, the
+data transfer term dominates, and the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1149.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1149.gif"> algorithm is to be
+preferred.  However, we can expect the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1150.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1150.gif"> algorithm to be
+competitive on small problems and when message startups are expensive
+and transfer costs are low.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3506 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3514 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3512 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3516 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3517 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3515 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html">11.4 Mergesort</A>
+<B>Up:</B> <A NAME=tex2html3513 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3507 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html">11.2 Vector Reduction</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

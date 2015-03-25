@@ -1,0 +1,17 @@
+void main() {
+	C c;
+	c = new(C);
+	print(c.five());
+}
+
+class A {
+	int five() {
+		return 5;
+	}
+}
+
+class B extends A {
+}
+
+class C extends B {
+}

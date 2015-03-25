@@ -1,0 +1,12 @@
+function1 () {
+ caller
+}
+function2 () {
+ caller 0
+}
+
+function1
+function1
+
+function2
+function2

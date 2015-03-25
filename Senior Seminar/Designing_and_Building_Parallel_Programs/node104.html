@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3213 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3221 HREF="node105.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node105.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3219 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3223 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3224 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3222 HREF="node105.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node105.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3220 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3214 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html">8.9 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION035100000000000000000> Exercises</A></H1>
+<P>
+<OL><LI>
+Devise an execution sequence for five processes such that
+Program <A HREF="node96.html#progmpnondet" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmpnondet">8.4</A> yields an incorrect result because of an
+out-of-order message.
+<P>
+<LI>
+<A NAME=exmpi1>&#160;</A>
+Write an MPI program in which two processes exchange a message of size
+<em> N</em>
+ words a large number of times.  Use this program to measure
+communication bandwidth as a function of <em> N</em>
+ on one or more
+networked or parallel computers, and hence obtain estimates for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1058.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1058.gif">
+and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1059.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1059.gif">.
+<P>
+<LI>
+Compare the performance of the program developed in
+Exercise <A HREF="node104.html#exmpi1" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html#exmpi1">2</A> with an equivalent CC++
+  or FM program.
+<P>
+<LI>
+<A NAME=exmpi2>&#160;</A>
+Implement a two-dimensional finite difference algorithm using MPI.
+Measure performance on one or more parallel computers, and use
+performance models to explain your results.
+<P>
+<LI>
+Compare the performance of the program developed in
+Exercise <A HREF="node104.html#exmpi2" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html#exmpi2">4</A> with an equivalent CC++
+ , FM, or HPF programs.
+Account for any differences.
+<P>
+<LI>
+Study the performance of the MPI global operations for different data
+sizes and numbers of processes.  What can you infer from your results
+about the algorithms used to implement these operations?
+<P>
+<LI>
+Implement the vector reduction algorithm of Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A>
+by using MPI point-to-point communication algorithms.  Compare the
+performance of your implementation with that of <tt> MPI_ALLREDUCE</tt>
+for a range of processor counts and problem sizes.  Explain any
+differences.
+<P>
+<LI>
+<A NAME=exmpi5>&#160;</A>
+Use MPI to implement a two-dimensional array transpose in which an
+array of size <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1060.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1060.gif"><em> N</em>
+ is decomposed over
+<em> P</em>
+ processes (<em> P</em>
+ dividing <em> N</em>
+), with each process having
+<em> N/P</em>
+ rows before the transpose and <em> N/P</em>
+ columns after.
+Compare its performance with that predicted by the performance models
+presented in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<P>
+<LI>
+Use MPI to implement a three-dimensional array transpose in which an
+array of size <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1061.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1061.gif"><em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1062.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1062.gif"><em> N</em>
+ is decomposed over
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1063.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1063.gif"> processes.  Each processor has
+<em> (N/P)</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1064.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1064.gif"><em> (N/P)</em>
+ <em> x/y</em>
+ columns before the transpose, the same number of <em> x/z</em>
+ columns
+after the first transpose, and the same number of <em> y/z</em>
+ columns
+after the second transpose.  Use an algorithm similar to that
+developed in Exercise <A HREF="node104.html#exmpi5" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html#exmpi5">8</A> as a building block.
+<P>
+<LI>
+<A NAME=exmplb>&#160;</A>
+Construct an MPI implementation of the parallel parameter study
+algorithm described in Section <A HREF="node10.html#exdatabase" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exdatabase">1.4.4</A>.  Use a single
+manager process to both allocate tasks and collect results.  Represent
+tasks by integers and results by real numbers, and have each worker
+perform a random amount of computation per task.
+<P>
+<LI>
+Study the performance of the program developed in
+Exercise <A HREF="node104.html#exmplb" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html#exmplb">10</A> for a variety of processor counts and problem
+costs.  At what point does the central manager become a bottleneck?
+<P>
+<LI>
+Modify the program developed in Exercise <A HREF="node104.html#exmplb" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html#exmplb">10</A> to use a
+decentralized scheduling structure.  Design and carry out experiments
+to determine when this code is more efficient.
+<P>
+<LI>
+Construct an MPI implementation of the parallel/transpose and
+parallel/pipeline convolution algorithms of
+Section <A HREF="node43.html#eximage" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eximage">4.4</A>, using intercommunicators to structure the
+program.  Compare the performance of the two algorithms, and account
+for any differences.
+<P>
+<LI>
+Develop a variant of Program <A HREF="node100.html#progmpfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html#progmpfd">8.8</A> that implements the
+nine-point finite difference stencil of Figure <A HREF="node20.html#figsten" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figsten">2.22</A>.
+<P>
+<LI>
+Complete Program <A HREF="node98.html#progmpfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#progmpfock">8.6</A>, adding support for an accumulate
+operation and incorporating dummy implementations of routines such as
+<tt> identify_next_task</tt>.
+<P>
+<LI>
+Use MPI to implement a hypercube communication template (see
+Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>).  Use this template to implement simple
+reduction, vector reduction, and broadcast algorithms.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3213 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3221 HREF="node105.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node105.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3219 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3223 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3224 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3222 HREF="node105.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node105.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3220 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3214 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html">8.9 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

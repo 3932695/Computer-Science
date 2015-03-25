@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.6 Case Study: Atmosphere Model</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.6 Case Study: Atmosphere Model">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2083 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2091 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2089 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2093 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2094 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2092 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html">2.7 Case Study: Floorplan Optimization</A>
+<B>Up:</B> <A NAME=tex2html2090 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2084 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html">2.5 Mapping</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02360000000000000000>2.6 Case Study: Atmosphere Model</A></H1>
+<P>
+<A NAME=secclim>&#160;</A>
+<A NAME=secatmsum>&#160;</A>
+<P>
+<A NAME=1663>&#160;</A>
+In the next three sections, we develop parallel algorithms for
+<A NAME=1664>&#160;</A>
+atmosphere modeling, VLSI design, and computational chemistry
+problems.  These case studies are intended to illustrate both the
+design principles presented in the text and the
+<A NAME=1665>&#160;</A>
+stepwise process by which realistic parallel algorithms are developed.
+<P>
+While the problems examined in these case studies are of considerable
+interest in their own right, our interest here is in their
+computational characteristics.  The atmosphere modeling application
+is an example of a problem amenable to parallelization by using
+simple domain decomposition techniques.  It is representative of a
+wide range of scientific and engineering computations.  The VLSI
+design problem is an example of an irregular problem
+requiring load-balancing techniques.  It is representative of many
+symbolic computing problems.  Finally, the computational chemistry
+application is an example of a problem requiring asynchronous access
+to distributed data structures, a requirement that arises frequently
+in both numerical and symbolic computing.
+<P>
+In each case study, we first briefly introduce the problem being
+solved and then develop parallel algorithms.  We restrict the problem
+descriptions to essential computational issues and omit details that
+would add to the length of the presentation without illustrating new
+principles.  In particular, we do not say much about why the
+underlying scientific or engineering problem is formulated in the way
+described, or about alternative problem formulations that might admit
+to alternative parallelization strategies.  The chapter notes provide
+pointers to detailed treatments of these topics.
+<P>
+<H2><A NAME=SECTION02361000000000000000>2.6.1 Atmosphere Model Background</A></H2>
+<P>
+<A NAME=1667>&#160;</A>
+<P><A NAME=2341>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img253.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img253.gif">
+<BR><STRONG>Figure 2.20:</STRONG>  The basic predictive equations used in atmospheric
+modeling, where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img249.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img249.gif"> and <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img250.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img250.gif"> are latitude and longitude,
+<em> z</em>
+ is height, <em> u</em>
+ and <em> v</em>
+ are horizontal components of
+velocity, <em> p</em>
+ is pressure, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img251.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img251.gif"> is density, <em> T</em>
+ is
+temperature, <em> f</em>
+ is Coriolis force, <em> g</em>
+ is gravity, 
+<em> F</em>
+ and <em> Q</em>
+ are external forcing terms, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img252.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img252.gif"> is specific
+heat, and <em> a</em>
+ is the earth's radius.
+<A NAME=figprimeq>&#160;</A><BR>
+<P>
+<P>
+<A NAME=1725>&#160;</A>
+An <em> atmosphere model
+ </em> is a computer program that simulates
+atmospheric processes (wind, clouds, precipitation, etc.)  that
+influence weather or climate.  It may be used to study the evolution
+of tornadoes, to predict tomorrow's weather, or to study the impact on
+climate of increased concentrations of atmospheric carbon dioxide.
+Like many numerical models of physical processes, an atmosphere model
+solves a set of partial differential equations, in this case
+describing the basic fluid dynamical behavior of the atmosphere
+(Figure <A HREF="node20.html#figprimeq" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figprimeq">2.20</A>).  The behavior of these equations on a
+continuous space is approximated by their behavior on a finite set of
+regularly spaced points in that space.  Typically, these points are
+located on a rectangular latitude-longitude grid of size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img254.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img254.gif">, with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img255.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img255.gif"> in the range 15--30, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img256.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img256.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img257.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img257.gif"> in the range 50--500
+(Figure <A HREF="node20.html#figgrid" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figgrid">2.21</A>). This grid is periodic in the <em> x</em>
+ and
+<em> y</em>
+ dimensions, meaning that grid point <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img258.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img258.gif"> is viewed as
+being adjacent to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img259.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img259.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img260.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img260.gif">.
+A vector of values is maintained at each grid point,
+representing quantities such
+as pressure, temperature, wind velocity, and humidity.
+<P>
+<P><A NAME=2758>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img261.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img261.gif">
+<BR><STRONG>Figure 2.21:</STRONG> <em> The three-dimensional grid used to represent the state of
+the atmosphere.  Values maintained at each grid point represent
+quantities such as pressure and temperature.</em><A NAME=figgrid>&#160;</A><BR>
+<P>
+<P>
+The atmosphere model performs a time integration to determine
+the state of the atmosphere at some future time, based on an initial
+state.  This integration proceeds in a series of steps, with each step
+advancing the state of the computation by a fixed amount.  We shall
+assume that the model uses a finite difference method
+(Section <A HREF="node17.html#seclocal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seclocal">2.3.1</A>) to update grid values, with a nine-point
+stencil being used to compute atmospheric motion in the horizontal
+dimension, and a three-point stencil in the vertical
+(Figure <A HREF="node20.html#figsten" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figsten">2.22</A>).
+<P>
+<P><A NAME=2773>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img262.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img262.gif">
+<BR><STRONG>Figure 2.22:</STRONG> <em> The finite difference stencils used in the atmosphere
+model.  This figure shows for a single grid point both the nine-point
+stencil used to simulate horizontal motion and the three-point stencil
+used to simulate vertical motion.</em><A NAME=figsten>&#160;</A><BR>
+<P>
+<P>
+The finite difference computations are concerned with the movement, or
+fluid dynamics, of the atmosphere.  In addition to these dynamics
+calculations, the atmosphere model includes algorithms used to
+simulate processes such as radiation, convection, and precipitation.
+These calculations are collectively termed <em> physics
+ </em> and use
+a range of numerical methods of varying complexity.  Data dependencies
+within physics computations are restricted to within vertical columns.
+<P>
+<A HREF="#anderson">Plate 4</A>
+
+<P>
+illustrates one of the many phenomena that can be simulated using an
+atmospheric circulation model.  This shows a potential temperature
+isosurface of two thunderstorm downdrafts that hit the ground as
+microbursts, then spread out and collide.  The surfaces outline the
+boundaries of the cold downdrafted air.  The collision region contains
+wind fields that are dangerous to landing aircraft.  The grey tiles
+are 1-kilometer squares and the model domain is <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img263.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img263.gif">
+km with 50 m resolution.
+<P>
+<P><HR>
+<A NAME=anderson HREF="../../../tppmsgs/msgs0.htm#14" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/anderson.gif"> <img
+ALIGN=MIDDLE src="pictures/anderson_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/anderson_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#14" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/anderson.gif">30443</A> bytes; TIFF <A
+HREF="../../../tppmsgs/msgs0.htm#15" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/anderson.tiff">723412</A> bytes.)
+Plate 4: Potential temperature isosurface of two colliding
+thunderstorm microbursts.  Image courtesy of J. Anderson.
+<P><HR>
+
+<P>
+In summary, the atmosphere modeling example is primarily concerned
+with performing finite difference computations on a regular
+three-dimensional grid.  In this respect, it is representative of a
+large class of scientific (numeric) computations.  The simple, regular
+structure of the finite difference method makes it a useful
+pedagogical tool, and we shall use it repeatedly in the following
+chapters to illustrate issues in algorithm design and performance
+analysis.
+<P>
+<A NAME=1751>&#160;</A>
+<P>
+<H2><A NAME=SECTION02362000000000000000>2.6.2 Atmosphere Model Algorithm Design</A></H2>
+<P>
+<A NAME=1753>&#160;</A>
+We now develop parallel algorithms for the atmosphere modeling
+problem, proceeding in the stepwise fashion presented in earlier
+sections.
+<P>
+<H4><A NAME=SECTION02362010000000000000> Partition.</A></H4>
+<P>
+The grid used to represent state in the atmosphere model is a natural
+candidate for domain decomposition.  Decompositions in the <em> x</em>
+,
+<em> y</em>
+, and/or <em> z</em>
+ dimensions are possible (Figure <A HREF="node16.html#figfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#figfd">2.2</A>).
+Pursuant to our strategy of exposing the maximum concurrency possible, we
+initially favor the most aggressive decomposition possible, which in
+this case defines a task for each grid point.  This task maintains as
+its state the various values associated with its grid point and is
+responsible for the computation required to update that state at each
+time step.  Hence, we have a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img264.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img264.gif"> tasks, each with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img265.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img265.gif"> data and computation per time
+step.
+<P>
+<H4><A NAME=SECTION02362020000000000000> Communication.</A></H4>
+<P>
+<A NAME=1760>&#160;</A>
+The design checklist of Section <A HREF="node16.html#secrules1" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#secrules1">2.2.3</A> does not suggest any
+obvious deficiencies in our partition design, so we proceed to
+consider communication requirements.  We identify three distinct
+communications:
+<P>
+<P><A NAME=2792>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img266.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img266.gif">
+<BR><STRONG>Figure 2.23:</STRONG> <em> Task and channel structure for a two-dimensional finite
+difference computation with nine-point stencil, assuming one grid
+point per processor.  Only the channels used by the shaded task are
+shown.</em><A NAME=figsten9>&#160;</A><BR>
+<P>
+<P>
+<OL><LI>
+<em> Finite difference stencils.</em> If we assume a fine-grained
+decomposition in which each task encapsulates a single grid point, the
+nine-point stencil used in the horizontal dimension requires that each
+task obtain values from eight neighboring tasks.  The corresponding
+channel structure is illustrated in Figure <A HREF="node20.html#figsten9" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figsten9">2.23</A>.
+Similarly, the three-point stencil used in the vertical dimension
+requires that each task obtain values from two neighbors.
+<P>
+<LI>
+<em> Global operations.</em> The atmosphere model computes periodically
+the total mass of the atmosphere, in order to verify that the simulation is
+proceeding correctly.  This quantity is defined as follows:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img267.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img267.gif"><P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img268.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img268.gif"> denotes the mass at grid point <em> (i,j,k)</em>
+.  This sum
+can be computed using one of the parallel summation algorithms
+presented in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.
+<P>
+<LI>
+<em> Physics computations.</em> If each task encapsulates a single grid
+point, then the physics component of the atmosphere model requires
+considerable communication.  For example, the total clear sky (TCS) at
+level <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img269.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img269.gif"> is defined as
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img270.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img270.gif"><P>
+where level 0 is the top of the atmosphere and cld<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img271.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img271.gif"> is the cloud
+fraction at level <em> i</em>
+.  This <em> prefix product
+ </em> operation
+<A NAME=1794>&#160;</A>
+can be performed in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img272.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img272.gif"> steps using a variant of the hypercube
+algorithm of Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.  In total, the physics component
+of the model requires on the order of 30 communications per grid point
+and per time step.
+</OL>
+<P>
+Let us evaluate this design by using the checklist of
+Section <A HREF="node17.html#secrules2" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#secrules2">2.3.5</A>.  The communication associated with the
+finite difference stencil is distributed and hence can proceed
+concurrently.  So is the communication required for the global
+communication operation, thanks to the distributed algorithm developed
+in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.  (We might also consider performing this
+global operation less frequently, since its value is intended only for
+diagnostic purposes.)  The one component of our algorithm's
+communication structure that is problematic is the physics.  However,
+we shall see that the need for this communication can be avoided by
+agglomeration.
+<P>
+<P><A NAME=2809>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img275.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img275.gif">
+<BR><STRONG>Figure 2.24:</STRONG> <em> Using agglomeration to reduce communication requirements
+in the atmosphere model.  In (a), each task handles a single point
+and hence must obtain data from eight other tasks in order to implement the
+nine-point stencil.  In (b), granularity is increased to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img274.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img274.gif">
+points, meaning that only 4 communications are required per
+task.</em><A NAME=figfd2>&#160;</A><BR>
+<P><H4><A NAME=SECTION02362030000000000000> Agglomeration.</A></H4>
+<P>
+<A NAME=1804>&#160;</A>
+Our fine-grained domain decomposition of the atmosphere model has
+created <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img276.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img276.gif"> tasks: between <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img277.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img277.gif"> and <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img278.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img278.gif">,
+depending on problem size.  This is likely to be many more than we
+require and some degree of agglomeration can be considered.  We
+identify three reasons for pursuing agglomeration:
+<OL><LI>
+As illustrated in Figure <A HREF="node20.html#figfd2" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figfd2">2.24</A>, a small amount of agglomeration
+(from one to four grid points per task) can reduce the communication
+requirements associated with the nine-point stencil from eight to four
+messages per task per time step.
+<P>
+<LI>
+Communication requirements in the horizontal dimension are relatively
+small: a total of four messages containing eight data values.  In
+contrast, the vertical dimension requires communication not only for
+the finite difference stencil (2 messages, 2 data values) but also for
+various ``physics'' computations (30 messages).  These communications
+can be avoided by agglomerating tasks within each vertical column.
+<P>
+<LI>
+Agglomeration in the vertical is also desirable from a software
+engineering point of view.  Horizontal dependencies are restricted to
+the dynamics component of the model; the physics component operates
+within individual columns only.  Hence, a two-dimensional horizontal
+decomposition would allow existing sequential physics code to be
+reused in a parallel program without modification.
+</OL>
+<P>
+This analysis makes it appear sensible to refine our parallel
+algorithm to utilize a two-dimensional horizontal decomposition of the
+model grid in which each task encapsulates at least four grid points.
+Communication requirements are then reduced to those associated with
+the nine-point stencil and the summation operation.  Notice that this
+algorithm can create at most <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img279.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img279.gif"> tasks: between <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img280.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img280.gif">
+and <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img281.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img281.gif">, depending on problem size.  This number is likely to be enough
+for most practical purposes.
+<P>
+<H4><A NAME=SECTION02362040000000000000> Mapping.</A></H4>
+<P>
+<A NAME=1809>&#160;</A>
+In the absence of load imbalances, the simple mapping strategy
+illustrated in Figure <A HREF="node19.html#figmap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#figmap1">2.16</A> can be used.  It is clear from
+the figure that in this case, further agglomeration can be performed;
+in the limit, each processor can be assigned a single task responsible
+for many columns, thereby yielding an SPMD program.
+<P>
+This mapping strategy is efficient if each grid column task performs
+the same amount of computation at each time step.  This assumption is
+valid for many finite difference problems but turns out to be invalid
+for some atmosphere models.  The reason is that the cost of
+physics computations can vary significantly depending on model
+state variables.  For example, radiation calculations are not
+performed at night, and clouds are formed only when humidity exceeds a
+certain threshold.  The sort of variation in computational load that
+can result is illustrated in
+<A HREF="#ccm2">Plate 5</A>.
+
+<P>
+<P><HR>
+
+<A NAME=ccm2 HREF="../../../tppmsgs/msgs0.htm#16" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/rad.gif"> <img
+src="pictures/rad_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/rad_small.gif"></A>
+<A HREF="../../../tppmsgs/msgs0.htm#17" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/norad.gif"> <img
+src="pictures/norad_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/norad_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#16" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/rad.gif">28536</A> and <A
+HREF="../../../tppmsgs/msgs0.htm#17" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/norad.gif">156403</A> bytes; RGB <A
+HREF="../../../tppmsgs/msgs0.htm#18" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/rad.rgb">116173</A> and <A
+HREF="../../../tppmsgs/msgs0.htm#19" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/norad.rgb">919250</A> bytes.) Plate 5: Load distribution
+in an atmosphere model with a 64X128 grid.  The figure shows per-point
+computational load at a single time step, with the histogram giving
+relative frequency of different load values.  The left-hand image
+shows a time step in which radiation time steps are performed, and the
+right-hand image an ordinary time step.  Diurnal, land/ocean, and
+local variations are visible.  Images courtesy of J. Michalakes.
+<P><HR>
+
+<P>
+<P><A NAME=2824>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img284.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img284.gif">
+<BR><STRONG>Figure 2.25:</STRONG> <em> Load distribution in the physics component of an atmosphere
+model in the absence of load balancing.  In the top part of the
+figure, shading is used to indicate computational load in each of
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img283.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img283.gif"> processors.  A strong spatial variation is evident.  This
+effect is due to the night/day cycle (radiation calculations are
+performed only in sunlight); hence, there is a temporal variation
+also.  The bottom part of the figure is a histogram showing the
+distribution of computation times, which vary by a factor of 5.  These
+results were obtained by using a parallel version of the National
+Center for Atmospheric Research (NCAR) Community Climate Model (CCM2)
+on the 512-processor Intel DELTA computer.</em><A NAME=figcmlb1>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=2839>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img285.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img285.gif">
+<BR><STRONG>Figure 2.26:</STRONG> <em> Load distribution in the physics component of CCM2
+when using a cyclic mapping.  A comparison with Figure 2.25 shows that
+load imbalances are reduced significantly.</em><A NAME=figcmlb2>&#160;</A><BR>
+<P>
+<P>
+<A NAME=1825>&#160;</A>
+Empirical studies suggest that these load imbalances can reduce
+computational efficiency by 20 percent or more
+(Figure <A HREF="node20.html#figcmlb1" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figcmlb1">2.25</A>; see also
+<A HREF="#ccm2">Plate 5</A>).
+
+<P>
+In many circumstances, this performance loss may be regarded as
+acceptable.  However, if a model is to be used extensively, it is
+worthwhile to spend time improving efficiency.  One approach is to use
+a form of cyclic mapping: for example, allocating each processor tasks
+from western and eastern and from northern and southern hemispheres.
+Figure <A HREF="node20.html#figcmlb2" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figcmlb2">2.26</A> shows the reduction in load imbalance that can
+be achieved with this technique; this reduction must be weighed
+against the resulting increase in communication costs.
+<P>
+<H2><A NAME=SECTION02363000000000000000>2.6.3 Atmosphere Model Summary</A></H2>
+<P>
+The design of a parallel atmosphere model has proved to be
+straightforward process, in that most design choices are clear-cut.  A
+two-dimensional domain decomposition of the model grid results in a
+need for both local communication between tasks handling neighboring
+grid points and a parallel summation operation.
+<P>
+One unanswered question concerns whether load-balancing algorithms
+<A NAME=1833>&#160;</A>
+should be incorporated into the model.  Because load balancing adds to the
+complexity of the overall design, this decision requires both
+performance data (of the sort presented in Figure <A HREF="node20.html#figcmlb1" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#figcmlb1">2.25</A>) and
+information about the expected use of the parallel model.  Another
+question, addressed in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, is how the
+atmosphere model will fit into a larger framework such as the climate
+model of Figure <A HREF="node16.html#figenv" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#figenv">2.3</A>.
+<A NAME=1837>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2083 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2091 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2089 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2093 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2094 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2092 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html">2.7 Case Study: Floorplan Optimization</A>
+<B>Up:</B> <A NAME=tex2html2090 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2084 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html">2.5 Mapping</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

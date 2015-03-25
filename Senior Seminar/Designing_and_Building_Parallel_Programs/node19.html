@@ -1,0 +1,508 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.5 Mapping</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.5 Mapping">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2071 HREF="node18.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2079 HREF="node20.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2077 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2081 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2082 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2080 HREF="node20.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html">2.6 Case Study: Atmosphere Model</A>
+<B>Up:</B> <A NAME=tex2html2078 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2072 HREF="node18.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html">2.4 Agglomeration</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02350000000000000000>2.5 Mapping</A></H1>
+<P>
+<A NAME=sectmap>&#160;</A>
+<P>
+<A NAME=1544>&#160;</A>
+In the fourth and final stage of the parallel algorithm design
+process, we specify where each task is to execute.  This mapping
+problem does not arise on uniprocessors or on shared-memory computers
+that provide automatic task scheduling.  In these computers, a set of
+tasks and associated communication requirements is a sufficient
+specification for a parallel algorithm; operating system or hardware
+mechanisms can be relied upon to schedule executable tasks to
+available processors.  Unfortunately, general-purpose mapping
+mechanisms have yet to be developed for scalable parallel computers.
+In general, mapping remains a difficult problem that must be
+explicitly addressed when designing parallel algorithms.
+<P>
+Our goal in developing mapping algorithms is normally to minimize
+total execution time.  We use two strategies to achieve this goal:
+<OL><LI>
+We place tasks that are able to execute concurrently on <em>
+different
+ </em> processors, so as to enhance concurrency.
+<LI>
+We place tasks that communicate frequently on the <em> same
+ </em>
+processor, so as to increase locality.
+</OL>
+Clearly, these two strategies will sometimes conflict, in which case
+our design will involve tradeoffs.  In addition, resource limitations
+may restrict the number of tasks that can be placed on a single
+processor.
+<P>
+The mapping problem is known to be <em> NP
+ -complete</em>, meaning that no
+computationally tractable (polynomial-time) algorithm can exist for
+evaluating these tradeoffs in the general case.  However, considerable
+knowledge has been gained on specialized strategies and heuristics and
+the classes of problem for which they are effective.  In this
+section, we provide a rough classification of problems and present
+some representative techniques.
+<P>
+<P><A NAME=2667>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img240.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img240.gif">
+<BR><STRONG>Figure 2.16:</STRONG> <em> Mapping in a grid problem in which each task performs the
+same amount of computation and communicates only with its four
+neighbors.  The heavy dashed lines delineate processor boundaries.
+The grid and associated computation is partitioned to give each
+processor the same amount of computation and to minimize off-processor
+communication.</em><A NAME=figmap1>&#160;</A><BR>
+<P>
+<P>
+Many algorithms developed using domain decomposition techniques
+feature a fixed number of equal-sized tasks and structured local and
+global communication.  In such cases, an efficient mapping is
+straightforward.  We map tasks in a way that minimizes interprocessor
+communication (Figure <A HREF="node19.html#figmap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#figmap1">2.16</A>); we may also choose to agglomerate
+tasks mapped to the same processor, if this has not already been done,
+to yield a total of <em> P</em>
+ coarse-grained tasks, one per processor.
+<P>
+In more complex domain decomposition-based algorithms with variable
+amounts of work per task and/or unstructured communication patterns,
+efficient agglomeration and mapping strategies may not be obvious to
+the programmer.  Hence, we may employ
+<em> load balancing
+ </em> algorithms that seek to identify efficient
+agglomeration and mapping strategies, typically by using heuristic
+techniques.  The time required to execute these algorithms must be
+weighed against the benefits of reduced execution time.  
+<em> Probabilistic load-balancing
+ </em> methods tend to have lower overhead
+<A NAME=1558>&#160;</A>
+than do methods that exploit structure in an application.
+<P>
+The most complex problems are those in which either the number of
+tasks or the amount of computation or communication per task changes
+dynamically during program execution.  In the case of problems
+developed using domain decomposition techniques, we may use a <em>
+<A NAME=1559>&#160;</A>
+dynamic load-balancing
+ </em> strategy in which a load-balancing
+algorithm is executed periodically to determine a new agglomeration
+and mapping.  Because load balancing must be performed many times
+during program execution, 
+<A NAME=1560>&#160;</A>
+<em> local
+ </em> algorithms may be preferred that do not require
+global knowledge of computation state.
+<P>
+Algorithms based on functional decomposition often yield computations
+consisting of many short-lived tasks that coordinate with other tasks
+only at the start and end of execution.  In this case, we can
+<A NAME=1562>&#160;</A>
+use <em> task-scheduling
+ </em> algorithms, which allocate tasks to
+processors that are idle or that are likely to become idle.
+<P>
+<H2><A NAME=SECTION02351000000000000000>2.5.1 Load-Balancing Algorithms</A></H2>
+<P>
+<A NAME=seclbalgs>&#160;</A>
+<P>
+A wide variety of both general-purpose and application-specific
+load-balancing techniques have been proposed for use in parallel
+algorithms based on domain decomposition techniques.  We review
+several representative approaches here (the chapter notes provide
+references to other methods), namely recursive bisection methods,
+local algorithms, probabilistic methods, and cyclic mappings.  These
+techniques are all intended to agglomerate fine-grained tasks defined
+in an initial partition to yield one coarse-grained task per
+processor.  Alternatively, we can think of them as partitioning our
+computational domain to yield one subdomain
+<A NAME=1566>&#160;</A>
+for each processor. For this reason, they are often referred to as
+<em> partitioning
+ </em> algorithms.
+<P>
+<H4><A NAME=SECTION02351010000000000000> Recursive Bisection.</A></H4>
+<P>
+<A NAME=1569>&#160;</A>
+Recursive bisection techniques are used to partition a domain (e.g., a
+<A NAME=1570>&#160;</A>
+finite element grid) into subdomains of approximately equal
+computational cost while attempting to minimize communication costs,
+that is, the number of channels crossing task boundaries.  A
+divide-and-conquer approach is taken.  The domain is first cut in one
+dimension to yield two subdomains.  Cuts are then made recursively in
+the new subdomains until we have as many subdomains as we require
+tasks.  Notice that this recursive strategy allows the
+partitioning algorithm itself to be executed in parallel.
+<P>
+The most straightforward of the recursive bisection techniques is <em>
+<A NAME=1571>&#160;</A>
+recursive coordinate bisection</em>, which is normally applied to
+irregular grids that have a mostly local communication structure.
+This technique makes cuts based on the physical coordinates of grid
+points in the domain, at each step subdividing along the longer
+dimension so that if (for example) the cut is made along the
+<em> x</em>
+ dimension, grid points in one subdomain will all have an
+<em> x</em>
+-coordinate greater than grid points in the other.  This
+approach has the advantages of being simple and inexpensive.  It also
+does a good job of partitioning computation.  A disadvantage is that
+it does not optimize communication performance.  In particular, it can
+generate long, skinny subdomains, which if an algorithm has
+significant local communication will result in more messages than will
+a decomposition that generates square subdomains.
+<P>
+A variant of recursive bisection called <em> unbalanced recursive
+<A NAME=1574>&#160;</A>
+bisection
+ </em> attempts to reduce communication costs by forming
+<A NAME=1575>&#160;</A>
+subgrids that have better aspect ratios.  Instead of automatically
+dividing a grid in half, it considers the <em> P-1</em>
+ partitions
+obtained by forming unbalanced subgrids with <em> 1/P</em>
+ and
+<em> (P-1)/P</em>
+ of the load, with <em> 2/P</em>
+ and <em> (P-2)/P</em>
+ of the
+load, and so on, and chooses the partition that minimizes partition
+aspect ratio.  This method increases the cost of computing the
+partition but can reduce communication costs.
+<A HREF="#plassman">Plate 1</A>
+
+<P>
+shows a mapping onto 64 processors constructed by using unbalanced
+recursive bisection.  In this instance, the grid in question is an
+irregular finite element mesh generated for a superconductivity
+simulation.
+<P>
+<P><HR>
+<A NAME=plassman HREF="../../../tppmsgs/msgs0.htm#7" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/part.gif"> <img
+ALIGN=MIDDLE src="pictures/part_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/part_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#7" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/part.gif">235573</A> bytes; RGB <A
+HREF="../../../tppmsgs/msgs0.htm#8" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/part.rgb">1142568</A> bytes.)
+Plate 1: The unbalanced recursive bisection algorithm, applied here to a
+superconductivity simulation in which increased computational load
+corresponds to an increased number of triangular elements in certain
+areas of the grid.  The recursive partitioning yields sixty four
+subdomains, with for example the first partition descending vertically
+between subdomains 28 and 5.  Image courtesy of P. Plassmann.
+<P><HR>
+
+<P>
+<A NAME=1587>&#160;</A>
+Another technique, called <em> recursive graph bisection
+ </em>, can be
+useful in the case of more complex unstructured grids, for example,
+finite element meshes.  This technique uses connectivity information
+to reduce the number of grid edges crossing subdomain boundaries, and
+hence to reduce communication requirements.  A grid is treated as a
+graph with <em> N</em>
+ vertices (grid points) <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img241.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img241.gif">.  The algorithm first
+identifies the two extremities of the graph, that is, the two vertices
+that are the most separated in terms of graph distance.  (The graph
+distance between two vertices is the smallest number of edges that
+must be traversed to go between them.)  Each vertex is then assigned
+to the subdomain corresponding to the closer extremity.  Another
+<A NAME=1590>&#160;</A>
+algorithm called <em> recursive spectral bisection
+ </em> is even
+better in many circumstances (see the chapter notes for references).
+<A HREF="#johan">Plate 2</A>
+
+<P>
+<A NAME=1596>&#160;</A>
+shows a partition computed using the latter algorithm for the grid of
+Figure <A HREF="node17.html#figfem" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#figfem">2.9</A>.
+<P>
+<P><HR>
+<A NAME=johan HREF="../../../tppmsgs/msgs0.htm#9" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/asm_color.gif"> <img
+ALIGN=MIDDLE src="pictures/asm_color_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/asm_color_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#9" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/asm_color.gif">34643</A> bytes; RGB <A
+HREF="../../../tppmsgs/msgs0.htm#10" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/asm_color.rgb">131183</A> bytes.)
+Plate 2: The spectral
+bisection partitioning algorithm applied to a finite element mesh
+generated for an assembly part.  Image courtesy of Z. Johan.
+<P><HR>
+
+<P>
+<A NAME=1600>&#160;</A>
+<P>
+<P><A NAME=2691>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img242.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img242.gif">
+<BR><STRONG>Figure 2.17:</STRONG> <em> Load balancing in a grid problem.  Variable numbers of
+grid points are placed on each processor so as to compensate for load
+imbalances.  This sort of load distribution may arise if a local
+load-balancing scheme is used in which tasks exchange load information
+with neighbors and transfer grid points when load imbalances are
+detected.</em><A NAME=figload2>&#160;</A><BR>
+<P><H4><A NAME=SECTION02351020000000000000> Local Algorithms.</A></H4>
+<P>
+<A NAME=1606>&#160;</A>
+The techniques just described are relatively expensive because they
+require global knowledge of computation state.  In contrast, local
+load-balancing algorithms compensate for changes in computational load
+using only information obtained from a small number of neighboring
+processors.  For example, processors may be organized in a logical
+mesh; periodically, each processor compares its computational load
+with that of its neighbors in the mesh and transfers computation if
+the difference in load exceeds some threshold.  Figure <A HREF="node19.html#figload2" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#figload2">2.17</A>
+and
+<A HREF="#mpmm">Plate 3</A>
+
+<P>
+show load distributions produced by such
+schemes.
+<P>
+<P><HR>
+<A NAME=mpmm HREF="../../../tppmsgs/msgs0.htm#11" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/Indlocal.gif"> <img
+ALIGN=MIDDLE src="pictures/Indlocal_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/Indlocal_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#11" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/Indlocal.gif">27606</A> bytes; RGB <A
+HREF="../../../tppmsgs/msgs0.htm#12" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/Indlocal.rgb">133673</A> bytes.)
+Plate 3: A dynamic, local
+load-balancing algorithm applied to a weather model.  This shows the
+situation after grid points have migrated to compensate for a ``hot
+spot'' slightly to the left of the center of the grid.  Image courtesy
+of J. Michalakes.
+<P><HR>
+
+<P>
+Because local algorithms are inexpensive to operate, they can be
+useful in situations in which load is constantly changing.  However,
+they are typically less good at balancing load than global algorithms
+and, in particular, can be slow to adjust to major changes in load
+characteristics.  For example, if a high load suddenly appears on one
+processor, multiple local load-balancing operations are
+required before load ``diffuses'' to other processors.
+<P>
+<H4><A NAME=SECTION02351030000000000000> Probabilistic Methods.</A></H4>
+<P>
+A particularly simple approach to load balancing is to allocate tasks
+<A NAME=1615>&#160;</A>
+to randomly selected processors.  If the number of tasks is large, we
+<A NAME=1616>&#160;</A>
+can expect that each processor will be allocated about the same amount
+of computation.  Advantages of this strategy are its low cost and
+scalability.  Disadvantages are that off-processor communication is
+required for virtually every task and that acceptable load
+distribution is achieved only if there are many more tasks than there
+are processors.  The strategy tends to be most effective when there is
+relatively little communication between tasks and/or little locality
+in communication patterns.  In other cases, probabilistic methods
+tend to result in considerably more communication than do other
+techniques.
+<P>
+<H4><A NAME=SECTION02351040000000000000> Cyclic Mappings.</A></H4>
+<P>
+<A NAME=1618>&#160;</A>
+If we know both that computational load per grid point varies and that
+there is significant spatial locality in load levels, then a <em>
+<A NAME=1619>&#160;</A>
+cyclic
+ </em> (or <em> scattered</em>, as it is sometimes called) mapping
+of tasks to processors can be appropriate.  That is, each of
+<em> P</em>
+ processors is allocated every <em> P</em>
+th task according to some
+enumeration of the tasks (Figure <A HREF="node19.html#figload43" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#figload43">2.18</A>).  This technique is a form of
+probabilistic mapping. The goal is that, on average, each processor
+will be allocated about the same computational load.  The benefits of
+improved load balance may need to be weighed against increased
+communication costs due to reduced locality.  Block cyclic
+distributions are also possible, in which blocks of tasks are
+allocated to processors.
+<P>
+<P><A NAME=2705>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img243.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img243.gif">
+<BR><STRONG>Figure 2.18:</STRONG> <em> Using a cyclic mapping for load balancing in a grid
+problem, when executing on 12 processors.  Tasks mapped to a single
+processor are shaded.  Notice that with this mapping, all
+communications are with tasks located on different processors
+(assuming a five-point stencil).</em><A NAME=figload43>&#160;</A><BR>
+<P><H2><A NAME=SECTION02352000000000000000>2.5.2 Task-Scheduling Algorithms</A></H2>
+<P>
+<A NAME=secmwmw>&#160;</A>
+<P>
+<A NAME=1629>&#160;</A>
+Task-scheduling algorithms can be used when a functional decomposition
+yields many tasks, each with weak locality requirements.  A
+centralized or distributed task pool is maintained, into
+which new tasks are placed and from which tasks are taken for
+allocation to processors.  In effect, we reformulate the parallel
+algorithm so that what were originally conceived of as tasks become
+data structures representing ``problems,'' to be solved by a set of
+worker tasks, typically one per processor.
+<P>
+The most critical (and complicated) aspect of a task-scheduling
+<A NAME=1630>&#160;</A>
+algorithm is the strategy used to allocate problems to workers.
+Generally, the chosen strategy will represent a compromise between the
+conflicting requirements for independent operation (to reduce
+communication costs) and global knowledge of computation state (to
+improve load balance).  We discuss manager/worker, hierarchical
+manager/worker, and decentralized approaches.
+<P>
+<P><A NAME=2721>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img244.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img244.gif">
+<BR><STRONG>Figure 2.19:</STRONG> <em> Manager/worker load-balancing structure.  Workers
+repeatedly request and process problem descriptions; the manager
+maintains a pool of problem descriptions (<tt> p</tt>) and responds to
+requests from workers.</em><A NAME=figLB2>&#160;</A><BR>
+<P><H4><A NAME=SECTION02352010000000000000> Manager/Worker.</A></H4>
+<P>
+Figure <A HREF="node19.html#figLB2" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#figLB2">2.19</A> illustrates a particularly simple task scheduling
+scheme that is nevertheless effective for moderate numbers of
+processors.  This strategy was used previously in
+Section <A HREF="node10.html#exdatabase" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exdatabase">1.4.4</A>.  A central manager task is given
+responsibility for problem allocation.  Each worker repeatedly
+requests and executes a problem from the manager.  Workers can also
+send new tasks to the manager for allocation to other workers.  The
+efficiency of this strategy depends on the number of workers and the
+<A NAME=1638>&#160;</A>
+relative costs of obtaining and executing problems.  Efficiency can be
+<A NAME=1639>&#160;</A>
+improved by prefetching problems so as to overlap computation and
+<A NAME=1640>&#160;</A>
+communication, and by caching problems in workers, so that workers
+communicate with the manager only when no problems are available
+locally.
+<P>
+<H4><A NAME=SECTION02352020000000000000> Hierarchical Manager/Worker.</A></H4>
+<P>
+A variant of the manager/worker scheme divides workers into
+<A NAME=1642>&#160;</A>
+disjoint sets, each with a submanager.  Workers request tasks from
+submanagers, which themselves communicate periodically with the
+manager and with other submanagers to balance load between the sets of
+processors for which they are responsible.
+<P>
+<H4><A NAME=SECTION02352030000000000000> Decentralized Schemes.</A></H4>
+<P>
+<A NAME=1644>&#160;</A>
+In completely decentralized schemes, there is no central manager.
+Instead, a separate task pool is maintained on each processor, and
+idle workers request problems from other processors.  In effect, the
+task pool becomes a distributed data structure that is accessed by the
+different tasks in an asynchronous fashion.  A variety of access
+policies can be defined.  For example, a worker may request work from
+a small number of predefined ``neighbors'' or may select other
+processors at random.  In a hybrid centralized/distributed scheme,
+requests are sent to a central manager, which allocates them to
+workers in a round-robin fashion.  Notice that while this manager will
+certainly be a bottleneck on large numbers of processors, it will
+typically be accessed less frequently than will the manager in a
+manager/worker scheduler and hence is a more scalable construct.
+<P>
+As noted in Section <A HREF="node17.html#seccommas" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommas">2.3.4</A>, access to a distributed 
+data structure, such as the task pool maintained by a decentralized
+load-balancing scheme,
+can be provided in several different ways.
+<A NAME=1646>&#160;</A>
+Workers can be made responsible for both computing and managing the
+queue of problems. In this case, each worker must periodically
+<A NAME=1647>&#160;</A>
+poll to detect pending requests.  Alternatively, computation and
+task pool management responsibilities can be encapsulated in separate
+tasks.
+<P>
+<A NAME=1648>&#160;</A>
+<H4><A NAME=SECTION02352040000000000000> Termination Detection.</A></H4>
+<P>
+Task-scheduling algorithms require a mechanism for determining when a
+search is complete; otherwise, idle workers will never stop requesting
+work from other workers.  This <em> termination
+<A NAME=1650>&#160;</A>
+detection
+ </em> operation is straightforward in centralized schemes,
+because the manager can easily determine when all workers are idle.
+It is more difficult in decentralized algorithms, because not only is
+there no central record of which workers are idle, but also messages
+in transit may be carrying tasks even when all workers appear to be
+idle.  See the chapter notes for references to termination-detection
+algorithms.
+<P>
+<H2><A NAME=SECTION02353000000000000000>2.5.3 Mapping Design Checklist</A></H2>
+<P>
+<A NAME=1652>&#160;</A>
+We have now completed our parallel algorithm design by specifying how
+<A NAME=1653>&#160;</A>
+tasks defined in previous design stages are mapped to processors.  Our
+mapping decisions seek to balance conflicting requirements for
+equitable load distribution and low communication costs.  When
+possible, we use a static mapping scheme that allocates each task to a
+single processor.  However, when the number or size of tasks is
+variable or not known until runtime, we may use a dynamic load
+balancing scheme or reformulate the problem so that a task scheduling
+structure can be used to schedule computation.
+<P>
+The following checklist can serve as a basis for an informal
+evaluation of the mapping design.
+<P>
+<OL><LI>
+If considering an SPMD design for a complex problem, have you also
+considered an algorithm based on dynamic task creation and deletion?
+The latter approach can yield a simpler algorithm (as will be
+illustrated in Section <A HREF="node21.html#secfloor" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#secfloor">2.7</A>); however, performance can be
+problematic.
+<P>
+<LI>
+If considering a design based on dynamic task creation and deletion,
+have you also considered an SPMD algorithm?  An SPMD algorithm
+provides greater control over the scheduling of communication and
+computation, but can be more complex.
+<P>
+<LI>
+If using a centralized load-balancing scheme, have you verified that
+the manager will not become a bottleneck?  You may be able to reduce
+communication costs in these schemes by passing pointers to tasks,
+rather than the tasks themselves, to the manager.
+<P>
+<LI>
+If using a dynamic load-balancing scheme, have you evaluated the
+relative costs of different strategies?  Be sure to include the
+implementation costs in your analysis.  Probabilistic or cyclic
+mapping schemes are simple and should always be considered, because they
+can avoid the need for repeated load-balancing operations.
+<P>
+<LI>
+If using probabilistic or cyclic methods, do you have a large enough number
+of tasks 
+to ensure reasonable load balance?  Typically, at least ten
+times as many tasks as processors are required.
+<P>
+</OL>
+<P>
+We have now completed the design of one or more parallel algorithms
+designs for our problem.  However, we are not quite ready to start
+writing code: several phases in the design process remain.  First, we
+need to conduct some simple performance analyses in order to choose
+between alternative algorithms and to verify that our design meets
+performance goals.  We should also think hard about the implementation
+costs of our designs, about opportunities for reusing existing code in
+their implementation, and about how algorithms fit into larger systems
+of which they may form a part.  These issues are discussed in detail
+in Chapters <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> and <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>.
+<P>
+<A NAME=1659>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2071 HREF="node18.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2079 HREF="node20.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2077 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2081 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2082 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2080 HREF="node20.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html">2.6 Case Study: Atmosphere Model</A>
+<B>Up:</B> <A NAME=tex2html2078 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2072 HREF="node18.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html">2.4 Agglomeration</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

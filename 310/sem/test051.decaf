@@ -1,0 +1,21 @@
+
+class A {
+	A a;
+  int x;
+  int func() 
+  { 
+    x = 2;
+	Print(a.x);
+    Print("Hi mom!"); 
+    return 5;
+  }
+}
+
+void main()
+{
+  A a;
+  a = New(A);
+  a.func();
+ Print(a.x);
+}
+

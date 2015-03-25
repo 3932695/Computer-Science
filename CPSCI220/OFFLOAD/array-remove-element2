@@ -1,0 +1,8 @@
+declare -a state=(CA NV NY UT TX)
+declare -a newstate=(${state[@]/NV*/} )
+echo "newstate[@] after delete = ${newstate[@]}"
+
+echo "newstate[0] = ${newstate[0]}"
+echo "newstate[1] = ${newstate[1]}"
+echo "newstate[2] = ${newstate[2]}"
+echo "newstate[3] = ${newstate[3]}"

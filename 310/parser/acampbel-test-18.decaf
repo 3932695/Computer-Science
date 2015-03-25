@@ -1,0 +1,22 @@
+void main() {
+	MyStack stack;
+	stack = new(MyStack);
+	stack.init();
+	stack.push(1);	
+
+}
+
+class MyStack {
+	int Size;
+	int[] Contents;
+
+	void init() {
+		Size = 0;
+		Contents = NewArray(10, int);
+	}
+
+	void push(int x) {
+		Contents[Size] = x;
+		Size = Size + 1;
+	}
+}

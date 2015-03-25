@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.8 Input/Output</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.8 Input/Output">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2261 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2269 HREF="node35.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2267 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2271 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2272 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2270 HREF="node35.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html">3.9 Case Study: Shortest-Path Algorithms</A>
+<B>Up:</B> <A NAME=tex2html2268 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2262 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html">3.7 A Refined Communication Cost Model</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02480000000000000000>3.8 Input/Output</A></H1>
+<P>
+An important determinant of performance in many parallel programs is
+<A NAME=3971>&#160;</A>
+the time required to move data between memory and secondary storage,
+<A NAME=3972>&#160;</A>
+that is, the time required for input/output (I/O).  Applications with
+substantial I/O requirements include the following.
+<P>
+<UL><LI>
+<em> Checkpoints</em>.  Many computations performed on parallel computers
+<A NAME=3975>&#160;</A>
+execute for extended periods.  Periodic checkpointing of computation
+state is essential in order to reduce the cost of system failures.  On
+large parallel computers, state can be large (many gigabytes).
+<P>
+<LI>
+<em> Simulation data.</em> Scientific and engineering simulations that
+compute the time evolution of physical systems periodically save
+system state for subsequent visualization or analysis.  Some
+simulations can generate very large amounts of data---hundreds of gigabytes
+or more in a single run.
+<P>
+<LI>
+<em> Out-of-core computation.</em> Some programs must operate on data
+<A NAME=3978>&#160;</A>
+structures that are larger than available ``core'' memory.  In
+principle, a virtual memory system can perform the necessary paging of
+data to and from disk.  In practice, not all parallel computers
+provide virtual memory. Even when they do, application performance can
+often be enhanced by explicit management of data movement.
+<P>
+<LI>
+<em> Data analysis.</em> Many applications involve the analysis of large
+amounts of data.  For example, climate model output or data from
+weather satellites may be searched for ``extreme events'' such as high
+temperature values, a video database may be searched for specified
+images, and a database of credit card transactions may be searched for
+patterns of fraudulent use.  These data analysis applications are
+particularly demanding from an I/O point of view, because relatively
+little computation is performed on each datum retrieved from disk.
+</UL>
+<P>
+It is difficult to provide a general discussion of parallel I/O
+because different parallel computers have radically different I/O
+architectures and hence parallel I/O mechanisms.  However, we can make
+several points that have wide applicability.
+<P>
+We can often gain a reasonable understanding of the cost of an I/O
+operation by thinking of it as a communication from the processors
+<A NAME=3981>&#160;</A>
+that perform that operation to one or more disks.  The cost of a disk
+I/O operation can be approximated by a startup cost and a per-word
+transfer cost in much the same way as an interprocessor
+communication.  (However, the startup cost is typically much greater.)
+As in interprocessor communication, the keys to good performance are
+to maximize the utilization of available paths and to minimize
+startups.
+<P>
+<P><A NAME=5177>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img590.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img590.gif">
+<BR><STRONG>Figure 3.22:</STRONG> <em> I/O architecture of an idealized parallel computer.  
+<em> P</em>
+ processors are connected by multiple I/O channels to
+<em> D</em>
+ disks.</em><A NAME=figioarch>&#160;</A><BR>
+<P>
+<P>
+If a computer has only a single disk or if multiple disks are
+connected to a single processor, little can be done to
+optimize I/O performance.  However, in practice most parallel
+computers provide multiple paths from processors to disk, whether by
+providing distinct ``I/O nodes'' or by connecting disks directly to
+processors (Figures <A HREF="node34.html#figioarch" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html#figioarch">3.22</A>).  On architectures of this
+sort, we seek to organize I/O operations so that multiple processors
+read and write concurrently, using multiple paths.  Thus, centralized
+I/O strategies that cause data to pass through a single processor are
+unlikely to be efficient and are certainly not scalable.
+<P>
+In addition to maximizing concurrency in I/O operations, we need to be
+<A NAME=3988>&#160;</A>
+concerned about the number of distinct read or write requests required
+to transfer data between disk and processor memory.  This can often
+have a greater impact on I/O performance than can the amount of data
+transferred.  The number of I/O requests depends partly on how data
+are distributed on disk and in memory.  The distribution in memory will
+presumably be determined by the application; the distribution on disk
+either will be under programmer control or will be selected by the
+file system.  Data may sometimes be ``striped'' (scattered) across
+available disks so as to reduce the probability of many processors
+attempting to read from the same disk simultaneously.
+<P>
+If distributions on disk and in memory differ, then a large number of
+reads or writes may be required in order to achieve data transfer.
+This problem is analogous to what happens when transferring data
+structures between two parallel program components that require
+different distributions.  As will be discussed in
+<A NAME=3989>&#160;</A>
+Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, at least two approaches are possible in this
+situation: we can modify one or both components to use different
+distributions, or we can explicitly redistribute data before or while
+transferring it.  Because I/O requests tend to be more expensive than
+interprocessor communications, it is often better to perform an
+explicit redistribution of data in memory so as to minimize the number
+of I/O requests.  This leads to a two-phase access strategy, in which
+the data distributions used on disk and in memory are decoupled.  The
+merits of these various approaches can be explored analytically with
+performance models.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2261 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2269 HREF="node35.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2267 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2271 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2272 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2270 HREF="node35.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html">3.9 Case Study: Shortest-Path Algorithms</A>
+<B>Up:</B> <A NAME=tex2html2268 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2262 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html">3.7 A Refined Communication Cost Model</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

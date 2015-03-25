@@ -1,0 +1,6 @@
+PS3="Enter your choice: "
+select state in CA NV NY Exit
+do
+ echo "Your selection is: $state"
+ break
+done

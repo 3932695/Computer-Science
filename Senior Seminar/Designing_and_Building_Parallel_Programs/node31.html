@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.5 Experimental Studies</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.5 Experimental Studies">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2225 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2233 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2231 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2235 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2236 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2234 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html">3.6 Evaluating Implementations</A>
+<B>Up:</B> <A NAME=tex2html2232 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2226 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html">3.4 Scalability Analysis</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02450000000000000000>3.5 Experimental Studies</A></H1>
+<P>
+<A NAME=secexper>&#160;</A>
+<P>
+<A NAME=3501>&#160;</A>
+Discussion in preceding sections has emphasized analytic modeling of
+performance.  Yet parallel programming is first and foremost an
+experimental discipline.  The flexibility and ease of modification of
+software on the one hand, and the complexity of parallel computer
+systems on the other, mean that approaches to parallel program design
+based entirely on theory are rarely cost effective.  The role of
+modeling is most often to assist in what is essentially an
+experimental process, by guiding experiment and explaining results.
+<P>
+Experimental studies can be used in early design stages to determine
+values for parameters used in performance models, such as computation
+time per grid point, average depth of a search tree, message startup
+cost, and message transfer costs.  They can also be used after
+programming begins, to compare observed and modeled performance.
+<P>
+Next we review several sometimes subtle issues that can arise during
+experimental studies.
+<P>
+<H2><A NAME=SECTION02451000000000000000>3.5.1 Experimental Design</A></H2>
+<P>
+<A NAME=3503>&#160;</A>
+The first step in an experimental study is to <em> identify the
+data
+ </em> that we wish to obtain.  For example, when calibrating a
+performance model we may be interested in determining the execution
+time of a sequential version of our application as a function of
+problem size in order to determine <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img485.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img485.gif">.  Or, we may need to measure
+the execution time of a simple message-passing testbed program in
+order to determine <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img486.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img486.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img487.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img487.gif">.
+<P>
+Normally, experiments are performed for a range of data
+points---different problem sizes and/or processor counts.  By
+maximizing the number of data points obtained, we reduce the impact of
+errors in individual measurements.  When empirical data are used to
+evaluate the quality of an implementation, a range of data points also
+allows us to estimate the accuracy of the model and to identify
+regimes in which it is inadequate.
+<P>
+The next step in an experimental study is to <em> design the
+<A NAME=3505>&#160;</A>
+experiments
+ </em> that will be used to obtain the required data.  The
+critical issue here is to ensure that our experiments measure what we
+intend to measure.  For example, if a program comprises an
+initialization step followed by a long series of iterations, and our
+performance model deals only with the cost of an iteration, then that
+is what we need to measure.
+<P>
+<H2><A NAME=SECTION02452000000000000000>3.5.2 Obtaining and Validating Experimental Data</A></H2>
+<P>
+The principal challenge when performing experiments is to obtain
+accurate and reproducible results.  Execution times can be obtained in
+various ways; which is best will depend on both our requirements and
+the facilities available on the target computer.  A straightforward
+but potentially time-consuming approach is to incorporate code into
+our program that calls system timer routines to determine elapsed
+time.  In principle, we should make these calls on every processor and
+then take the maximum time.  However, we can often identify a
+reference processor that does not start or finish appreciably later or
+sooner than others, and measure times on this processor alone.
+Alternatively, we can use a profiling or tracing tool that obtains
+timing data automatically.  We discuss specific tools in
+Chapter <A HREF="node106.html#chaptools" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html#chaptools">9</A>.
+<P>
+Experiments should always be repeated to
+verify that results are reproducible.  Generally, results should not
+vary by more than a small amount---2 or 3 percent is a lot if one is
+trying to fine-tune algorithms.  Possible causes of variation include
+the following.
+<P>
+<UL><LI>
+<A NAME=3509>&#160;</A>
+<em> A nondeterministic algorithm.</em> Programs may use random numbers
+<A NAME=3511>&#160;</A>
+or may explore a search space or allocate work to processors in a
+time-dependent manner (as in the search algorithm of
+Section <A HREF="node21.html#secfloor" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#secfloor">2.7</A>).  Nondeterminism due to random numbers can be
+controlled by using a reproducible parallel generator
+(Chapter <A HREF="node116.html#chaprandom" tppabs="http://www.mcs.anl.gov/dbpp/text/node116.html#chaprandom">10</A>).  Nondeterminism due to time-dependent
+execution is more problematic.  One solution is to perform a large
+number of trials.  Another is to normalize execution times by dividing
+them by some measure of the amount of work done, such as search tree
+nodes visited.
+<P>
+<LI>
+<em> An inaccurate timer.</em> The timer used to obtain execution times
+may have limited resolution or be inaccurate.  If resolution is
+limited, we can improve accuracy by increasing execution time, for
+example by performing more iterations or by solving the same problem
+several times.  If the timer is inaccurate, we need to find another
+way to determine execution times.
+<P>
+<LI>
+<em> Startup and shutdown costs.</em> The time required for system
+management functions concerned with the acquisition of processors,
+loading of code, allocation of virtual memory, deallocation of
+processors, etc., can vary significantly according to the state of the
+system.  Timings are often more accurate if these system-dependent
+components are excluded.  Hence, we may start a timer after a program
+is loaded and stop it once a solution has been computed.
+<P>
+<LI>
+<em> Interference from other programs.</em> On a nondedicated machine,
+other users may compete for shared resources such as processors,
+network bandwidth, and I/O bandwidth.  Timings may also be perturbed
+by system functions such as accounting and backups that execute
+occasionally.  Note that competition can occur even when processors
+are dedicated to our application.  For example, a computer in which
+processors are connected in a 2-D mesh (Section <A HREF="node33.html#secperfinter" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfinter">3.7.2</A>)
+may be partitioned into disjoint submeshs.  Yet I/O requests generated
+by programs executing in one submesh may need to traverse our submesh
+to reach I/O devices, thereby consuming bandwidth.
+<P>
+<LI>
+<em> Contention.</em> On some computers, the time required for a
+communication operation can increase when several processors
+communicate at the same time.  For example, an Ethernet-connected LAN
+can carry only one message at a time, and senders must back off and
+resend when messages collide.  An unfortunate schedule can result in
+repeated resendings, thereby increasing execution time.  In
+Section <A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>, we describe advanced modeling
+techniques that can account for some such effects.
+<P>
+<LI>
+<em> Random resource allocation.</em> The operating system may use a
+random processor allocation strategy, which will affect execution
+times if communication costs depend on processor location in a network
+(see Section <A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>).  If possible, the same allocation
+should be used for all experiments.
+</UL>
+<P>
+Studies of variability in experimental results can help us to identify
+sources of error or uncertainty in our measurements.  However, even
+when results are reproducible, we still have no assurance that they
+are correct.  Confidence in our results can be increased by measuring
+the same thing several different ways and verifying that the results
+of these redundant measurements are consistent.  For example, in
+addition to measuring the time taken in individual program components,
+we can measure the total time for the entire program.
+<P>
+<H2><A NAME=SECTION02453000000000000000>3.5.3 Fitting Data to Models</A></H2>
+<P>
+<A NAME=3524>&#160;</A>
+When experimental studies are performed for calibration purposes, we
+<A NAME=3525>&#160;</A>
+fit results to the function of interest to obtain values for unknown
+parameters.  A fit can be performed graphically by plotting data
+points and estimating the fit.  For example, if the function is
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img488.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img488.gif"><P>
+we can plot the data points <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img489.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img489.gif"> as a function of
+<em> L</em>
+ and draw a straight line that fits these points.  The slope
+of this line will be <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img490.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img490.gif">, and the intercept of the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img491.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img491.gif"> axis
+when <em> L=0</em>
+ will be <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img492.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img492.gif">.
+<P>
+<A NAME=3533>&#160;</A>
+Alternatively, and more accurately, we can perform a least-squares fit
+of the function with the data.  (Mathematical packages such as
+Mathematica and Matlab incorporate fitting functions.)  A
+least-squares fit involves a minimization of the sum of the squares of
+the differences between the observations, <tt> obs</tt><em> (i)</em>
+, and the
+corresponding function values, <tt> f</tt><em> (i)</em>
+:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img493.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img493.gif"><P>
+<P>
+For example, when fitting the function <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img494.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img494.gif"> with observations
+of <em> T</em>
+ for different values of <em> N</em>
+ in order to determine the
+value <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img495.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img495.gif">, we minimize
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img496.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img496.gif"><P>
+<P>
+When fitting to execution times for different numbers of processors,
+the method just described gives less weight to the (presumably
+smaller) times on larger numbers of processors.  Yet these are
+typically the times of greatest interest.  Hence, we can use a <em>
+scaled
+ </em> least-squares fit in which the difference between
+observation and function value is scaled by the observation, as
+follows:
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img497.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img497.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img509.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img509.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img498.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img498.gif">    Determining Computation Time (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img499.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img499.gif">)</b>:<A NAME=exfdc>&#160;</A>
+<P>
+We consider the problem of determining the computation cost per grid
+<A NAME=3557>&#160;</A>
+point in the finite difference problem.  Recall that we have modeled
+this cost as follows (Equation <A HREF="node29.html#eq87" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq87">3.2</A>):
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img500.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img500.gif"><P>
+In this equation, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img501.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img501.gif"> is the parameter that we wish to determine,
+and <em> N</em>
+ is a value that we can vary while measuring performance.
+(For simplicity, we keep <em> Z</em>
+ fixed.)  Table <A HREF="node31.html#tabfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#tabfd">3.2</A> gives
+execution times measured on a Sun SPARC 2 workstation.  Experiments
+were performed when the machine was idle but not in single-user mode;
+hence, there might have been a small amount of background activity.
+Each experiment was repeated three times so that we could study
+variability; the table also lists the means of each set of three
+values.  The repeated experiments show little variation in total
+execution time.
+<P>
+<P><A NAME=4471>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img502.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img502.gif">
+<BR><STRONG>Table 3.2:</STRONG>  Execution times in milliseconds for a single time step
+of the finite difference code on a Sun SPARC 2, with
+<em> Z=10</em>
+.
+<A NAME=tabfd>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=4831>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img505.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img505.gif">
+<BR><STRONG>Figure 3.9:</STRONG> <em> Simple and scaled least-squares fits of the function
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img504.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img504.gif"> to finite difference execution times on a Sun SPARC 2
+workstation.  Notice the use of logarithmic
+scales.</em><A NAME=figstuff>&#160;</A><BR>
+<P>
+<P>
+<A NAME=3580>&#160;</A>
+<P>
+<P><A NAME=4472>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img506.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img506.gif">
+<BR><STRONG>Table 3.3:</STRONG>  Execution times predicted for finite difference code on
+Sun SPARC 2, with <em> Z=10</em>
+ (milliseconds).
+<A NAME=tabfd2>&#160;</A><BR>
+<P>
+<P>
+Figure <A HREF="node31.html#figstuff" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#figstuff">3.9</A> shows simple and scaled least-squares fits of
+Equation <A HREF="node29.html#eq87" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq87">3.2</A> to the data in Table <A HREF="node31.html#tabfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#tabfd">3.2</A>.  The two fits
+correspond to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img507.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img507.gif"> values of 0.0120 msec and 0.0112 msec,
+respectively.  The execution times predicted by the two models are
+<A NAME=3598>&#160;</A>
+<A NAME=3599>&#160;</A>
+shown in Table <A HREF="node31.html#tabfd2" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#tabfd2">3.3</A>.  As expected, the simple fit is more
+accurate for larger <em> N</em>
+, while the scaled fit is better for
+smaller <em> N</em>
+; both are good enough for most practical purposes.
+These results suggest that the hypothesized performance model, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img508.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img508.gif">, is an adequate characterization of finite difference
+computation time.
+<P>
+<BR><HR>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2225 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2233 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2231 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2235 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2236 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2234 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html">3.6 Evaluating Implementations</A>
+<B>Up:</B> <A NAME=tex2html2232 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2226 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html">3.4 Scalability Analysis</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3 A Quantitative Basis for Design</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3 A Quantitative Basis for Design">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2153 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2161 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2159 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2163 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2164 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2162 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html">3.1 Defining Performance</A>
+<B>Up:</B> <A NAME=tex2html2160 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html">Part I: Concepts</A>
+<B> Previous:</B> <A NAME=tex2html2154 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"> Chapter Notes</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02400000000000000000>3 A Quantitative Basis for Design</A></H1>
+<P>
+<A NAME=chapperf>&#160;</A>
+<P>
+In parallel programming, as in other engineering disciplines, the goal
+of the design process is not to optimize a single metric such as
+speed.  Rather, a good design must optimize a problem-specific
+function of execution time, memory requirements, implementation costs,
+maintenance costs, and so on.  Such design optimization involves
+tradeoffs between simplicity, performance, portability, and other
+factors.
+<P>
+Making informed design decisions about alternatives requires an
+understanding of their costs.  In this chapter, we show how this
+understanding can be developed and formalized in mathematical <em>
+performance models</em>.  These models can be used to compare the
+efficiency of different algorithms, to evaluate scalability, and to
+identify bottlenecks and other inefficiencies, all <em> before
+ </em> we
+invest substantial effort in an implementation.  Performance models
+can also be used to guide implementation efforts by showing where
+optimization is needed.
+<P>
+After studying this chapter, you should know how to develop
+performance models for parallel algorithms and be able to use these
+models to evaluate scalability and to choose between alternative
+algorithms.  You also should know how to obtain reliable empirical
+data and how to use this data to validate models and implementations.
+Further, you should understand how network topology can affect
+communication performance, and you should know how to account for
+these effects in your models.  Finally, you should be able to
+recognize and account for factors other than performance, factors such
+as implementation costs, that influence design choices.
+<P>
+
+<HR>
+<UL> 
+<LI> <A NAME=tex2html2165 HREF="node27.html#SECTION02410000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html#SECTION02410000000000000000">3.1 Defining Performance</A>
+<LI> <A NAME=tex2html2166 HREF="node28.html#SECTION02420000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html#SECTION02420000000000000000">3.2 Approaches to Performance Modeling</A>
+<LI> <A NAME=tex2html2167 HREF="node29.html#SECTION02430000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#SECTION02430000000000000000">3.3 Developing Models</A>
+<LI> <A NAME=tex2html2168 HREF="node30.html#SECTION02440000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#SECTION02440000000000000000">3.4 Scalability Analysis</A>
+<LI> <A NAME=tex2html2169 HREF="node31.html#SECTION02450000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#SECTION02450000000000000000">3.5 Experimental Studies</A>
+<LI> <A NAME=tex2html2170 HREF="node32.html#SECTION02460000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#SECTION02460000000000000000">3.6 Evaluating Implementations</A>
+<LI> <A NAME=tex2html2171 HREF="node33.html#SECTION02470000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#SECTION02470000000000000000">3.7 A Refined Communication Cost Model</A>
+<LI> <A NAME=tex2html2172 HREF="node34.html#SECTION02480000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html#SECTION02480000000000000000">3.8 Input/Output</A>
+<LI> <A NAME=tex2html2173 HREF="node35.html#SECTION02490000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#SECTION02490000000000000000">3.9 Case Study: Shortest-Path Algorithms</A>
+<LI> <A NAME=tex2html2174 HREF="node36.html#SECTION024100000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html#SECTION024100000000000000000">3.10 Summary</A>
+<LI> <A NAME=tex2html2175 HREF="node37.html#SECTION024110000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#SECTION024110000000000000000"> Exercises</A>
+<LI> <A NAME=tex2html2176 HREF="node38.html#SECTION024120000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node38.html#SECTION024120000000000000000"> Chapter Notes</A>
+</UL>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2153 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2161 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2159 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2163 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2164 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2162 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html">3.1 Defining Performance</A>
+<B>Up:</B> <A NAME=tex2html2160 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html">Part I: Concepts</A>
+<B> Previous:</B> <A NAME=tex2html2154 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"> Chapter Notes</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,548 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.7 A Refined Communication Cost Model</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.7 A Refined Communication Cost Model">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2249 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2257 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2255 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2259 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2260 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2258 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html">3.8 Input/Output</A>
+<B>Up:</B> <A NAME=tex2html2256 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2250 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html">3.6 Evaluating Implementations</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02470000000000000000>3.7 A Refined Communication Cost Model</A></H1>
+<P>
+<A NAME=secperfrefine>&#160;</A>
+<P>
+Next we examine how the idealized communication cost model used in
+preceding sections can be extended to account for characteristics of
+realistic interconnection networks.  We review a range of network
+architectures and develop a more detailed model of communication
+performance that takes into account the impact of competition for
+bandwidth on communication costs.  This more detailed model is
+<A NAME=3729>&#160;</A>
+still idealized but can be significantly more accurate in some
+<A NAME=3730>&#160;</A>
+circumstances.
+<P>
+<H2><A NAME=SECTION02471000000000000000>3.7.1 Competition for Bandwidth</A></H2>
+<P>
+<A NAME=3732>&#160;</A>
+In the idealized multicomputer architecture introduced in
+Chapter <A HREF="node6.html#chap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html#chap1">1</A>, the time required to send a message from one
+processor to another is independent of both processor location and the
+number of other processors that may be communicating at the same time.
+These assumptions are reflected in the communication cost model,
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A>:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img536.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img536.gif"><P>
+<P>
+While accurate for many algorithms and on many architectures, this
+model can break down if a computer's interconnection network has
+properties different from the ideal, particularly if an application
+generates many messages.  In these cases, it is necessary to develop a
+more detailed model of the interconnection network.
+<P>
+Most interconnection networks use fewer than <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img537.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img537.gif"> wires to connect
+<em> N</em>
+ processors.  Hence, they must include routing nodes, or <em>
+switches
+ </em>, to route messages from a source processor to a
+destination.  A switching node may block or reroute messages when
+several messages require access to the same wire at the same time.
+The number of wires that must be traversed in order to get from one
+processor to another is termed the <em> distance
+ </em> between those
+two processors.  (The distance is equal to the number of switches plus one.)
+The maximum distance from any processor to any other processor is
+termed the <em> diameter
+ </em> of the network.  The distance between
+<A NAME=3742>&#160;</A>
+two processors and the length of the wires connecting them are not
+normally significant factors in determining performance, although
+networks with long wires may be more expensive to build.  (Wire length
+can be important in networks extending over tens to thousands of
+<A NAME=3743>&#160;</A>
+kilometers, where the speed of light---about <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img538.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img538.gif">sec per
+kilometer in optical fiber---places a lower limit on communication
+latency.)
+<P>
+A factor that <em> can
+ </em> have a significant impact on
+communication performance and which we study here in some depth is
+<em> competition for bandwidth</em>.  Two processors may need to send data
+over the same wire at the same time.  Typically, only one message can
+be transmitted simultaneously, so the other message will be delayed.
+However, for many practical purposes it suffices to think of the two
+processors as <em> sharing
+ </em> the available bandwidth.  Hence, we
+scale the data volume term of Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> by <em> S</em>
+, the
+number of processors needing to send concurrently over the same wire:
+<P><A NAME=eqcomm1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img539.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img539.gif"><P>
+The scaling factor reflects the idea that the effective bandwidth
+available to each processor is <em> 1/S</em>
+ of the true bandwidth.
+<P>
+Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A> does not account for additional contention
+costs that may be incurred if messages collide and must be
+retransmitted.  (Network researchers have developed sophisticated
+simulation techniques to account for such effects.)  However,
+experience shows that Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A> is sufficiently accurate
+for many practical purposes.
+<P>
+The impact of competition for bandwidth is most severe in algorithms
+that execute <em> synchronously</em>, that is, algorithms in which all
+processors are sending and receiving messages at approximately the
+same time and in which processors cannot proceed with other
+computation while awaiting messages.  The finite difference problem
+and many other SPMD algorithms have this property.  In algorithms such
+as the search and Fock matrix construction algorithms described in
+Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>, processors execute asynchronously and are less
+likely to compete for bandwidth.
+<P>
+<H2><A NAME=SECTION02472000000000000000>3.7.2 Interconnection Networks</A></H2>
+<P>
+<A NAME=secperfinter>&#160;</A>
+<A NAME=4444>&#160;</A>
+<P>
+<A NAME=3761>&#160;</A>
+The value <em> S</em>
+ in Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A> can depend on properties
+<A NAME=3764>&#160;</A>
+of both the parallel algorithm and the underlying interconnection
+<A NAME=3765>&#160;</A>
+network.  In the following discussion, we use two examples to
+illustrate how the communication patterns of a particular algorithm
+can be analyzed to determine an approximate value for <em> S</em>
+ on
+different networks.  We first consider properties of interconnection
+networks.
+<P>
+<H4><A NAME=SECTION02472010000000000000> Crossbar Switching Network.</A></H4>
+<P>
+<A NAME=3768>&#160;</A>
+A crossbar switch avoids competition for bandwidth by using <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img540.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img540.gif">
+<A NAME=3769>&#160;</A>
+switches to connect <em> N</em>
+ inputs to <em> N</em>
+ outputs
+(Figure <A HREF="node33.html#figcrossbar" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figcrossbar">3.11</A>).  In this case, <em> S=1</em>
+.  Although
+highly nonscalable, crossbar switches are a popular mechanism for
+connecting small numbers of workstations, typically 20 or fewer.  For
+<A NAME=3774>&#160;</A>
+example, the DEC GIGAswitch can connect up to 22 workstations.  While
+<A NAME=3775>&#160;</A>
+larger crossbars can be constructed (for example, the Fujitsu VPP 500
+uses a 224 <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img541.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img541.gif"> 224 crossbar to connect 224 processors), they are
+very expensive.
+<P>
+<P><A NAME=4912>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img544.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img544.gif">
+<BR><STRONG>Figure 3.11:</STRONG> <em> A 4<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img543.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img543.gif">4 nonblocking crossbar, used here to connect 4
+processors.  On the right, two switching elements are expanded; the
+top one is set to pass messages through and the lower one to switch
+messages.  Notice that each processor is depicted twice, and that any
+pair of processors can communicate without preventing other processor
+pairs from communicating.</em><A NAME=figcrossbar>&#160;</A><BR>
+<P><H4><A NAME=SECTION02472020000000000000> Bus-based Networks.</A></H4>
+<P>
+<A NAME=3781>&#160;</A>
+In a bus-based network, processors share a single communication
+<A NAME=3782>&#160;</A>
+resource (the bus).  A bus is a highly nonscalable architecture,
+because only one processor can communicate on the bus at a time.  The
+competition factor <em> S</em>
+ is equal to the number of processors trying
+to communicate simultaneously.
+<P>
+<P><A NAME=4928>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img545.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img545.gif">
+<BR><STRONG>Figure 3.12:</STRONG> <em> A bus-based interconnection network, here used to implement
+a shared-memory parallel computer.  Each processor (P) is connected to
+the bus, which in turn is connected to the global memory.  A cache
+associated with each processor stores recently accessed memory values,
+in an effort to reduce bus traffic.</em><A NAME=figbus>&#160;</A><BR>
+<P>
+<P>
+<A NAME=3788>&#160;</A>
+Buses are commonly used in shared-memory parallel computers to
+<A NAME=3789>&#160;</A>
+communicate read and write requests to a shared global memory.  In
+principle, the use of a global memory in a shared-memory computer
+simplifies parallel programming by making locality a nonissue.
+However, as discussed in Section <A HREF="node8.html#sec1othermachine" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html#sec1othermachine">1.2.2</A>, most
+shared-memory parallel computers introduce caches in an attempt to
+<A NAME=3791>&#160;</A>
+reduce bus traffic; hence, locality continues to be important.
+<P>
+<P><A NAME=4943>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img546.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img546.gif">
+<BR><STRONG>Figure 3.13:</STRONG> <em> An Ethernet LAN.  Multiple computers are connected to a
+single Ethernet cable, which acts as a communication bus, carrying a
+single signal at a time.</em><A NAME=figether1>&#160;</A><BR>
+<P><H4><A NAME=SECTION02472030000000000000> Ethernet.</A></H4>
+<P>
+<A NAME=3797>&#160;</A>
+The Ethernet network often used in LANs to
+connect workstations or personal computers at a departmental level is
+another example of a bus-based interconnect.  As noted in
+Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A>,
+<A NAME=3799>&#160;</A>
+standard Ethernet can provide network bandwidths of up to about
+1 Mbytes per second.  All computers connected via an Ethernet share a
+single communication channel (Figure <A HREF="node33.html#figether1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figether1">3.13</A>).  A computer
+that needs to send must wait until the channel is idle, then send its
+message; if it detects a collision, it waits a while and then
+retransmits.  Since a computer requires exclusive access to the entire
+channel when sending a message, any algorithm that requires more than
+one processor to communicate concurrently will suffer reduced
+effective bandwidth.  Hence, the term <em> S</em>
+ in
+Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A> is, as in other bus-based networks, equal to
+the number of simultaneous senders.  The impact of Ethernet bandwidth
+limitations on performance is illustrated in the examples that follow.
+<P>
+<P><A NAME=4959>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img547.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img547.gif">
+<BR><STRONG>Figure 3.14:</STRONG> <em> A two-dimensional torus interconnection network.  This
+is a 2-D mesh with end-around connections so that each processor is
+connected to four neighbors.</em><A NAME=figperfmc2>&#160;</A><BR>
+<P><H4><A NAME=SECTION02472040000000000000> Mesh Networks.</A></H4>
+<P>
+<A NAME=3808>&#160;</A>
+A mesh network can be thought of as a crossbar switch
+(Figure <A HREF="node33.html#figcrossbar" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figcrossbar">3.11</A>) in which processors are associated with
+switching elements rather than being placed on the edge of the mesh.  In a
+mesh network of dimension <em> D</em>
+, each nonboundary processor is
+connected to <em> 2D</em>
+ immediate neighbors.  Connections typically
+consist of two wires, one in each direction.  Two- and
+three-dimensional meshes are commonly used in parallel computing. They
+have the advantage over some more sophisticated networks that they can
+be constructed in three-dimensional space without long wires.  In a
+2-D mesh, a message is communicated from processor
+<em> (i,j)</em>
+ to processor <em> (k,l)</em>
+ in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img548.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img548.gif"> steps.
+One-, two- and three-dimensional cubic meshes of <em> P</em>
+ processors
+have diameters of <em> P-1</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img549.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img549.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img550.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img550.gif">
+and contain <em> 2(P-1)</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img551.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img551.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img552.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img552.gif"> wires,
+respectively.  As illustrated in Figure <A HREF="node33.html#figperfmc2" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figperfmc2">3.14</A>, these
+diameters can be halved by extending a mesh with toroidal connections
+<A NAME=3821>&#160;</A>
+so that boundary processors are also connected with neighbors.
+<A NAME=3822>&#160;</A>
+However, the torus has two disadvantages.  First, longer wires are
+needed for the end-around connections in the 3-D case.  (The need for
+longer wires can be avoided in a 2-D torus by folding the mesh.)
+Second, a subset of a torus is not a torus, so the benefits of the
+toroidal connections are lost if a torus-connected computer is
+partitioned among several users.
+<P>
+<P><A NAME=4982>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img553.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img553.gif">
+<BR><STRONG>Figure 3.15:</STRONG> <em> Competition for bandwidth in a 1-D mesh.  In (a),
+processors P0 and P1 communicate and P2 and P3 communicate.  Because the two
+communications use different wires, both can proceed concurrently.  In
+(b), processors P0 and P2 communicate and P1 and P3 communicate.  The two
+communications must both traverse the wire connecting P1 and P2;
+hence, the two communications cannot proceed concurrently, and
+<em> S=2</em>
+.  In (c), processors P0 and P2 communicate and P3 and P1 communicate.
+Because each connection is bidirectional, the two communications can
+proceed concurrently.</em><A NAME=figmesh1>&#160;</A><BR>
+<P>
+<P>
+Competition for bandwidth in a mesh network occurs when two or more
+processors attempt to send over the same wire at the same time
+(Figure <A HREF="node33.html#figmesh1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figmesh1">3.15</A>).  The analysis used to determine <em> S</em>
+ for
+a particular algorithm is illustrated in the examples that follow.
+<P>
+<P><A NAME=5003>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img554.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img554.gif">
+<BR><STRONG>Figure 3.16:</STRONG> <em> Hypercubes of dimension zero through four. The processors
+in the cubes of dimension 1, 2, and 3 are labeled with integers, here
+represented as binary numbers. Notice that two processors are
+neighbors in dimension <em> d</em>
+ if and only if their binary labels
+differ only in the <em> d</em>
+th place.  Notice also that in a hypercube
+of dimension <em> d</em>
+, a message can be routed between any pair of
+processors in at most <em> d</em>
+ hops.</em><A NAME=fighyper>&#160;</A><BR>
+<P><H4><A NAME=SECTION02472050000000000000> Hypercube Network.</A></H4>
+<P>
+<A NAME=3837>&#160;</A>
+The hypercube network was introduced in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.  As in
+<A NAME=3839>&#160;</A>
+the mesh, processors in a hypercube network are associated with
+<A NAME=3840>&#160;</A>
+switching elements.  A <em> d</em>
+-dimensional hypercube connects each of
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img555.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img555.gif"> processors to <em> d</em>
+ other processors.  A hypercube can be
+defined recursively as follows (Figure <A HREF="node33.html#fighyper" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#fighyper">3.16</A>). A
+zero-dimensional hypercube is a single processor and a one-dimensional
+hypercube connects two zero-dimensional hypercubes. Generally, a
+hypercube of dimension <em> d+1</em>
+ is constructed by connecting
+corresponding processors in two hypercubes of dimension <em> d</em>
+.  As
+with the mesh, the competition-for-bandwidth factor <em> S</em>
+ is
+algorithm dependent, although the greater number of wires in the
+hypercube means that competition for bandwidth tends to occur less
+often.
+<P>
+The many interesting properties of hypercubes are beyond the scope of
+this book (but see Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>).  However, we note that
+when labeled as shown in Figure <A HREF="node33.html#fighyper" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#fighyper">3.16</A>, two processors are
+connected if and only if the binary representation of their labels
+differs in a single position.  We exploit this property when
+specifying algorithms that use the hypercube communication structure.
+Another important feature of a hypercube is that it contains a mesh:
+it may be considered a mesh with additional, long-distance
+connections.  The additional connectivity reduces the diameter to
+<em> d</em>
+ and increases the number of available wires, particularly for
+nonlocal communication.  A disadvantage of the hypercube interconnect
+from an engineering point of view is that it is more complex than the
+mesh.  In particular, it requires more and longer wires, since a
+hypercube with dimension greater than three cannot be laid out in three-dimensional
+space so that wires connect only physically adjacent processors.
+<P>
+<P><A NAME=5032>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img556.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img556.gif">
+<BR><STRONG>Figure 3.17:</STRONG> <em> Example multistage interconnection networks.  Shaded circles
+represent processors and unshaded circles represent crossbar switches.
+The network on the left has <em> k=2</em>
+ and <em> n=3</em>
+; on the right,
+<em> k=4</em>
+ and <em> n=2</em>
+.  The network can be constructed from unidirectional
+switches and links, in which case it is folded so that the processors
+on the left and right are the same. Alternatively, it can be
+constructed from bidirectional switches and links, in which case
+processors on the left and right are
+distinct.</em><A NAME=figbutt>&#160;</A><BR>
+<P><H4><A NAME=SECTION02472060000000000000> Multistage Interconnection Networks.</A></H4>
+<P>
+In a multistage interconnection network (MIN), as in a crossbar,
+switching
+<A NAME=3858>&#160;</A>
+elements are distinct from processors.  However, fewer than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img557.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img557.gif">
+switches are used to connect <em> P</em>
+ processors.  Instead, messages
+pass through a series of switch stages.  Figure <A HREF="node33.html#figbutt" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figbutt">3.17</A>
+illustrates two MINs, which are representatives of a general class of networks
+characterized by parameters <em> n</em>
+ and
+<em> k</em>
+.  These networks are sometimes referred to as radix <em> k</em>
+,
+dimension <em> n</em>
+ butterflies, or <em> k</em>
+-ary <em> n</em>
+-flies.  Either
+<em> n</em>
+ stages of <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img558.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img558.gif"> <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img559.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img559.gif"> unidirectional crossbar
+switches connect <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img560.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img560.gif"> processors, or <em> n</em>
+ stages of <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img561.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img561.gif">
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img562.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img562.gif"> bidirectional crossbar switches connect <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img563.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img563.gif">
+processors.  In the latter case, each link comprises two channels
+that carry data in opposite directions, and each crossbar switch can
+route data arriving on any of <em> 2k</em>
+ inputs to any of
+<em> 2k</em>
+ outputs.  Notice that each stage of these networks connects
+<em> P</em>
+ inputs with <em> P</em>
+ outputs, although not every input is directly
+connected to every output in each stage.
+<P>
+<P><A NAME=5065>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img564.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img564.gif">
+<BR><STRONG>Figure 3.18:</STRONG> <em> Communications in a bidirectional MIN.  The communication
+indicated at (a) involves processors connected to the same crossbar;
+it takes just two hops and passes through a single switch.  The
+communication at (b) takes three hops and passes through two
+switches.</em><A NAME=figperfx>&#160;</A><BR>
+<P>
+<P>
+In a unidirectional MIN, all messages
+<A NAME=3879>&#160;</A>
+must traverse the same number of wires, and so the cost of sending a
+message is independent of processor location.  In effect, all
+processors are equidistant.  In a bidirectional MIN, the number of
+wires traversed depends to some extent on processor location, although
+to a lesser extent than in a mesh or hypercube
+(Figure <A HREF="node33.html#figperfx" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figperfx">3.18</A>).
+<P>
+The fact that messages destined for different destinations may need to
+pass over the same wire means that MINs are not immune to competition
+for bandwidth.  Nevertheless, a MIN connecting <em> P</em>
+ processors
+typically provides <em> P</em>
+ wires at each stage, so in principle we
+should be able to organize communications so that little competition
+occurs.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img573.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img573.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img565.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img565.gif">    Competition for Bandwidth in Finite Difference</b>:<A NAME=experffd>&#160;</A>
+<P>
+<A NAME=3885>&#160;</A>
+In the first of two examples, we consider the impact of competition
+for bandwidth in an algorithm with a high degree of locality: the
+one-dimensional finite difference algorithm examined in preceding
+sections.  Recall from Equation <A HREF="node29.html#eq76" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq76">3.3</A> that according to the
+idealized model of Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A>, the per-processor
+communication costs for this algorithm are
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img566.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img566.gif"><P>
+<P>
+<P><A NAME=5094>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img571.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img571.gif">
+<BR><STRONG>Figure 3.19:</STRONG> <em> Speedup of finite difference code with <em> N=512</em>
+ and
+<em> Z=5</em>
+ as measured on Ethernet-connected IBM RS6000 workstations
+and as predicted both by a simple performance model that does not take
+into account competition for bandwidth and by a more sophisticated
+model that does.  Both models assume that <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img569.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img569.gif">sec and
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img570.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img570.gif">sec.</em><A NAME=figfdetherspeedup2>&#160;</A><BR>
+<P>
+<P>
+Competition for bandwidth is not an issue on a mesh or hypercube because
+the one-dimensional ring-based communication structure of the finite
+difference problem can be embedded in these networks using only
+nearest-neighbor connections.  On a bus-based network, only one of the
+<em> P</em>
+ processors can communicate at one time; if we assume that in
+the communication phase of the algorithm, half the processors need to
+send at once (the other half are receiving), then <em> S=P/2</em>
+ and the
+communication volume term must be scaled by a factor of <em> P/2</em>
+,
+giving
+<P><A NAME=eqfdb>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img572.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img572.gif"><P>
+<P>
+Figure <A HREF="node33.html#figfdetherspeedup2" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figfdetherspeedup2">3.19</A> illustrates both the large impact
+<A NAME=3904>&#160;</A>
+that bandwidth limitations can have on the performance of even a
+simple algorithm such as finite difference and the improved accuracy
+of the refined performance model.  The figure shows performance
+measured on Ethernet-connected workstations and as predicted by
+Equations <A HREF="node29.html#eq76" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq76">3.3</A> and <A HREF="node33.html#eqfdb" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqfdb">3.11</A>.  We see that the more
+sophisticated model is reasonably accurate.
+<P>
+<BR><HR>
+<P>
+<A NAME=3907>&#160;</A>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img586.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img586.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img574.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img574.gif">    Competition for Bandwidth in Butterfly</b>:<A NAME=experfbfly>&#160;</A>
+<P>
+<A NAME=3910>&#160;</A>
+As a second example, we consider an algorithm in which <em> P</em>
+ tasks
+<A NAME=3912>&#160;</A>
+use the butterfly (or hypercube) communication structure
+illustrated in Figure <A HREF="node18.html#figbflyN" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figbflyN">2.14</A> to perform <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img575.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img575.gif"> exchanges of
+<em> N/P</em>
+ data.  The summation algorithm described in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>
+has this form. Other algorithms with similar characteristics are
+described in Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>.
+<P>
+Per-processor communication costs associated with this algorithm are,
+in the absence of competition for bandwidth,
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img576.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img576.gif"><P>
+<P>
+The algorithm can, of course, execute without competition for
+bandwidth on a crossbar switch.  Somewhat less obviously, it can also
+execute without competition for bandwidth on a <em> P</em>
+-processor
+hypercube: Computation and communication can be organized so that each
+of the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img577.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img577.gif"> processors with which a processor must communicate is
+a neighbor on one of the hypercube links.  On a bus-based network,
+only one processor can communicate at a time; hence, as in the finite
+difference algorithm considered in Example <A HREF="node33.html#experffd" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#experffd">3.7</A>, we assume
+<em> S=P/2</em>
+ and from Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A> we have
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img578.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img578.gif"><P>
+<P>
+<P><A NAME=5133>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img579.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img579.gif">
+<BR><STRONG>Figure 3.20:</STRONG> <em> Execution of the butterfly summation algorithm on an
+eight-processor, one-dimensional mesh.  Shading is used to highlight a
+single task and its communication partners, which are one, two, and
+four hops distant.</em><A NAME=figbutt3>&#160;</A><BR>
+<P>
+<P>
+On a mesh, the limited number of wires becomes an issue.  For example,
+on a one-dimensional mesh of <em> P</em>
+ processors, each processor
+generates messages that must traverse 1, 2, ..., <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img580.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img580.gif"> hops in the
+<em> p</em>
+ steps of the algorithm (Figure <A HREF="node33.html#figbutt3" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figbutt3">3.20</A>).  These
+messages travel a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img581.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img581.gif"> hops.
+This represents the number of wires to which each processor requires
+exclusive access during execution of the summation.  As a
+one-dimensional bidirectional mesh provides only <em> 2(P-1)</em>
+ wires,
+we see that the parallel algorithm cannot possibly proceed in less
+than <em> P/2</em>
+ steps rather than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img582.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img582.gif"> steps as supposed
+previously.  In fact, it can proceed in <em> P/2</em>
+ steps only if we can
+define a communication schedule that keeps all wires busy all the
+time.  Hence, the following model represents a lower bound on
+communication costs:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img583.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img583.gif"><P>
+<P>
+<P><A NAME=5156>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img584.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img584.gif">
+<BR><STRONG>Figure 3.21:</STRONG> <em> Performance of parallel FFT in a spectral transform code
+<A NAME=5151>&#160;</A>
+on a one-dimensional mesh in Intel DELTA and on Ethernet-connected
+RS/6000 processors.  The simple models do not take into account
+competition for bandwidth; the refined models do, and give a better
+fit to observed performance.</em><A NAME=figbflyperf1>&#160;</A><BR>
+<P>
+<P>
+Figure <A HREF="node33.html#figbflyperf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#figbflyperf1">3.21</A> compares observed speedups with those
+<A NAME=3954>&#160;</A>
+predicted by the simple and bandwidth-limited performance models on a
+one-dimensional mesh and on an Ethernet.  These results are from an
+<A NAME=3955>&#160;</A>
+atmosphere modeling code that uses a parallel fast Fourier transform
+<A NAME=3956>&#160;</A>
+(FFT) to parallelize a numerical method called the spectral transform.
+<A NAME=3957>&#160;</A>
+The details of the numerical method are not important here; what is
+relevant is that at each step, the code must perform two butterfly
+communication operations (specifically, FFT) on a large array.
+Details of the two experiments are given in Table <A HREF="node33.html#tabexp" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#tabexp">3.6</A>.  (The
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img585.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img585.gif"> term used on the DELTA is significantly smaller than in the
+finite difference code of Example <A HREF="node32.html#exfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#exfdi">3.6</A>; this reflects the
+fact that the communication code in the FFT implementation on the
+DELTA had been carefully optimized.)
+<P>
+<BR><HR>
+<P>
+<P><A NAME=4475>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img589.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img589.gif">
+<BR><STRONG>Table 3.6:</STRONG>  Parameters for butterfly performance study (<em> N</em>
+ in words,
+times in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img588.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img588.gif">sec).
+<A NAME=tabexp>&#160;</A><BR>
+<P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2249 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2257 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2255 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2259 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2260 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2258 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html">3.8 Input/Output</A>
+<B>Up:</B> <A NAME=tex2html2256 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2250 HREF="node32.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html">3.6 Evaluating Implementations</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

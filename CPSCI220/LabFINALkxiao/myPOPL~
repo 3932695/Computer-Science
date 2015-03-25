@@ -1,0 +1,10 @@
+#!/bin/bash 
+# Accepts a single string indicating language environment. 
+# Starts environment with rlwrap.
+#STR=~shirshfi/public_html/CPSCI220/"$1new"/
+
+rlwrap $1
+
+#cp -r ~kxiao/CPSCI220/"$1kxiao"/ $STR
+#ls ~shirshfi/public_html/CPSCI220/"$1new"/"$1kxiao"/
+#cd ~shirshfi/public_html/CPSCI220/"$1new"/"$1kxiao"/

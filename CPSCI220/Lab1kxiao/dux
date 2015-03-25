@@ -1,0 +1,16 @@
+#!/bin/bash 
+# Accepts directory name as sole parameter
+# Runs "dos2unix" on every file in a directory; sets each file's permission to be executable
+# To execute, type "./dux.sh TARGET_DIRECTORY"
+
+if [ -d $1 ]; then
+	FILES=$1*
+	for file in $FILES
+	do
+		dos2unix $file
+		chmod a+x $file
+	done
+	
+else
+	echo "Could not locate: " $1
+fi

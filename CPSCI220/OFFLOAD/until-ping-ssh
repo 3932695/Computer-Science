@@ -1,0 +1,7 @@
+read -p "Enter IP Address:" ipadd
+echo $ipadd
+until ping -c 1 $ipadd
+do
+ sleep 60;
+done
+ssh $ipadd

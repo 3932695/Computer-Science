@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.2 Fortran 90</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.2 Fortran 90">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2964 HREF="node83.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node83.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2972 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2970 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2974 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2975 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2973 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html">7.3 Data Distribution</A>
+<B>Up:</B> <A NAME=tex2html2971 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2965 HREF="node83.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node83.html">7.1 Data Parallelism</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03420000000000000000>7.2 Fortran 90</A></H1>
+<P>
+<A NAME=secf90>&#160;</A>
+<P>
+Fortran 90 (F90) is a complex language. It augments Fortran 77 (F77)
+with pointers, user-defined datatypes, modules, recursive
+subroutines, dynamic storage allocation, array operations, new
+intrinsic functions, and many other features.  We focus 
+here on those new features that are most relevant to parallel
+programming: the <em> array assignment statement
+ </em> and the
+<em> array intrinsic functions</em>.
+<P>
+<H2><A NAME=SECTION03421000000000000000>7.2.1 Array Assignment Statement</A></H2>
+<P>
+F90 allows a variety of <em> scalar
+ </em> operations---operations
+defined on single values---to be applied also to entire
+<A NAME=10696>&#160;</A>
+arrays.  This feature causes the scalar operation to be applied to each
+element of the array.  If an operation involves several values, all
+<A NAME=10697>&#160;</A>
+must be represented by <em> conformable
+ </em> arrays, that is, scalar
+<A NAME=10699>&#160;</A>
+values or arrays of the same size and shape.  The operation is
+performed on corresponding elements from each array.  For example,
+consider the following scalar operation, which assigns the sum <tt>
+b+c</tt> to <tt> a</tt>.
+<P>
+<PRE>                  integer a, b, c
+                  a = b + c
+</PRE>
+<P>
+In F90, we can apply the same operation to arrays <tt> A</tt> and <tt> B</tt>
+and scalar <tt> c</tt>, as follows.  This assigns each element <tt>
+A(i,j)</tt> of <tt> A</tt> the sum <tt> B(i,j)+c</tt>.
+<P>
+<PRE>                  integer A(10,10), B(10,10), c
+                  A = B + c
+</PRE>
+<P>
+In fact, all F90's unary and binary intrinsic operations can be
+applied to arrays, as the following examples show.
+<P>
+<PRE><TT> 
+		<tt> real A(10,20), B(10,20)</tt>
+<P>
+		<tt> logical L(10,20)</tt>
+<P>
+		<tt> A = A + 1.0</tt>  		 ! Adds <tt> 1.0</tt> to each element of <tt> A</tt>
+<P>
+		<tt> A = SQRT(A)</tt>  		 ! Computes square root of each element of <tt> A</tt>
+<P>
+		<tt> L = A .EQ. B</tt> 		 ! Sets <tt> L(i,j)</tt> to <tt> .true.</tt> if <tt> A(i,j)</tt>=<tt> B(i,j)</tt>;
+<P>
+				 ! and to <tt> .false.</tt> otherwise
+<P>
+</TT></PRE>
+<P>
+A conformable <em> array section
+ </em> can be substituted for an entire
+array in an array operation.  An array section is represented by
+specifying a range for one or more subscripts.  A range is represented
+by a triplet that has the following general form.
+<em> lower-bound</em> : <em> upper-bound</em> : <em> stride</em>
+<P>
+A stride of 1 is assumed if <tt> : <em> stride
+ </em></tt> is omitted, and
+bounds can be omitted if the corresponding bounds of the array are
+required.  See Figure <A HREF="node84.html#figasection" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#figasection">7.1</A> for examples of array
+sections.
+<P>
+<P><A NAME=11803>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img938.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img938.gif">
+<BR><STRONG>Figure 7.1:</STRONG> <em> F90 array sections.  The three examples show array sections comprising (a) all of
+row <tt> 2</tt>, (b) elements <tt> 2..7</tt> of row <tt> 2</tt>, and (c) elements
+<tt> 1,3,5,7</tt> of row <tt> 2</tt>,
+respectively.</em><A NAME=figasection>&#160;</A><BR>
+<P>
+<P>
+When operations are performed on arrays and array sections, corresponding
+elements are selected by position, not index.  Hence, different array
+components do not need to have corresponding subscripts, and we can
+write the following code to compute the sum <tt> A(i)=B(i)+B(i+1)</tt> for
+<tt> 1<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img939.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img939.gif">i<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img940.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img940.gif">7</tt> (Figure <A HREF="node84.html#figasect2" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#figasect2">7.2</A>).
+<P>
+<tt> A(1:7) = B(1:7) + B(2:8)</tt>
+<P>
+<P><A NAME=11820>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img945.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img945.gif">
+<BR><STRONG>Figure 7.2:</STRONG> <em> Use of array sections to compute the sum <tt> B(i)+B(i+1)</tt>
+for <tt> 1<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img943.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img943.gif">i<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img944.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img944.gif">7</tt>.</em><A NAME=figasect2>&#160;</A><BR>
+<P>
+<P>
+<A NAME=10750>&#160;</A>
+Finally, a masked array assignment uses the <tt> WHERE</tt> construct to
+restrict the array elements on which an assignment is performed.  For
+example, the following statement replaces each nonzero element of
+<tt> X</tt> with its reciprocal (the F90 <tt> /=</tt> operator is equivalent
+to <tt> .NE.</tt> in F77).
+<tt> WHERE(X /= 0) X = 1.0/X</tt>
+<H2><A NAME=SECTION03422000000000000000>7.2.2 Array Intrinsic Functions</A></H2>
+<P>
+All F90 intrinsic functions that apply to scalar values can also be
+<A NAME=10759>&#160;</A>
+applied to arrays, in which case the function is applied to each array
+element.  For example, <tt> ABS(A)</tt> returns an array containing the
+absolute values of the elements of array <tt> A</tt>.  In addition, F90
+<A NAME=10762>&#160;</A>
+provides a number of <em> transformational
+ </em> functions which
+return a scalar or array result that depends on the values of many
+elements of an array.  Table <A HREF="node84.html#tabf90intrinsics" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#tabf90intrinsics">7.1</A> lists a
+representative selection of these functions.
+<P>
+<P><A NAME=11749>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img946.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img946.gif">
+<BR><STRONG>Table 7.1:</STRONG>  Selected F90 array intrinsic functions.
+<A NAME=tabf90intrinsics>&#160;</A><BR>
+<P>
+<P>
+<tt> MAXVAL</tt>, <tt> MINVAL</tt>, <tt> SUM</tt>, and <tt> PRODUCT</tt> perform a
+<A NAME=10800>&#160;</A>
+reduction operation (Section <A HREF="node17.html#seccommglobal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommglobal">2.3.2</A>) on an array,
+returning a scalar value representing the maximum, minimum, sum, or
+product of the elements of the array, respectively.  Hence, the
+following code sets the scalar variable <tt> s</tt> to the sum of the
+elements of the array <tt> X</tt>.
+<PRE>                 real s, X(100)
+                 s = SUM(X)
+</PRE>
+<P>
+<P><A NAME=11836>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img947.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img947.gif">
+<BR><STRONG>Figure 7.3:</STRONG> <em> The F90 <tt> CSHIFT</tt> function.  In (a), a negative shift of
+one element is applied in dimension 1; in (b), a negative shift of
+three elements is applied in dimension 2.</em><A NAME=figcshift>&#160;</A><BR>
+<P>
+<P>
+The <tt> CSHIFT</tt> function performs a circular shift on an array,
+<A NAME=10809>&#160;</A>
+returning a new array of the same size and shape but with its elements
+in a different configuration.  As illustrated in
+Figure <A HREF="node84.html#figcshift" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#figcshift">7.3</A>, a call of the form
+<tt> CSHIFT(A,s,d)</tt>
+<P>
+performs a circular shift on the elements of the array <tt> A</tt>, where
+the scalar or array <tt> s</tt> specifies the size and direction (left is
+positive) of the shift and the optional argument <tt> d</tt> indicates the
+dimension in which the shift is to be applied (it defaults to 1).
+This function is often used in expressions involving index
+expressions.  For example, consider the following F77 loop.
+<PRE>     real X(0:99), B(0:99)
+     do i = 0,99
+       B(i) = ( X(mod(i+99,100) + X(mod(i+1,100)) )/2
+     enddo
+</PRE>
+This can be written in F90 as
+<PRE>     real X(100), B(100), L(100), R(100)
+     L = CSHIFT(X,+1)
+     R = CSHIFT(X,-1)
+     B = ( L + R )/2
+</PRE>
+or simply as  follows.
+<PRE>     real X(100), B(100)
+     B = ( CSHIFT(X,+1) + CSHIFT(X,-1) )/2
+</PRE>
+In both cases, an array assignment sets the array <tt> B</tt> to the sum
+of two arrays: <tt> X</tt> shifted left one element, and <tt> X</tt> shifted
+right one element.
+<P>
+Although powerful, F90's array operations can be used to implement
+only a limited class of data-parallel algorithms.  Consequently, F90
+<A NAME=10820>&#160;</A>
+programs often incorporate code that, although implicitly parallel,
+<A NAME=10821>&#160;</A>
+must be executed sequentially if a compiler is unable to detect the
+implicit parallelism.  For example, the following code zeroes the
+diagonal of an array.  Although clearly a parallel operation, this
+cannot be expressed as such using the F90 array assignment statement.
+<P>
+<PRE>              do i = 1,100
+                X(i,i) = 0.0
+              enddo
+</PRE>
+<P>
+<P><A NAME=progf90>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img948.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img948.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img950.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img950.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img949.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img949.gif">    Finite Difference</b>:<A NAME=exfde>&#160;</A>
+<P>
+<A NAME=10852>&#160;</A>
+Program <A HREF="node84.html#progf90" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#progf90">7.1</A> illustrates F90's array assignment and array
+<A NAME=10854>&#160;</A>
+intrinsics.  This program, for which both F77 and F90 versions are
+given, first applies a five-point finite difference stencil to the
+array <tt> X</tt> to obtain the array <tt> New</tt> and then computes the
+maximum difference between the two arrays.  The F90 version uses an
+array assignment and the intrinsic functions <tt> ABS</tt> and <tt>
+MAXVAL</tt>.
+<P>
+<BR><HR>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2964 HREF="node83.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node83.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2972 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2970 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2974 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2975 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2973 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html">7.3 Data Distribution</A>
+<B>Up:</B> <A NAME=tex2html2971 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2965 HREF="node83.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node83.html">7.1 Data Parallelism</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

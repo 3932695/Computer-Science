@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# a dummy script that does nothing, but
+# requires two arguments, the second of which 
+# is a directory
+
+# FROM: cookbook filename: check_arg_count
+#
+
+# Check for the correct # of arguments:
+# In this case, 2 args expected
+if (( $# < 2 ))
+then
+    printf "%b" "Error. Not enough arguments.\n" >&2
+    printf "%b" "usage: argsdir num dir\n" >&2
+    exit 1
+elif (( $# > 2 ))
+then
+    printf "%b" "Error. Too many arguments.\n" >&2
+    printf "%b" "usage: argsdir num dir\n" >&2
+    exit 2
+else
+    printf "%b" "Argument count correct.  Proceeding...\n"
+fi
+
+echo $1
+
+# make sure directory exists before changing to it and 
+# listing its contents
+if [ ! -d "$2" ]
+then
+    echo "Directory $2 does not exist"
+    exit 3
+else
+    for file in "$2"/*
+    do
+        if [[ -f $file ]]
+        then
+            printf "%b" "Processing file" $file
+	    printf "\n"
+        fi
+    done
+fi
+
+    

@@ -1,0 +1,5 @@
+input=${1}
+if [ "$input" == "apple" -o "$input" == "orange" ]
+then
+ echo "Yes. $input is a fruit."
+fi

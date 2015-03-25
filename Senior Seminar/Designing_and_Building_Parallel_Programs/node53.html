@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.2 CC++
+  Introduction</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.2 CC++
+  Introduction">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2571 HREF="node52.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2579 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2577 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2581 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2582 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2580 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html">5.3 Concurrency</A>
+<B>Up:</B> <A NAME=tex2html2578 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2572 HREF="node52.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html">5.1 C++
+  Review</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03220000000000000000>5.2 CC++
+  Introduction</A></H1>
+<P>
+CC++
+  is a general-purpose parallel programming language comprising
+all of C++
+  plus six new keywords.  It is a strict superset of the
+C++
+  language in that any valid C or C++
+  program that does not use
+a CC++
+  keyword is also a valid CC++
+  program.  The
+<A NAME=6832>&#160;</A>
+CC++
+  extensions implement six basic abstractions:
+<P>
+<OL><LI>
+<A NAME=6834>&#160;</A>
+The <em> processor object
+ </em> is a mechanism for controlling
+locality.  A computation may comprise one or more processor objects.
+Within a processor object, sequential C++
+  code can execute without
+modification.  In particular, it can access local data structures.
+The keyword <tt> global</tt> identifies a processor object class, and the
+predefined class <tt> proc_t</tt> controls processor object placement.
+<P>
+<LI>
+The <em> global pointer</em>, identified by the type modifier <tt>
+<A NAME=6839>&#160;</A>
+global</tt>, is a mechanism for linking together processor objects.  A
+global pointer must be used to access a data structure or to perform
+computation (using a remote procedure call, or RPC) in another
+processor object.
+<P>
+<LI>
+<A NAME=6840>&#160;</A>
+The <em> thread
+ </em> is a mechanism for specifying concurrent
+<A NAME=6842>&#160;</A>
+execution.  Threads are created independently from processor objects,
+and more than one thread can execute in a processor object.  The <tt>
+par</tt>, <tt> parfor</tt>, and <tt> spawn</tt> statements create threads.
+<P>
+<LI>
+<A NAME=6846>&#160;</A>
+The <em> sync variable</em>, specified by the type modifier <tt> sync</tt>, is
+used to synchronize thread execution.
+<P>
+<LI>
+<A NAME=6849>&#160;</A>
+The <em> atomic function</em>, specified by the keyword <tt> atomic</tt>, is a
+mechanism used to control the interleaving of threads executing in the
+same processor object.
+<P>
+<LI>
+<A NAME=6852>&#160;</A>
+<em> Transfer functions</em>, with predefined type <tt> CCVoid</tt>, allow
+arbitrary data structures to be transferred between processor objects
+as arguments to remote procedure calls.
+</OL>
+<P>
+These abstractions provide the basic mechanisms required to specify
+concurrency, locality, communication, and mapping.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img834.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img834.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img833.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img833.gif">    Bridge Construction</b>:<A NAME=exccbridge>&#160;</A>
+<P>
+<A NAME=6858>&#160;</A>
+Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A> illustrates many CC++
+  features.  It is
+<A NAME=6860>&#160;</A>
+an implementation of the bridge construction algorithm developed
+in Example <A HREF="node9.html#exbridge" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#exbridge">1.1</A>.  The program creates two tasks, <tt>
+foundry</tt> and <tt> bridge</tt>, and connects them with a channel.  The
+channel is used to communicate a stream of integer values <tt> 1..100</tt>
+from <tt> foundry</tt> to <tt> bridge</tt>, followed by the value --1 to signal
+termination.
+<P>
+While the concepts of task and channel are not supported directly in
+CC++
+ , they can be implemented easily by using CC++
+  mechanisms.  
+Hence, the main program creates two tasks by first using the <tt> new</tt>
+operator to create two processor objects and then using the <tt> par</tt>
+construct to create two threads, one per processor object.  The two
+tasks engage in channel communication by invoking functions defined in
+a <tt> Channel</tt> class, which will be described in Section 5.11.  A
+channel is declared in the main program and passed as an argument to
+<tt> foundry</tt> and <tt> bridge</tt>. These processes use access functions
+<tt> get_out_port</tt> and <tt> get_in_port</tt> to obtain pointers to
+out-port and in-port objects to which can be applied functions <tt>
+send</tt> and <tt> receive</tt>, respectively.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progccbuild>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img835.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img835.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2571 HREF="node52.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2579 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2577 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2581 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2582 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2580 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html">5.3 Concurrency</A>
+<B>Up:</B> <A NAME=tex2html2578 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2572 HREF="node52.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html">5.1 C++
+  Review</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

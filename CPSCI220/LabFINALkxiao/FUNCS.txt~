@@ -1,0 +1,28 @@
+val AND = fn : bool * bool -> bool
+// value AND is a function. 
+// It takes 'bool * bool' (a boolean pair) and returns the resulting 'bool'.
+
+val ANDc = fn : bool -> bool -> bool
+// value ANDc is function.
+// It takes a 'bool', and another 'bool', and returns the resulting 'bool'. 
+
+val andF = fn : bool * bool -> bool
+// value andF is a function. 
+// It takes 'bool * bool' (a boolean pair) and returns the resulting 'bool'.
+
+val it = false : bool
+// value of previous call was false.
+
+val it = false : bool
+// value of previous call was false.
+
+val andCtrue = fn : bool -> bool
+// value andCtrue is a function.
+// It takes a 'bool', and returns the resulting 'bool'.
+
+val it = false : bool
+// value of previous call was false.
+
+val it = true : bool
+// value of previous call was false.
+

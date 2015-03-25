@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.7 Determinism</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.7 Determinism">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2631 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2639 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2637 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2641 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2642 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2640 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html">5.8 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2638 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2632 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html">5.6 Asynchronous Communication</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03270000000000000000>5.7 Determinism</A></H1>
+<P>
+<A NAME=secccdet>&#160;</A>
+<P>
+We noted in Section <A HREF="node9.html#secc1det" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#secc1det">1.3.1</A> that determinism can greatly
+simplify program development.  CC++
+  does not provide any guarantees
+<A NAME=7364>&#160;</A>
+of deterministic execution: indeed, the basic execution model is
+highly nondeterministic, allowing as it does the interleaved execution
+of multiple threads in a single address space.  Nevertheless, there
+are simple rules that, if followed, allow us to avoid unwanted
+deterministic interactions.  In particular, a CC++
+  program is easily
+shown to be deterministic if it uses a
+<A NAME=7365>&#160;</A>
+task-based concurrency model (one thread per processor object) and if
+tasks interact only by using the channel library used in
+Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A>, with one sender and one receiver per
+channel.
+<P>
+While a task/channel model ensures determinism, there are also
+circumstances in which it is advantageous to use CC++
+  constructs in
+more flexible ways.  For example:
+<P>
+<OL><LI>
+Concurrent threads provide a mechanism for overlapping computation and
+communication.  When one thread is suspended waiting for a
+communication, another thread can be executing.  For example, the
+following code can perform computation while waiting for the remote
+datum, <tt> value</tt>.
+<P>
+<PRE>par {
+   value = pobj-&gt;get_remote_value();
+   perform_computation();
+}
+use_remote_value(value);
+</PRE>
+<P>
+<LI>
+RPCs that read and write data structures in other processor objects
+can be used to implement a variety of asynchronous communication
+mechanisms; see, for example, Section <A HREF="node63.html#secccfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#secccfock">5.12</A>.
+<P>
+<LI>
+On a shared-memory computer, threads created in the same processor
+object can execute in parallel (on different processors),
+communicating by reading and writing shared data rather than sending
+and receiving data.  This shared-memory programming model
+(Section <A HREF="node9.html#sec1other" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#sec1other">1.3.2</A>) can improve performance relative to
+channel-based communication by reducing data movement and copying.
+<P>
+</OL>
+<P>
+These more general forms of concurrency and communication introduce
+the possibility of complex, nondeterministic interactions between
+concurrently executing threads.  However, the risk of nondeterministic
+interactions can be reduced substantially by avoiding the use of
+global variables, by making shared data structures have the sync
+attribute, and by ensuring that accesses to nonsync shared data
+structures occur within atomic functions.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2631 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2639 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2637 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2641 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2642 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2640 HREF="node59.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html">5.8 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2638 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2632 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html">5.6 Asynchronous Communication</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

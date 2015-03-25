@@ -1,0 +1,18 @@
+#!/bin/bash 
+# Accepts a single string indicating language environment. 
+# Starts environment with rlwrap.
+
+echo "Available arguments: 'prolog', 'ml', 'scheme'"
+
+if [ $1 == "prolog" ]; then
+    rlwrap swipl
+fi
+
+if [ $1 == "ml" ]; then
+    rlwrap sml
+fi
+
+if [ $1 == "scheme" ]; then
+    rlwrap scheme
+fi
+

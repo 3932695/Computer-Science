@@ -1,0 +1,10 @@
+function getcapital () {
+ state="$1"
+ case $state in
+   "CA" ) echo "Sacramento";;
+   "UT" ) echo "Salt Lake City";;
+   "NV" ) echo "Carson City";;
+     *  ) echo "State not recognized";;
+ esac
+}
+getcapital "UT"

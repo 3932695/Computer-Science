@@ -1,0 +1,7 @@
+lname=Bourne
+name=${lname:?"Variable lname is not defined"}
+echo $lname
+
+name=${fname:?"Variable fname is not defined"}
+
+echo "finished.."

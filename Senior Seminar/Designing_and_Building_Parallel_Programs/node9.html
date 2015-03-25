@@ -1,0 +1,393 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>1.3 A Parallel Programming Model</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="1.3 A Parallel Programming Model">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1942 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1950 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1948 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1952 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1953 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1951 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html">1.4 Parallel Algorithm Examples</A>
+<B>Up:</B> <A NAME=tex2html1949 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1943 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html">1.2 A Parallel Machine Model</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02230000000000000000>1.3 A Parallel Programming Model</A></H1>
+<P>
+<A NAME=secmodel>&#160;</A>
+<P>
+The von Neumann machine model assumes a processor able to execute
+sequences of instructions.  An instruction can specify, in addition to
+various arithmetic operations, the address of a datum to be read or
+written in memory and/or the address of the next instruction to be
+executed.  While it is possible to program a computer in terms of this
+basic model by writing machine language, this method is for most
+purposes prohibitively complex, because we must keep track of millions
+of memory locations and organize the execution of thousands of machine
+<A NAME=422>&#160;</A>
+instructions.  Hence, modular design techniques are applied, whereby
+complex programs are constructed from simple components, and
+components are structured in terms of higher-level abstractions such
+as data structures, iterative loops, and procedures.  Abstractions
+such as procedures make the exploitation of modularity easier by
+allowing objects to be manipulated without concern for their internal
+structure.  So do high-level languages such as Fortran, Pascal, C, and
+Ada, which allow designs expressed in terms of these abstractions to
+be translated automatically into executable code.
+<P>
+<A NAME=423>&#160;</A>
+Parallel programming introduces additional sources of complexity: if
+we were to program at the lowest level, not only would the number of
+instructions executed increase, but we would also need to manage
+explicitly the execution of thousands of processors and coordinate
+millions of interprocessor interactions.  Hence, abstraction and
+modularity are at least as important as in sequential programming.  In
+fact, we shall emphasize <em> modularity
+ </em> as a fourth fundamental
+<A NAME=425>&#160;</A>
+requirement for parallel software, in addition to concurrency,
+scalability, and locality.
+<P>
+<H2><A NAME=SECTION02231000000000000000>1.3.1 Tasks and Channels</A></H2>
+<P>
+<A NAME=secc1det>&#160;</A>
+<P>
+<P><A NAME=893>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img102.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img102.gif">
+<BR><STRONG>Figure 1.7:</STRONG> <em> A simple parallel programming model.  The figure shows
+both the instantaneous state of a computation and a detailed picture
+of a single task.  A computation consists of a set of tasks
+(represented by circles) connected by channels (arrows).  A task
+encapsulates a program and local memory and defines a set of ports
+that define its interface to its environment.  A channel is a message
+queue into which a sender can place messages and from which a receiver
+can remove messages, ``blocking'' if messages are not
+available.</em><A NAME=figcm>&#160;</A><BR>
+<P>
+<P>
+<A NAME=432>&#160;</A>
+We consider next the question of which abstractions are appropriate
+<A NAME=433>&#160;</A>
+and useful in a parallel programming model.  Clearly,
+mechanisms are needed that allow explicit discussion about concurrency and
+locality and that facilitate development of scalable and modular
+programs.  Also needed are abstractions that are simple to work with and
+that match the architectural model, the multicomputer.  While numerous
+possible abstractions could be considered for this purpose, two fit
+<A NAME=434>&#160;</A>
+these requirements particularly well: the <em> task
+ </em> and <em>
+channel</em>.  These are illustrated in Figure <A HREF="node9.html#figcm" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#figcm">1.7</A> and can be
+summarized as follows:
+<P>
+<P><A NAME=908>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img103.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img103.gif">
+<BR><STRONG>Figure 1.8:</STRONG> <em> The four basic task actions. In addition to reading and
+writing local memory, a task can send a message, receive a message,
+create new tasks (suspending until they terminate), and
+terminate.</em><A NAME=figactions>&#160;</A><BR>
+<P>
+<P>
+<OL><LI>
+A parallel computation consists of one or more tasks.  Tasks
+execute concurrently.  The number of tasks can vary during program
+execution.
+<P>
+<LI>
+A task encapsulates a sequential program and local memory.  (In
+effect, it is a virtual von Neumann machine.)  In addition, a set of
+<em> inports
+ </em> and <em> outports
+ </em> define its interface to its
+<A NAME=445>&#160;</A>
+environment.
+<P>
+<LI>
+A task can perform four basic actions in addition to reading and
+writing its local memory (Figure <A HREF="node9.html#figactions" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#figactions">1.8</A>): send messages on
+its outports, receive messages on its inports, create new tasks, and
+terminate.
+<P>
+<LI>
+A send operation is asynchronous: it completes immediately.  A receive
+operation is synchronous: it causes execution of the task to block
+until a message is available.
+<P>
+<LI>
+<A NAME=447>&#160;</A>
+Outport/inport pairs can be connected by message queues called <em>
+channels</em>.  Channels can be created and deleted, and references to
+channels (ports) can be included in messages, so connectivity can vary
+dynamically.
+<P>
+<LI>
+<A NAME=449>&#160;</A>
+Tasks can be mapped to physical processors in various ways; the
+mapping employed does not affect the semantics of a program.  In
+particular, multiple tasks can be mapped to a single processor.  (We
+can also imagine a single task being mapped to multiple processors,
+but that possibility is not considered here.)
+<P>
+</OL>
+<P>
+<A NAME=451>&#160;</A>
+The task abstraction provides a mechanism for talking about locality:
+<A NAME=452>&#160;</A>
+data contained in a task's local memory are ``close''; other data are
+``remote.''  The channel abstraction provides a mechanism for
+indicating that computation in one task requires data in another task
+in order to proceed.  (This is termed a <em> data dependency
+ </em>).
+The
+<A NAME=454>&#160;</A>
+following simple example illustrates some
+<A NAME=455>&#160;</A>
+of these features.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img106.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img106.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img104.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img104.gif">    Bridge Construction</b>:<A NAME=exbridge>&#160;</A>
+<P>
+<A NAME=458>&#160;</A>
+Consider the following real-world problem.  A bridge is to be
+assembled from girders being constructed at a foundry.
+These two activities are organized by providing trucks to transport girders
+from the foundry to the bridge site.  This situation is illustrated in
+Figure <A HREF="node9.html#figbridge" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#figbridge">1.9</A>(a), with the foundry and bridge represented as
+tasks and the stream of trucks as a channel.  Notice that this
+approach allows assembly of the bridge and construction of girders to
+proceed in parallel without any explicit coordination: the foundry
+crew puts girders on trucks as they are produced, and the assembly crew
+adds girders to the bridge as and when they arrive.
+<P>
+<P><A NAME=938>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img105.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img105.gif">
+<BR><STRONG>Figure 1.9:</STRONG> <em> Two solutions to the bridge construction problem.  Both
+represent the foundry and the bridge assembly site as separate tasks,
+<tt> foundry</tt> and <tt> bridge</tt>.  The first uses a single channel on
+which girders generated by <tt> foundry</tt> are transported as fast as
+they are generated.  If <tt> foundry</tt> generates girders faster than
+they are consumed by <tt> bridge</tt>, then girders accumulate at the
+construction site.  The second solution uses a second channel to pass
+flow control messages from <tt> bridge</tt> to <tt> foundry</tt> so as to
+avoid overflow.</em><A NAME=figbridge>&#160;</A><BR>
+<P>
+<P>
+A disadvantage of this scheme is that the foundry may produce girders
+much faster than the assembly crew can use them.  To prevent the
+bridge site from overflowing with girders, the assembly crew instead
+can explicitly request more girders when stocks run low.  This refined
+approach is illustrated in Figure <A HREF="node9.html#figbridge" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#figbridge">1.9</A>(b), with the stream
+of requests represented as a second channel.  The second channel can
+also be used to shut down the flow of girders when the bridge is
+complete.
+<P>
+<BR><HR>
+<P>
+We now examine some other properties of this task/channel programming
+model: performance, mapping independence, modularity, and determinism.
+<A NAME=471>&#160;</A>
+<P>
+<em> Performance.</em> Sequential programming abstractions such as
+procedures and data structures are effective because they can be
+mapped simply and efficiently to the von Neumann computer.  The task
+and channel have a similarly direct mapping to the multicomputer.  A
+task represents a piece of code that can be executed sequentially, on
+a single processor.  If two tasks that share a channel are mapped to
+different processors, the channel connection is implemented as
+interprocessor communication; if they are mapped to the same
+<A NAME=474>&#160;</A>
+processor, some more efficient mechanism can be used.
+<P>
+<A NAME=476>&#160;</A>
+<em> Mapping Independence.</em> Because tasks interact using the same
+mechanism (channels) regardless of task location, the result computed
+by a program does not depend on where tasks execute.  Hence,
+algorithms can be designed and implemented without concern for the
+number of processors on which they will execute; in fact, algorithms
+are frequently designed that create many more tasks than processors.
+This is a
+<A NAME=478>&#160;</A>
+straightforward way of achieving <em> scalability
+ </em>: as the number
+<A NAME=480>&#160;</A>
+of processors increases, the number of tasks per processor is reduced
+but the algorithm itself need not be modified.  The creation of more
+tasks than processors can also serve to mask communication delays, by
+providing other computation that can be performed while communication
+is performed to access remote data.
+<P>
+<em> Modularity.</em> In modular program design, various components of a
+program are developed separately, as independent modules, and then
+combined to obtain a complete program.  Interactions between
+<A NAME=483>&#160;</A>
+modules are restricted to well-defined interfaces.  Hence, module
+<A NAME=484>&#160;</A>
+implementations can be changed without modifying other components, and
+the properties of a program can be determined from the specifications
+for its modules and the code that plugs these modules together.  When
+successfully applied, modular design reduces program complexity and
+facilitates code reuse.
+<P>
+<P><A NAME=956>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img107.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img107.gif">
+<BR><STRONG>Figure 1.10:</STRONG> <em> The task as building block.  (a) The <tt> foundry</tt> and
+<tt> bridge</tt> tasks are building blocks with complementary interfaces.
+(b) Hence, the two tasks can be plugged together to form a complete
+program.  (c) Tasks are interchangeable: another task with a
+compatible interface can be substituted to obtain a different
+program.</em><A NAME=figblock>&#160;</A><BR>
+<P>
+<P>
+The task is a natural building block for modular design.  As
+illustrated in Figure <A HREF="node9.html#figblock" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#figblock">1.10</A>, a task encapsulates both data
+and the code that operates on those data; the ports on which it sends
+and receives messages constitute its interface.  Hence, the advantages
+of modular design summarized in the previous paragraph are directly
+accessible in the task/channel model.
+<P>
+Strong similarities exist between the task/channel model and the
+<A NAME=491>&#160;</A>
+popular object-oriented programming paradigm.  Tasks, like objects,
+<A NAME=492>&#160;</A>
+encapsulate data and the code that operates on those data.
+Distinguishing features of the task/channel model are its concurrency,
+its use of channels rather than method calls to specify interactions,
+and its lack of support for inheritance.
+<P>
+<em> Determinism.</em> An algorithm or program is deterministic if
+execution with a particular input always yields the same output.  It
+is nondeterministic if multiple executions with the same input can
+give different outputs.  Although nondeterminism is sometimes useful
+<A NAME=495>&#160;</A>
+and must be supported, a parallel programming model that makes it easy
+to write deterministic programs is highly desirable.
+<A NAME=496>&#160;</A>
+Deterministic programs tend to be easier to understand. Also, when
+<A NAME=497>&#160;</A>
+checking for correctness, only one execution sequence of a parallel
+program needs to be considered, rather than all possible executions.
+<P>
+The ``arms-length'' interactions supported by the task/channel model
+makes determinism relatively easy to guarantee.  As we shall see in
+Part II when we consider programming tools, it suffices to verify
+that each channel has a single sender and a single receiver
+and that a task receiving on a channel blocks until a receive
+operation is complete.  These conditions can be relaxed when
+nondeterministic interactions are required.
+<P>
+In the bridge construction example, determinism means that the same
+bridge will be constructed regardless of the rates at which the
+foundry builds girders and the assembly crew puts girders together.
+If the assembly crew runs ahead of the foundry, it will block, waiting
+for girders to arrive.  Hence, it simply suspends its operations until
+more girders are available, rather than attempting to continue
+construction with half-completed girders.  Similarly, if the foundry
+produces girders faster than the assembly crew can use them, these
+girders simply accumulate until they are needed.  Determinism would be
+guaranteed even if several bridges were constructed simultaneously: As
+long as girders destined for different bridges travel on
+<A NAME=498>&#160;</A>
+distinct channels, they cannot be confused.
+<P>
+<A NAME=499>&#160;</A>
+<P>
+
+<H2><A NAME=SECTION02232000000000000000>1.3.2 Other Programming Models</A></H2>
+<P>
+<A NAME=sec1other>&#160;</A>
+<P>
+In subsequent chapters, the task/channel model will often be used to
+describe algorithms.  However, this model is certainly not the only
+approach that can be taken to representing parallel computation.  Many
+other models have been proposed, differing in their flexibility, task
+interaction mechanisms, task granularities, and support for locality,
+scalability, and modularity.  Here, we review several alternatives.
+<P>
+<A NAME=502>&#160;</A>
+<em> Message passing.
+ </em> Message passing is probably the most
+<A NAME=504>&#160;</A>
+widely used parallel
+<A NAME=505>&#160;</A>
+programming model today.  Message-passing programs, like task/channel
+programs, create multiple tasks, with each task encapsulating local
+data.  Each task is identified by a unique name, and tasks interact by
+sending and receiving messages to and from named tasks.  In this
+respect, message passing is really just a minor variation on the
+task/channel model, differing only in the mechanism used for data
+transfer.  For example, rather than sending a message on ``channel
+<tt> ch</tt>,'' we may send a message to ``task <tt> 17</tt>.''  We study the
+message-passing model in more detail in Chapter <A HREF="node94.html#chapmpi" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html#chapmpi">8</A>, where
+we discuss the <em> Message Passing Interface</em>.  In that chapter, we
+explain that the definition of channels is a useful discipline even
+when designing message-passing programs, because it forces us to
+conceptualize the communication structure of a parallel program.
+<P>
+The message-passing model does not preclude the dynamic creation of
+tasks, the execution of multiple tasks per processor, or the execution
+of different programs by different tasks.  However, in practice most
+message-passing systems create a fixed number of identical tasks at
+program startup and do not allow tasks to be created or destroyed
+during program execution.  These systems are said to implement a <em>
+<A NAME=510>&#160;</A>
+single program multiple data
+ </em> (SPMD) programming model because each
+<A NAME=511>&#160;</A>
+task executes the same program but operates on different data.  As 
+explained in subsequent chapters, the SPMD model is sufficient for a
+wide range of parallel programming problems but does hinder some
+parallel algorithm developments.
+<P>
+<em> Data Parallelism.
+ </em> Another commonly used parallel
+<A NAME=513>&#160;</A>
+programming model, data parallelism, calls for exploitation of the
+concurrency that derives from the application of the same operation to
+<A NAME=514>&#160;</A>
+multiple elements of
+<A NAME=515>&#160;</A>
+a data structure, for example, ``add 2 to all elements of this
+array,'' or ``increase the salary of all employees with 5 years
+service.''  A data-parallel program consists of a sequence of such
+operations.  As each operation on each data element can be thought of
+as an independent task, the natural granularity of a data-parallel
+computation is small, and the concept of ``locality'' does not arise
+naturally.  Hence, data-parallel compilers often require the
+programmer to provide information about how data are to be distributed
+over processors, in other words, how data are to be partitioned into
+tasks.  The compiler can then translate the data-parallel program into
+an SPMD formulation, thereby generating communication code
+automatically.  We discuss the data-parallel model in more detail in
+Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A> under the topic of <em> High Performance
+Fortran</em>.  In that chapter, we show that the algorithm design and
+analysis techniques developed for the task/channel model apply
+directly to data-parallel programs; in particular, they provide the
+concepts required to understand the locality and scalability of
+data-parallel programs.
+<P>
+<em> Shared Memory.
+ </em> In the shared-memory programming model,
+tasks share a common address space, which they read and write
+<A NAME=519>&#160;</A>
+asynchronously.  Various mechanisms such as locks and
+<A NAME=520>&#160;</A>
+semaphores may be used to control access to the shared memory.  An
+<A NAME=521>&#160;</A>
+advantage of this model from the programmer's point of view is that
+the notion of data ``ownership'' is lacking, and hence there is no
+<A NAME=522>&#160;</A>
+need to specify explicitly the communication of data from producers to
+consumers.  This model can simplify program development.  However,
+understanding and managing locality becomes more difficult, an
+important consideration (as noted earlier) on most shared-memory
+architectures.  It can also be more difficult to write deterministic
+programs.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1942 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1950 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1948 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1952 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1953 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1951 HREF="node10.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html">1.4 Parallel Algorithm Examples</A>
+<B>Up:</B> <A NAME=tex2html1949 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1943 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html">1.2 A Parallel Machine Model</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

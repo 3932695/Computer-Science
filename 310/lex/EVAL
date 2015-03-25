@@ -1,0 +1,73 @@
+Script started on Thu 18 Sep 2014 06:48:37 PM EDT
+/home/kxiao/310/lex
+
+**** AUTOMATIC TESTS UNDER CONSTRUCTION  (hacking) ***
+
+Unpacking your archive...
+tar: *.tar: Cannot open: No such file or directory
+tar: Error is not recoverable: exiting now
+
+Running make
+make: `decafl' is up to date.
+========== acampbel-test-01.decaf ==========
+Test passed
+
+========== acampbel-test-02.decaf ==========
+Test passed
+
+========== acampbel-test-03.decaf ==========
+Test passed
+
+========== acampbel-test-04.decaf ==========
+Test passed
+
+========== acampbel-test-05.decaf ==========
+Test passed
+
+========== acampbel-test-06.decaf ==========
+Test passed
+
+========== acampbel-test-07.decaf ==========
+Test passed
+
+========== acampbel-test-08.decaf ==========
+Test passed
+
+========== acampbel-test-09.decaf ==========
+Test passed
+
+========== acampbel-test-10.decaf ==========
+Test passed
+
+========== acampbel-test-11.decaf ==========
+Test passed
+
+========== acampbel-test-12.decaf ==========
+Test passed
+
+========== acampbel-test-13.decaf ==========
+Test passed
+
+========== acampbel-test-14.decaf ==========
+Test passed
+
+========== acampbel-test-15.decaf ==========
+Test passed
+
+========== acampbel-test-16.decaf ==========
+Test passed
+
+========== acampbel-test-17.decaf ==========
+Test passed
+
+========== acampbel-test-18.decaf ==========
+Test passed
+
+========== acampbel-test-19.decaf ==========
+Test passed
+
+========== acampbel-test-20.decaf ==========
+Test passed
+
+Passed 20 out of 20 test cases for Campbell_tests
+Evaluation complete.

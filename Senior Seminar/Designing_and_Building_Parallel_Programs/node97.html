@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.3 Global Operations</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.3 Global Operations">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3129 HREF="node96.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3137 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3135 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3139 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3140 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3138 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html">8.4 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html3136 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3130 HREF="node96.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html">8.2 MPI Basics</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03530000000000000000>8.3 Global Operations</A></H1>
+<P>
+As explained in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>, parallel algorithms often call
+for coordinated communication operations involving multiple processes.
+For example, all processes may need to cooperate to transpose a
+distributed matrix or to sum a set of numbers distributed one per
+process.  Clearly, these global operations can be implemented by a
+programmer using the send and receive functions introduced in
+Section <A HREF="node96.html#secmpibasics" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#secmpibasics">8.2</A>.  For convenience, and to permit
+optimized implementations, MPI also
+<A NAME=12580>&#160;</A>
+provides a suite of specialized <em>
+<A NAME=12581>&#160;</A>
+collective communication
+ </em> functions that perform commonly used
+<A NAME=12582>&#160;</A>
+operations of this type.  These functions include the following.
+<P>
+<UL><LI> Barrier: Synchronizes all processes.
+<P>
+<LI> Broadcast: Sends data from one process to all processes.
+<P>
+<LI> Gather: Gathers data from all processes to one process.
+<P>
+<LI> Scatter: Scatters data from one process to all processes.
+<P>
+<LI> Reduction operations: Sums, multiplies, etc., distributed data.
+<A NAME=12584>&#160;</A>
+</UL>
+<P>
+These operations are summarized in Figure <A HREF="node97.html#figmpiglobal" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html#figmpiglobal">8.2</A>.
+All are executed collectively, meaning that each process in
+a process group calls the communication routine with the same
+parameters.
+<P>
+<P><A NAME=13816>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1014.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1014.gif">
+<BR><STRONG>Figure 8.2:</STRONG>  MPI global communication functions.
+<A NAME=figmpiglobal>&#160;</A><BR>
+<P><H2><A NAME=SECTION03531000000000000000>8.3.1 Barrier</A></H2>
+<P>
+<A NAME=secmpbar>&#160;</A>
+<P>
+<tt> MPI_BARRIER</tt> is used to synchronize execution of a group of
+<A NAME=12650>&#160;</A>
+processes.  No process returns from this function until all processes
+<A NAME=12651>&#160;</A>
+have called it.  A barrier is a simple way of separating two phases of
+<A NAME=12652>&#160;</A>
+a computation to ensure that messages generated in the two phases do
+not intermingle.  For example, a call to <tt> MPI_BARRIER</tt> could be
+inserted before the second send operation in
+Program <A HREF="node96.html#progmpnondet" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmpnondet">8.4</A> to ensure deterministic execution.  Of
+course, in this example as in many others, the need for an explicit
+barrier can be avoided by the appropriate use of tags, source specifiers,
+and/or contexts.
+<P>
+<H2><A NAME=SECTION03532000000000000000>8.3.2 Data Movement</A></H2>
+<P>
+<A NAME=secmpmov>&#160;</A>
+<P>
+<tt> MPI_BCAST</tt>, <tt> MPI_GATHER</tt>, and <tt> MPI_SCATTER</tt> are
+collective <em> data movement
+ </em> routines, in which all processes
+interact with a distinguished <tt> root</tt> process to broadcast, gather,
+or scatter data, respectively.  The operation of these functions is illustrated in
+Figure <A HREF="node97.html#figmpdata" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html#figmpdata">8.3</A>.  In each case, the first three arguments
+specify the location (<tt> inbuf</tt>) and type (<tt> intype</tt>)
+of the data to be communicated 
+and the number of elements to be sent to each
+destination (<tt> incnt</tt>).  Other arguments specify the location and
+type of the result (<tt> outbuf</tt>, <tt> outtype</tt>) and the number of
+elements to be received from each source (<tt> outcnt</tt>).
+<P>
+<P><A NAME=13960>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1017.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1017.gif">
+<BR><STRONG>Figure 8.3:</STRONG> <em> MPI collective data movement functions, illustrated for a
+group of 4 processes.  In each set of 16 boxes, each row represents
+data locations in a different process.  Thus, in the one-to-all
+broadcast, the data <tt> A</tt><IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1016.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1016.gif"> is initially located just in process
+0; after the call, it is replicated in all processes.  In each case,
+both <tt> incnt</tt> and <tt> outcnt</tt> are 1, meaning that each message
+comprises a single data element.</em><A NAME=figmpdata>&#160;</A><BR>
+<P>
+<P>
+<tt> MPI_BCAST</tt> implements a one-to-all <em> broadcast
+ </em>
+<A NAME=12677>&#160;</A>
+operation whereby a single named process (<tt> root</tt>) sends the same
+<A NAME=12679>&#160;</A>
+data to all other processes; each process receives this data from the
+root process.  At the time of call, the data are located in <tt>
+inbuf</tt> in process <tt> root</tt> and consists of <tt> incnt</tt> data items of
+a specified <tt> intype</tt>.  After the call, the data are replicated in
+<tt> inbuf</tt> in all processes.  As <tt> inbuf</tt> is used for input at the
+<tt> root</tt> and for output in other processes, it has type <tt> INOUT</tt>.
+<P>
+<tt> MPI_GATHER</tt> implements an all-to-one <em> gather
+ </em>
+<A NAME=12690>&#160;</A>
+operation.  All processes (including the <tt> root</tt> process) send data
+<A NAME=12692>&#160;</A>
+located in <tt> inbuf</tt> to <tt> root</tt>.  This process places the data in
+contiguous nonoverlapping locations in <tt> outbuf</tt>, with the data
+from process <em> i</em>
+ preceding that from process
+<em> i+1</em>
+.  Hence, the <tt> outbuf</tt> in the root process must be
+<em> P</em>
+ times larger than <tt> inbuf</tt>, where <em> P</em>
+ is the number of
+processes participating in the operation.  The <tt> outbuf</tt> in
+processes other than the <tt> root</tt> is ignored.
+<P>
+<tt> MPI_SCATTER</tt> implements a one-to-all <em> scatter
+ </em>
+<A NAME=12706>&#160;</A>
+operation; it is the reverse of <tt> MPI_GATHER</tt>.  A specified <tt>
+<A NAME=12708>&#160;</A>
+root</tt> process sends data to all processes, sending the <em> i</em>
+th
+portion of its <tt> inbuf</tt> to process <em> i</em>
+; each process receives
+data from <tt> root</tt> in <tt> outbuf</tt>.  Hence, the <tt> inbuf</tt> in the
+root process must be <em> P</em>
+ times larger than <tt> outbuf</tt>.  Notice
+the subtle difference between this function and <tt> MPI_BCAST</tt>:
+while in <tt> MPI_BCAST</tt> every process receives the <em> same
+ </em>
+value from the root process, in <tt> MPI_SCATTER</tt> every process
+receives a <em> different
+ </em> value.
+<P>
+<H2><A NAME=SECTION03533000000000000000>8.3.3 Reduction Operations</A></H2>
+<P>
+<A NAME=secmpred>&#160;</A>
+<P>
+<A NAME=12724>&#160;</A>
+The functions <tt> MPI_REDUCE</tt> and <tt> MPI_ALLREDUCE</tt> implement
+reduction operations.  They combine the values provided in the input
+buffer of each process, using a specified operation <tt> op</tt>, and
+<A NAME=12728>&#160;</A>
+return the combined value either to the output buffer of the single
+<A NAME=12729>&#160;</A>
+<tt> root</tt> process (in the case of <tt> MPI_REDUCE</tt>) or to the output
+<A NAME=12732>&#160;</A>
+buffer of all processes (<tt> MPI_ALLREDUCE</tt>).  The operation is
+applied pointwise to each of the <tt> count</tt> values provided by each
+process.  All operations return <tt> count</tt> values with the same
+datatype as the operands.  Valid operations include maximum and
+minimum (<tt> MPI_MAX</tt> and <tt> MPI_MIN</tt>); sum and product (<tt>
+MPI_SUM</tt> and <tt> MPI_PROD</tt>); logical and, or, and exclusive or
+(<tt> MPI_LAND</tt>, <tt> MPI_LOR</tt>, and <tt> MPI_LXOR</tt>); and bitwise
+and, or, and exclusive or (<tt> MPI_BAND</tt>, <tt> MPI_BOR</tt>, and <tt>
+MPI_BXOR</tt>).
+<P>
+<P><A NAME=13984>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1018.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1018.gif">
+<BR><STRONG>Figure:</STRONG> <em> Applications of <tt> MPI_REDUCE</tt> and <tt> MPI_ALLREDUCE</tt>.
+The first line shows the send buffers (of size 2) in each of four
+processes; subsequent lines show the output buffers in each process
+following four different global communication
+calls.</em><A NAME=figmpreduce>&#160;</A><BR>
+<P>
+<P>
+As an example, the following call would be used to compute the minimum
+of two sets of <em> P</em>
+ values, where <em> P</em>
+ is the number of
+processes involved in the reduction.
+<P>
+<tt> MPI_REDUCE(inbuf, outbuf, 2, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD)</tt>
+<P>
+After the reduction, <tt> outbuf[0]</tt> in process 0 contains the minimum
+of the first element in each input buffer (<tt> min(inbuf[0])</tt>);
+similarly, <tt> outbuf[1]</tt> contains <tt> min(inbuf[1])</tt>.  The
+operation of this and other calls to MPI reduction functions are
+illustrated in Figure <A HREF="node97.html#figmpreduce" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html#figmpreduce">8.4</A>.
+<P>
+<P><A NAME=progmp4>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1019.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1019.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1022.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1022.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1020.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1020.gif">    Finite Difference</b>:<A NAME=exmpfd>&#160;</A>
+<P>
+Once again we consider a finite difference problem, this time to
+<A NAME=12802>&#160;</A>
+illustrate the use of global operations.  The algorithm
+<A NAME=12803>&#160;</A>
+considered requires both nearest-neighbor communication (to exchange
+boundary values) and global communication (to detect termination).
+Similar problems have previously been discussed in
+Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>.  The MPI implementation given in
+Program <A HREF="node97.html#progmp4" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html#progmp4">8.5</A> is for a one-dimensional decomposition of a
+one-dimensional problem in which each process has two neighbors.  It
+uses <tt> MPI_SEND</tt> and <tt> MPI_RECV</tt> for nearest-neighbor
+communication and four MPI global communication routines, for a total
+of five distinct communication operations.  These are summarized 
+as follows and are illustrated in Figure <A HREF="node97.html#figmpfdcomm" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html#figmpfdcomm">8.5</A>:
+<P>
+<P><A NAME=14026>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1021.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1021.gif">
+<BR><STRONG>Figure 8.5:</STRONG> <em> Communication performed in the finite difference program,
+assuming three processes.  Each column represents a processor; each
+subfigure shows data movement in a single phase.  The five phases
+illustrated are (1) broadcast, (2) scatter, (3) nearest-neighbor
+exchange, (4) reduction, and (5) gather.</em><A NAME=figmpfdcomm>&#160;</A><BR>
+<P>
+<P>
+<OL><LI>
+<tt> MPI_BCAST</tt> to broadcast the problem size parameter (<tt> size</tt>)
+from process 0 to all <tt> np</tt> processes;
+<P>
+<LI>
+<tt> MPI_SCATTER</tt> to distribute an input array (<tt> work</tt>) from
+process 0 to other processes, so that each process receives <tt>
+size/np</tt> elements;
+<P>
+<LI>
+<tt> MPI_SEND</tt> and <tt> MPI_RECV</tt> for exchange of data (a single
+floating-point number) with neighbors;
+<P>
+<LI>
+<tt> MPI_ALLREDUCE</tt> to determine the maximum of a set of <tt>
+localerr</tt> values computed at the different processes and to
+distribute this maximum value to each process; and
+<P>
+<LI>
+<tt> MPI_GATHER</tt> to accumulate an output array at process 0.
+</OL>
+<P>
+The use of scatter and gather operations to transfer input and
+output data is particularly simple and convenient.  Note, however, that
+their use in this example is inherently nonscalable.  As we solve
+larger problems, storage limitations will eventually prevent us from
+accumulating all input and output data in a single process.  In
+addition, the associated communication costs may be prohibitive.
+<P>
+<BR><HR>
+<P>
+<A NAME=12826>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3129 HREF="node96.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3137 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3135 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3139 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3140 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3138 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html">8.4 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html3136 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3130 HREF="node96.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html">8.2 MPI Basics</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

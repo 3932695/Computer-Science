@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>9.3 Data Transformation and Visualization</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="9.3 Data Transformation and Visualization">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3276 HREF="node108.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3284 HREF="node110.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node110.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3282 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3286 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3287 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3285 HREF="node110.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node110.html">9.4 Tools</A>
+<B>Up:</B> <A NAME=tex2html3283 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B> Previous:</B> <A NAME=tex2html3277 HREF="node108.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html">9.2 Data Collection</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03630000000000000000>9.3 Data Transformation and Visualization</A></H1>
+<P>
+Data transformation and visualization tools transform raw data
+collected during program execution to yield data and images more
+easily understood by the programmer.  In this section, we provide a
+general discussion of transformation and display techniques,
+indicating which are useful for which purposes.  In the next section,
+we present examples of specific tools and describe specific
+transformations and display formats.
+<P>
+<H2><A NAME=SECTION03631000000000000000>9.3.1 Profile and Counts</A></H2>
+<P>
+<A NAME=14382>&#160;</A>
+A typical profile provides information about the time spent in
+<A NAME=14383>&#160;</A>
+each procedure on each processor, the number of times each procedure
+is called, the number of messages generated on each processor, the
+volume of these messages, and so forth.  Data reduction techniques can
+be used to reduce this multidimensional data to a smaller number of
+dimensions, and various forms of display can be used to visualize both
+the original and the reduced data.
+<P>
+Zero-dimensional (scalar) data are of course trivial to display,
+consisting of a single number: total computation time, total number of
+messages, mean message size, and so forth.  However, numbers of this
+sort provide relatively little insight into program behavior.  For
+example, we may notice that total communication volume is greater than
+expected.  This observation may stimulate us to ask several questions.
+Is the additional communication concentrated in a subset of the
+processors?  Is it concentrated in a single procedure?  In which phase
+of the computation does it occur?  More data are required if we are to
+answer these questions.
+<P>
+The histogram is often a convenient display format for one-dimensional
+<A NAME=14384>&#160;</A>
+data.  If the number of processors is large, the size of a histogram
+can be reduced by binning, in which case histogram bars represent the
+number of processors (or procedures or whatever) that have computation
+time in a specified range.  Two-dimensional data can be displayed
+using color and a two-dimensional matrix.  For example, in
+<A HREF="#gauge">Plate 7</A> and <A HREF="#paragraph1">Plate 8</A>
+
+<P>
+color is used, respectively, to indicate execution time per procedure per processor,
+and communication volume between pairs of processors.
+<P>
+
+<P>
+<P><HR><P>
+<EM>Plate 7 is not available in the online version.</EM>
+<P><HR>
+
+<P>
+
+<P>
+<P><HR><P>
+<EM>Plate 8 is not available in the online version.</EM>
+<P><HR>
+
+<H2><A NAME=SECTION03632000000000000000>9.3.2 Traces</A></H2>
+<P>
+<A NAME=14394>&#160;</A>
+Trace data can often be reduced to one, two, or three dimensions and
+<A NAME=14395>&#160;</A>
+then displayed using the histogram techniques described in 
+Section 9.3.1.  For example, we can plot communication volume or
+efficiency as a function of time, or plot histograms of trace values.
+Other forms of display can provide more detailed views of temporal
+dependencies between different processors and program components by
+sacrificing scalability and abstraction for detail.  We describe just
+two displays of this sort; others are illustrated in later sections.
+<P>
+<A NAME=14396>&#160;</A>
+The <em> Gantt chart
+ </em>
+<A NAME=14398>&#160;</A>
+is a horizontal bar chart in
+<A NAME=14399>&#160;</A>
+which each bar
+<A NAME=14400>&#160;</A>
+represents the status of each processor as a function of time
+<A HREF="#paragraph1">(Plate 8</A> and <A HREF="#tilson">Plate
+12).</A>
+
+<P>
+Bars can simply represent status (computing, communicating, or idling)
+and/or indicate the program component or procedure that is executing
+on each processor at a particular time.  A Gantt chart can highlight
+unexpected
+<A NAME=14405>&#160;</A>
+dependencies between program components.  Note that dependencies
+inferred from these sorts of displays are valid only if the computer
+and performance tool that we are using ensure that times recorded for
+events occurring on different processors are consistent.  This will
+generally be the case if we use the performance tools described in
+this chapter, as these all incorporate appropriate clock
+synchronization logic.
+<A NAME=14406>&#160;</A>
+<P>
+If we augment a Gantt chart by drawing lines to connect corresponding
+send and receive events on different processors, we obtain a <em>
+space-time diagram
+ </em>, illustrated in the lower part of
+<A HREF="#paragraph1">Plate 8</A>.
+
+<P>
+A space-time diagram can make it easier to infer temporal
+dependencies, because it is often possible to identify the specific
+communication event for which a processor is waiting and hence idle.
+<P>
+<H2><A NAME=SECTION03633000000000000000>9.3.3 Data-Parallel Languages</A></H2>
+<P>
+<A NAME=secpthpf>&#160;</A>
+<P>
+<A NAME=14414>&#160;</A>
+In data-parallel languages such as HPF and pC++
+ ,
+performance analysis is simplified by the fact that each processor
+<A NAME=14415>&#160;</A>
+typically executes the same program.  On the other hand, the semantic
+gap between parallel program and executable code is particularly high.
+Apparently innocuous assignment statements can cause large amounts of
+communication if distributions do not match, while a compiler may
+restructure code to eliminate other communication operations that the
+programmer may assume will occur.  Similarly, the mapping of
+computation to processors may not be obvious to the programmer.
+Therefore, low-level information about computation and
+communication tends to have only limited value.
+<P>
+Performance tools for data-parallel languages both can take advantage
+of the SPMD nature of data-parallel computation and overcome the
+semantic gap by relating performance data to the program statements
+concerned.  For example, they can label the source code with
+communication costs or can color data arrays to indicate the
+computation costs and communication volumes associated with each
+element.  These forms of display can involve a considerable degree of
+compiler assistance and/or postprocessing, since in many cases the
+executed code has been transformed out of recognition.  This approach
+is illustrated in
+<A HREF="#prism">Plate 9</A>,
+
+<P>
+which shows a communication summary produced by Thinking Machine's
+<A NAME=14420>&#160;</A>
+Prism performance tool.  The program illustrated is the
+<A NAME=14421>&#160;</A>
+Gaussian elimination code used as a case study in
+<A NAME=14422>&#160;</A>
+Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A>.  The plate indicates sources of communication
+<A NAME=14424>&#160;</A>
+in a data-parallel Fortran program and the relative cost of each
+communication operation.
+<P>
+<P><HR>
+<A NAME=prism HREF="../../../tppmsgs/msgs0.htm#33" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/prism3.gif"> <img
+ALIGN=MIDDLE src="pictures/prism3_small.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/prism3_small.gif"></A>
+<P>
+(GIF <A HREF="../../../tppmsgs/msgs0.htm#33" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/prism3.gif">27721</A> bytes; RGB <A
+HREF="../../../tppmsgs/msgs0.htm#34" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures/prism3.rgb">295002</A> bytes.)
+Plate 9: Thinking Machine's PRISM performance
+tool, here applied to a Gaussian elimination algorithm.  Image
+courtesy of D. Reed.
+<P><HR>
+
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3276 HREF="node108.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3284 HREF="node110.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node110.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3282 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3286 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3287 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3285 HREF="node110.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node110.html">9.4 Tools</A>
+<B>Up:</B> <A NAME=tex2html3283 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B> Previous:</B> <A NAME=tex2html3277 HREF="node108.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html">9.2 Data Collection</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

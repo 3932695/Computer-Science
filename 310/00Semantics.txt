@@ -1,0 +1,74 @@
+Semantics
+	properties
+		kind 		-string
+		toString()
+	subclasses
+		S_variable	class
+		S_function
+		S_interface
+		S_class
+
+
+
+
+
+
+
+
+
+
+
+S_variable properties:
+	name
+	type
+	parent 		class : pointer to S_class
+	seq		(int)
+
+
+
+
+
+
+Pass 1
+	establish scopes
+	error: duplicate varicableDecl
+
+Pass 2
+	basic checking on functionDecls
+
+Pass 3
+	check every statement inside code blocks
+
+
+
+
+
+
+
+
+
+
+
+
+Symbol Table
+
+	Dictionary
+		Strings --> Semantics
+		PARENT = fact
+	fact
+		y:int
+		PARENT = foo's table
+	foo's table
+		x:bar
+		fact:function
+		PARENT = global
+	global
+		x:int
+
+
+
+
+semantics * lookup(string key)
+	semantics * answer;
+		return (answer = local_lookup(key)) ? answer:
+			parent ? parent->lookup(key) : NULL;

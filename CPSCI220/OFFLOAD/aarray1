@@ -1,0 +1,7 @@
+declare -A states
+i=1
+states=( ["CA"]="California" ["NY"]="New York" ["NV"]="Nevada" ["UT"]="Utah")
+for index in ${!states[@]}
+do
+ echo "$((i++)): $index"
+done

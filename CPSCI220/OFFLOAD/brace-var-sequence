@@ -1,0 +1,14 @@
+# Print 1 to 4 using sequences. 
+for i in {1..4} 
+do 
+  echo $i 
+done 
+start=1 
+end=4 
+
+# Print 1 to 4 using through variables 
+echo "Sequences expressed using variables" 
+for i in {$start..$end} 
+do 
+  echo $i 
+done

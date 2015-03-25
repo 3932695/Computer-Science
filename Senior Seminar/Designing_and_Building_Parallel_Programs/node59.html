@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.8 Mapping</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.8 Mapping">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2643 HREF="node58.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node58.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2651 HREF="node60.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2649 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2653 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2654 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2652 HREF="node60.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html">5.9 Modularity</A>
+<B>Up:</B> <A NAME=tex2html2650 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2644 HREF="node58.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node58.html">5.7 Determinism</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03280000000000000000>5.8 Mapping</A></H1>
+<P>
+<A NAME=secccmap>&#160;</A>
+<P>
+<A NAME=7384>&#160;</A>
+A parallel program defined in terms of CC++
+  constructs can be
+<A NAME=7385>&#160;</A>
+executed on both uniprocessor and multiprocessor computers.  In the
+latter case, a complete program must also specify how the processor
+objects created by a CC++
+  program are mapped to processors.  Recall
+from Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> that this is an important part of parallel
+algorithm design.
+<P>
+<P><A NAME=8341>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img849.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img849.gif">
+<BR><STRONG>Figure 5.6:</STRONG> <em> Mapping in CC++
+ .  First, threads are mapped to processor
+objects.  Then, processor objects are mapped to physical
+processors.</em><A NAME=figccmap>&#160;</A><BR>
+<P>
+<P>
+Mapping in CC++
+  is a two-stage process (Figure <A HREF="node59.html#figccmap" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#figccmap">5.6</A>).
+First, threads are mapped to processor objects, and then processor
+objects are mapped to processors.  The mapping of threads to processor
+objects can be one-to-one, in which case it is the mapping of
+processor objects to physical processors that is important.
+Alternatively, the mapping of processor objects to physical processors
+may be one-to-one, in which case it is the mapping of threads to
+processor objects that is important.  If both mappings are one-to-one,
+then the mapping problem is straightforward.
+<P>
+An important aspect of the second mapping stage, processor object
+placement, is that it <em> influences performance but not
+correctness</em>.  Hence, we can develop a program on a uniprocessor and
+then tune performance on a parallel computer by changing placement
+decisions.  This is consistent with the design methodology of
+Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>, in which mapping is the fourth and final stage
+of the design process.  The first mapping stage, thread placement, has
+this property only if threads do not share data structures.
+<P>
+<H2><A NAME=SECTION03281000000000000000>5.8.1 Processor Object Placement</A></H2>
+<P>
+<A NAME=7395>&#160;</A>
+By default, a newly created processor object is placed on the same
+processor as its creator.  An alternative placement can be specified
+by using the <em> placement
+ </em> argument to the <tt> new</tt> operator.
+In C++
+ , this argument is used to position an object in memory space;
+in CC++
+ , it can also be used to position a processor object in
+processor space.  (It can also be used to specify where in a file
+system to find the code for a processor object; however, we do not
+discuss this facility here.)  The location is specified by an
+implementation-dependent class named <tt> proc_t</tt>.  The constructor
+functions <tt> proc_t</tt> and <tt> node_t</tt> defined in the
+CC++
+  library can be used to construct a placement structure with a
+specified processor name.  These are used in the following code
+fragment, which creates a new processor object (of type <tt> MyClass</tt>)
+on a processor called <tt> mymachine</tt>.
+<P>
+<PRE>MyClass *global G;
+proc_t location(node_t(&quot;mymachine&quot;));
+G = new (location) MyClass;
+</PRE>
+<P>
+The <tt> new</tt> statement creates a new processor object; the supplied
+<tt> proc_t</tt> object (<tt> location</tt>) specifies the machine name.  To
+place the new processor object on a different processor, one need
+change only the second line of this code fragment, for example to the
+following.
+<P>
+<PRE>proc_t location(node_t(&quot;yourmachine&quot;));
+</PRE>
+<P>
+As a further example, the following code creates 32 processor objects,
+placing each on a different processor of a multicomputer with nodes
+named <tt> sp#0</tt>, <tt> sp#1</tt>, ..., <tt> sp#31</tt>.  Notice how <tt>
+parfor</tt> is used to create the different processor objects
+concurrently.
+<P>
+<PRE>MyClass *global G[32];
+parfor (int i=0; i&lt;31; i++) {
+   char node_name[256];
+   sprintf(node_name,&quot;sp#%
+   proc_t location(node_t(node_name));
+   G[i] = new (location) MyClass;
+}
+</PRE>
+<P>
+Although simple, this code represents bad programming practice, in
+that it embeds information about the environment in which the program
+is executing.  A better approach is to encapsulate mapping decisions
+in a separate class, for example, the class <tt> Mapping</tt> defined in
+Program <A HREF="node59.html#progccmap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccmap2">5.8</A>.  This class encapsulates two private
+variables (<tt> P</tt> and <tt> proc_names</tt>) that represent the
+environment in which a program is to execute.  The member function
+<tt> initmap</tt> is used to initialize these variables.  Two additional
+member functions, <tt> processor</tt> and <tt> random_p</tt>, return a <tt>
+proc_t</tt> object representing the <tt> i</tt>th processor and a
+randomly-selected processor, respectively.  Finally, two data transfer
+functions (omitted for brevity) package and unpackage the node list
+associated with a mapping object, allowing a mapping to be passed as
+an argument when creating a new processor object.  The use of the <tt>
+Mapping</tt> class is illustrated in the following example.
+<P>
+<P><A NAME=progccmap2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img850.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img850.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img852.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img852.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img851.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img851.gif">    Search (II)</b>:<A NAME=excctree4>&#160;</A>
+<P>
+Recall that Program <A HREF="node55.html#progcctree" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html#progcctree">5.4</A> explores a search tree in
+parallel by creating new threads to explore the subtrees rooted at
+each nonleaf node.  Each thread executes in a new processor object.
+This program does not specify a mapping strategy for these processor
+objects.  One strategy is to place each newly created processor
+object/thread pair on a processor selected at random.
+Program <A HREF="node59.html#progccprog2" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccprog2">5.9</A> uses the <tt> Mapping</tt> class of
+Program <A HREF="node59.html#progccmap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccmap2">5.8</A> to implement this behavior.  There are
+three significant differences between this program and
+Program <A HREF="node55.html#progcctree" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html#progcctree">5.4</A>.  First, a global <tt> Mapping</tt> object is
+defined and initialized at the beginning of <tt> main</tt> to contain the
+names of the processors on which the program is to execute.  These
+names are read from a file.  Second, a constructor is provided for the
+processor object class <tt> Tree</tt> that copies the <tt> Mapping</tt> object
+to each new processor object as it is created.  Third, one of the
+processor object allocation calls in the <tt> search</tt> function is
+augmented with a call to <tt> random_p</tt>, which returns a <tt>
+proc_t</tt> structure on a randomly selected processor.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progccprog2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img853.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img853.gif"><P><H2><A NAME=SECTION03282000000000000000>5.8.2 Mapping Threads to Processor Objects</A></H2>
+<P>
+<A NAME=secccvf>&#160;</A>
+<P>
+<A NAME=7488>&#160;</A>
+An alternative approach to mapping in CC++
+  is to create a
+fixed number of processor objects onto which threads are then placed.
+<A NAME=7489>&#160;</A>
+This approach is often used in SPMD computations, in which case a
+<A NAME=7490>&#160;</A>
+single thread is mapped to each processor object.  Another important
+application is in situations where a computation creates a large
+number of lightweight threads that interact only via global pointers.
+We can map these threads to a static number of processor objects,
+hence avoiding the overhead of creating a new processor object when
+creating a new thread; as the threads do not share local data
+structures, the mapping of threads to processor objects does not
+influence the result computed.
+<P>
+Program <A HREF="node59.html#progccpo" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccpo">5.10</A> supports this general approach by defining a
+class <tt> POArray</tt> that can be used to create an array of processor
+objects of specified size and type.  Each processor object is
+initialized to contain an array of pointers to the other processor
+objects, so that communication between the different processor objects
+can be achieved.
+<P>
+The class <tt> POArray</tt> provides an initialization function, <tt>
+init</tt>, that creates the processor objects.  The arguments to this
+function specify the number and names of the processors on which
+processor objects are to be created.  The <tt> init</tt> function first
+makes repeated calls to <tt> create_pobj</tt> to create an array of
+processor objects with type <tt> POArrayNode</tt>.  It then initializes
+these processor objects by calling the function <tt> init_pobj</tt> with
+a copy of the <tt> POArray</tt> object (accessed by the C++
+  keyword <tt>
+this</tt>) as an argument.
+<P>
+We would like to be able to use <tt> POArray</tt> to create processor
+objects of arbitrary type.  Hence, we use the keyword <tt> virtual</tt>
+and the notation <tt> =0</tt> to declare <tt> create_pobj</tt> and <tt>
+init_pobj</tt> to be <em> virtual functions</em>.  This means that these
+functions can be defined in classes derived from the classes <tt>
+POArrary</tt> and <tt> POArrayNode</tt>, respectively.  To create an array of
+virtual functions of some type <em> T</em>
+, we simply derive new classes
+from <tt> POArray</tt> and <tt> POArrayNode</tt> and define the functions <tt>
+create_pobj</tt> and <tt> init_pobj</tt> in these classes to create and
+initialize new processor objects of type <em> T</em>
+.  This mechanism is
+used in the following example and in Program <A HREF="node63.html#progccda" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccda">5.16</A>, both of
+which use <tt> POArray</tt> for mapping.
+<P>
+<P><A NAME=progccpo>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img854.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img854.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img857.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img857.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img855.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img855.gif">    Coupled Climate Model</b>:<A NAME=exccmxc>&#160;</A>
+<P>
+<A NAME=7527>&#160;</A>
+A coupled climate modeling system comprising an ocean model and an
+atmosphere model can be structured as a <em> parallel
+composition
+ </em> of the two component models, in which each model
+executes on one half of <tt> P</tt> processors.  This structure is
+implemented in Program <A HREF="node59.html#progccoa" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccoa">5.11</A>.  Mapping is achieved using
+the <tt> POArray</tt> class of Program <A HREF="node59.html#progccpo" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccpo">5.10</A>.  The class <tt>
+AtmOcn</tt> is derived from <tt> POArray</tt>.  It extends it by defining the
+virtual function <tt> create_pobj</tt> used by <tt> POArray</tt> to create a
+processor object, as well as the functions <tt> atmosphere</tt> and <tt>
+ocean</tt> that implement the atmosphere and ocean models.  Similarly, the
+processor object class <tt> AtmOcnNode</tt> is derived from <tt>
+POArrayNode</tt> and defines the virtual function <tt> init_pobj</tt> that
+initializes an ocean/atmosphere model processor object, as well as the
+functions <tt> atm_proc</tt> and <tt> ocn_proc</tt> that will be executed in
+each processor object.  The <tt> init_pobj</tt> function creates a local
+instance of the <tt> AtmOcn</tt> object passed as an argument, hence
+providing each processor object with access to the other processor
+objects.
+<P>
+The main program first reads a list of processor names, <tt> nodes</tt>.
+Then, it creates two instances of the <tt> AtmOcn</tt> class (<tt> atm</tt>
+and <tt> ocn</tt>), and uses the member function <tt> init</tt> to create
+arrays of processor objects located on the lower <tt> P/2</tt> and upper
+<tt> P/2</tt> processors named in <tt> nodes</tt>, respectively.  The <tt>
+AtmOcn</tt> objects are passed as arguments to the ocean and atmosphere
+model components, which use them to perform local mapping.  The
+functions <tt> atmosphere</tt> and <tt> ocean</tt> initiate SPMD computation,
+placing a distinct instance of <tt> atm_proc</tt> (or <tt> ocn_proc</tt>) on
+each of the <tt> posize</tt> processor objects named in the <tt> AtmOcn</tt>
+object passed as an argument.
+<P>
+<P><A NAME=progccoa>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img856.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img856.gif"><P>
+<P>
+The advantage of the structure employed in Program <A HREF="node59.html#progccoa" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccoa">5.11</A> is
+that mapping decisions are specified separately from other aspects of
+program logic.  As a result, the same program can be structured as a
+<A NAME=7577>&#160;</A>
+<em> concurrent composition</em>, in which the ocean and atmosphere models
+execute concurrently on the same processors, simply by changing the
+calls to <tt> init</tt> in the main program, as shown in
+Program <A HREF="node59.html#progccoa2" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccoa2">5.12</A>.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progccoa2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img858.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img858.gif"><P>
+<P>
+<A NAME=7586>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2643 HREF="node58.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node58.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2651 HREF="node60.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2649 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2653 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2654 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2652 HREF="node60.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node60.html">5.9 Modularity</A>
+<B>Up:</B> <A NAME=tex2html2650 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2644 HREF="node58.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node58.html">5.7 Determinism</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

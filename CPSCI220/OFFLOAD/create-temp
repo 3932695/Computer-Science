@@ -1,0 +1,4 @@
+echo "Temporary file = /tmp/temp$$.log"
+touch /tmp/temp$$.log
+echo "Temporary directory = /tmp/temp.$$"
+mkdir /tmp/temp.$$

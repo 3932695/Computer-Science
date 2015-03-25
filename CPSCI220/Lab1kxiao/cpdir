@@ -1,0 +1,15 @@
+#!/bin/bash 
+# Copies contents of directory specified in argument to personal OFFLOAD folder 
+#(useful for Gemini-access-only directories)
+# Also automatically grants program execution permissions to all files in directory
+# To execute, type: "./cpdir.sh TARGET_DIRECTORY"
+STR=~kxiao/CPSCI220/OFFLOAD
+
+if [ -d $1 ]; then
+	cp -r $1 $STR
+	echo "Directory copy completed: " $1
+	chmod a+x $STR
+	ls $STR
+else
+	echo "Could not locate: " $1
+fi

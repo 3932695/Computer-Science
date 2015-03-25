@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.3 Concurrency</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.3 Concurrency">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2583 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2591 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2589 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2593 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2594 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2592 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html">5.4 Locality</A>
+<B>Up:</B> <A NAME=tex2html2590 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2584 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html">5.2 CC++
+  Introduction</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03230000000000000000>5.3 Concurrency</A></H1>
+<P>
+<A NAME=secccconc>&#160;</A>
+<P>
+Next, we give a more complete description of CC++
+ .  The
+presentation is loosely structured according to the design methodology
+of Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>.  First, we describe how CC++
+  programs
+specify concurrent execution.  Then, we explain how CC++
+  programs
+specify locality.  Next, we explain how to specify various
+communication structures.  Finally, we describe how CC++
+  programs
+specify mapping.  Along the way, we also address the issues of
+modularity and determinism.
+<P>
+A CC++
+  program, like a C++
+  program, executes initially as a single
+thread of control (task).  However, a CC++
+  program can use <tt>
+par</tt>, <tt> parfor</tt>, and <tt> spawn</tt> constructs to create additional
+threads.  A parallel block is distinguished from an
+ordinary C++
+  block by the keyword <tt> par</tt>, as follows.
+<A NAME=6899>&#160;</A>
+<P>
+<PRE>par {
+      statement1;
+      statement2;
+      ...
+      statementN;
+    }
+</PRE>
+<P>
+A parallel block can include any legal CC++
+  statement except for
+variable declarations and statements that result in nonlocal changes
+in the flow of control, such as <tt> return</tt>.
+<P>
+Statements in a parallel block execute concurrently.  For
+example, the following parallel block creates three concurrent
+<A NAME=6911>&#160;</A>
+threads: two <tt> worker</tt>s and one <tt> master</tt>.
+<A NAME=6914>&#160;</A>
+<P>
+<PRE>par {
+   worker();
+   worker();
+   master();
+}
+</PRE>
+<P>
+A parallel block terminates when all its constituent statements
+terminate; execution then proceeds to the next executable statement.
+Thus, in the preceding parallel block, the thread that executed the
+parallel block proceeds to the next statement only when both the
+master and the workers have terminated.
+<P>
+A <em> parallel for-loop
+ </em> creates multiple threads, all executing
+the same statements contained in the body of the for-loop.  It is
+<A NAME=6926>&#160;</A>
+identical in form to the for-loop except that the keyword <tt> parfor</tt>
+replaces <tt> for</tt>.  For example, the following code
+creates ten threads of control, each executing the function <tt>
+myprocess</tt>.
+<P>
+<PRE>parfor (int i=0; i&lt;10; i++) {
+   myprocess(i);
+}
+</PRE>
+<P>
+Only the loop body of the <tt> parfor</tt> executes in parallel.
+Evaluation of the initialization, test, and update components of the
+statement follows normal sequential ordering.  If the initialization
+section uses a locally declared variable (for example, <tt> int i</tt>),
+then each instance of the loop body has its own private copy of that
+variable.
+<P>
+CC++
+  parallel constructs can be nested arbitrarily.  Hence, the following
+code creates ten <tt> worker</tt> threads and one <tt> master</tt>.
+<P>
+<PRE>par {
+   master();
+   parfor (int i=0; i&lt;10; i++)
+      worker(i);
+}
+</PRE>
+<P>
+Finally, the <tt> spawn</tt> statement can be used to specify unstructured
+parallelism.  This statement can be applied to a function to create a
+<A NAME=6955>&#160;</A>
+completely independent thread of control.  The parent thread does not
+<A NAME=6956>&#160;</A>
+wait for the new thread to terminate execution, and cannot receive a
+return value from the called function.  As we shall see in
+Section <A HREF="node61.html#secccperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node61.html#secccperf">5.10</A>, one use for the <tt> spawn</tt> statement is to
+provide an efficient implementation of RPCs that do not require a
+return value.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2583 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2591 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2589 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2593 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2594 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2592 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html">5.4 Locality</A>
+<B>Up:</B> <A NAME=tex2html2590 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2584 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html">5.2 CC++
+  Introduction</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,413 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.5 Communication</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.5 Communication">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2607 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2615 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2613 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2617 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2618 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2616 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html">5.6 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html2614 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2608 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html">5.4 Locality</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03250000000000000000>5.5 Communication</A></H1>
+<P>
+<A NAME=seccccomm>&#160;</A>
+<P>
+<A NAME=7056>&#160;</A>
+CC++
+  does not provide low-level primitives for directly sending and
+<A NAME=7057>&#160;</A>
+receiving data between threads.  Instead, threads communicate by
+operating on shared data structures.  For example, one thread may
+append items to a shared list structure, from which another thread
+removes items; this implements a form of channel communication.
+CC++
+  mechanisms can be used to implement a wide variety of such
+communication structures.
+<P>
+In this section, we first explain how global pointers are used to
+communicate data between processor objects.  Then, we explain how sync
+variables and atomic functions are used to provide synchronization and
+mutual exclusion.  Finally, we show how data transfer functions are
+used to communicate more complex data structures.
+<P>
+<H2><A NAME=SECTION03251000000000000000>5.5.1 Remote Operations</A></H2>
+<P>
+<P><A NAME=8163>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img839.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img839.gif">
+<BR><STRONG>Figure 5.1:</STRONG> <em> Remote read and write operations.  At the top of the
+figure, we show a global pointer <tt> gp</tt> located in processor object
+<tt> pobj1</tt> referencing an integer <tt> length</tt> in processor object
+<tt> pobj2</tt>.  The rest of the figure is a timeline depicting the
+activity in these two processor objects as a thread in <tt> pobj1</tt>
+first writes and then reads <tt> length</tt>.  The thread in <tt> pobj1</tt>
+is shown as a solid line when active and as a dashed line when
+suspended waiting for a remote operation.  The diagonal dashed lines
+represent communications.</em><A NAME=figcclen>&#160;</A><BR>
+<P>
+<P>
+CC++
+  global pointers are used in the same way as C++
+  local pointers;
+<A NAME=7069>&#160;</A>
+the only difference is that we use them to operate on data or to
+invoke functions that may be located in other processor objects.
+Hence, the following code fragment first assigns to and then reads
+from the remote location referenced by the global pointer <tt> gp</tt>.
+<P>
+<PRE>global int *gp;
+int len2;
+*gp = 5;
+len2 = (*gp) * 2;
+</PRE>
+<P>
+As illustrated in Figure <A HREF="node56.html#figcclen" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#figcclen">5.1</A>, these read and write
+operations result in communication.
+<P>
+If we invoke a member function of an object referenced by a global
+<A NAME=7080>&#160;</A>
+pointer, we perform what is called a remote procedure call (RPC).  An
+RPC has the general form
+<P>
+<PRE>&lt;type&gt; *global gp;
+result = gp-&gt;p(...)
+</PRE>
+<P>
+where <tt> gp</tt> is a global pointer of an arbitrary <tt> &lt;type&gt;</tt>, <tt>
+p(...)</tt> is a call to a function defined in the object referenced by
+that global pointer, and <tt> result</tt> is a variable that will be set
+to the value returned by <tt> p(...)</tt>.  An RPC proceeds in
+three stages:
+<OL><LI>
+The arguments to the function <tt> p(...)</tt> are packed into a message,
+communicated to the remote processor object, and unpacked.  The
+calling thread suspends execution.
+<P>
+<LI>
+A new thread is created in the remote processor object to execute the
+called function.
+<P>
+<LI>
+Upon termination of the remote function, the function return value is
+transferred back to the calling thread, which resumes execution.
+</OL>
+<P>
+Basic integer types (<tt> char</tt>, <tt> short</tt>, <tt> int</tt>, <tt> long</tt>,
+and the unsigned variants of these), floats, doubles, and global
+pointers can be transferred as RPC arguments or return values without
+any user intervention.  Structures, regular pointers, and arrays can
+be transferred with the aid of transfer functions, to be discussed
+later in this section.
+<P>
+<P><A NAME=progccrw>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img840.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img840.gif"><P>
+<P>
+Program <A HREF="node56.html#progccrw" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccrw">5.5</A> uses RPCs to access a variable <tt> length</tt>
+located in another processor object; contrast this with the code
+fragment given at the beginning of this section, in which read and
+write operations were used for the same purpose.  The communication
+that results is illustrated in Figure <A HREF="node56.html#figccrpc1" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#figccrpc1">5.2</A>.
+<P>
+<P><A NAME=8205>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img841.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img841.gif">
+<BR><STRONG>Figure 5.2:</STRONG> <em> Using remote procedure calls to read and write a remote
+variable.  At the top of the figure, we show a global pointer <tt> lp</tt>
+located in processor object <tt> pobj1</tt> referencing processor object
+<tt> pobj2</tt>.  The rest of the figure is a timeline depicting the
+activity in these two processor objects as a thread in <tt> pobj1</tt>
+issues RPCs first to read and then to write the remote variable <tt>
+length</tt>.  The thread in <tt> pobj1</tt> is shown as a vertical solid or
+dashed line when active or suspended, waiting for a remote operation;
+the diagonal dashed lines represent communications.  The solid
+vertical lines in <tt> pobj2</tt> represent the threads created to execute
+the remote procedure calls.</em><A NAME=figccrpc1>&#160;</A><BR>
+<P><H2><A NAME=SECTION03252000000000000000>5.5.2 Synchronization</A></H2>
+<P>
+<A NAME=secccsync>&#160;</A>
+<P>
+<P><A NAME=8222>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img842.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img842.gif">
+<BR><STRONG>Figure 5.3:</STRONG> <em> Alternative synchronization mechanisms.  On the left, the
+<A NAME=8216>&#160;</A>
+channel: a receiver blocks until a message is in the channel.  On the
+right, the <tt> sync</tt> variable: a receiver blocks until the variable
+has a value.</em><A NAME=figccsync>&#160;</A><BR>
+<P>
+<P>
+A producer thread can use an RPC to move data to a processor object in
+which a consumer thread is executing, hence effecting communication.
+<A NAME=7131>&#160;</A>
+However, we also require a mechanism for synchronizing the execution
+<A NAME=7132>&#160;</A>
+of these two threads, so that the consumer does not read the data
+<A NAME=7133>&#160;</A>
+before it is communicated by the producer.  In the task/channel model
+of Part I, synchronization is achieved by making a consumer requiring
+data from a channel block until a producer makes data available.
+CC++
+  uses a different but analogous mechanism, the single
+assignment or <em> sync
+ </em> variable (Figure <A HREF="node56.html#figccsync" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#figccsync">5.3</A>).  A
+sync variable is identified by the type modifier <tt> sync</tt>, which
+indicates that the variable has the following properties:
+<OL><LI>
+It initially has a special value, ``undefined.''
+<P>
+<LI>
+It can be assigned a value at most once, and once assigned is treated
+as a constant (ANSI C and C++
+  <tt> const</tt>).
+<P>
+<LI>
+An attempt to read an undefined variable causes the thread that
+performs the read to block until the variable is assigned a value.
+<P>
+</OL>
+We might think of a sync variable as an empty box with its interior
+coated with glue; an object cannot be removed once it has been placed
+inside.
+<P>
+Any regular C++
+  type can be declared <tt> sync</tt>, as can a
+CC++
+  global pointer.  Hence, we can write the following.
+<P>
+<PRE>sync int i;         // i is a sync integer
+sync int *j;        // j is a pointer to a sync integer
+int *sync k;        // k is a sync pointer to an integer
+sync int *sync l;   // l is a sync pointer to a sync integer
+</PRE>
+<P>
+<A NAME=7157>&#160;</A>
+We use the following code fragment to illustrate the use of <tt> sync</tt>
+variables.  This code makes two concurrent RPCs to functions defined
+in Program <A HREF="node56.html#progccrw" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccrw">5.5</A>: one to read the variable <tt> length</tt> and
+one to write that variable.
+<P>
+<PRE>Length *global lp;
+int val;
+par {
+   val = lp-&gt;read_len();
+   lp-&gt;write_len(42);
+}
+</PRE>
+<P>
+What is the value of the variable <tt> val</tt> at the end of the parallel
+block?  Because the read and write operations are not synchronized,
+the value is not known.  If the read operation executes before the
+write, <tt> val</tt> will have some arbitrary value.  (The <tt> Length</tt>
+class does not initialize the variable <tt> length</tt>.)  If the
+execution order is reversed, <tt> val</tt> will have the value 42.
+<P>
+This nondeterminism can be avoided by modifying
+Program <A HREF="node56.html#progccrw" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccrw">5.5</A> to make the variable <tt> length</tt> a <tt>
+sync</tt> variable.  That is, we change its definition to the following.
+<tt> sync int length;</tt>
+<P>
+Execution order now does not matter: if <tt> read_len</tt> executes
+first, it will block until the variable <tt> length</tt> is assigned a
+value by <tt> write_len</tt>.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img846.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img846.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img843.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img843.gif">    Channel Communication</b>:<A NAME=exccch1>&#160;</A>
+<P>
+Global pointers and <tt> sync</tt> variables can be used to implement a
+variety of communication mechanisms.  In this example, we use these
+constructs to implement a simple shared queue class.  This class can
+be used to implement channel communication between two
+<A NAME=7188>&#160;</A>
+concurrently executing producer and consumer tasks: we simply allocate
+a queue object and provide both tasks with pointers to this object.
+We shall see in Section <A HREF="node62.html#secccchan" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html#secccchan">5.11</A> how this <tt> Queue</tt> class
+can be encapsulated in the more convenient <tt> Channel</tt> class used in
+Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A>.
+<P>
+Recall that a channel is a message queue to which a sender can append
+a sequence of messages and from which a receiver can remove messages.
+The only synchronization constraint is that the receiver blocks when
+removing a message if the queue is empty.  An obvious
+CC++
+  representation of a message queue is as a linked list, in which each
+entry contains a message plus a pointer to the next message.
+Program <A HREF="node56.html#progccch0" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccch0">5.6</A> takes this approach, defining a <tt> Queue</tt>
+class that maintains pointers to the head and tail of a message queue
+represented as a list of <tt> IntQData</tt> structures.  The data
+structures manipulated by Program <A HREF="node56.html#progccch0" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccch0">5.6</A> are illustrated in
+Figure <A HREF="node56.html#figccch1" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#figccch1">5.4</A>.
+<P>
+<P><A NAME=progccch0>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img844.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img844.gif"><P>
+<P>
+<P><A NAME=8279>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img845.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img845.gif">
+<BR><STRONG>Figure 5.4:</STRONG> <em> A message queue class, showing the internal representation
+of a queue as a linked list of <tt> IntQData</tt> structures (two are
+shown) with message values represented as <tt> sync</tt> values that are
+either defined (<tt> 42</tt>) or undefined (<tt> &lt;undef&gt;</tt>).  Producer and
+consumer tasks execute <tt> enqueue</tt> and <tt> dequeue</tt> operations,
+respectively.</em><A NAME=figccch1>&#160;</A><BR>
+<P>
+<P>
+The <tt> Queue</tt> class provides <tt> enqueue</tt> and <tt> dequeue</tt>
+functions to add items to the tail of the queue and remove items from
+the head, respectively.  The <tt> sync</tt> variable contained in the <tt>
+IntQData</tt> structure used to represent a linked list entry ensures
+synchronization between the <tt> enqueue</tt> and <tt> dequeue</tt>
+operations.  The queue is initialized to be a single list element
+containing an undefined variable as its message.
+<P>
+The first action performed by <tt> dequeue</tt> is to read the message
+value associated with the first entry in the queue.  This read
+operation will block if the queue is empty, providing the necessary
+synchronization.  If the queue is not empty, the <tt> dequeue</tt>
+function will read the queue value, delete the list element, and
+advance the <tt> head</tt> pointer to the next list element.  Similarly,
+the <tt> enqueue</tt> function first allocates a new list element and
+links it into the queue and then sets the <tt> msg</tt> field of the
+current tail list element.  Notice that the order in which these two
+operations are performed is important.  If performed in the opposite
+order,
+<P>
+<PRE>tail-&gt;value = msg;
+tail-&gt;next  = new IntQData;
+</PRE>
+<P>
+then a <tt> dequeue</tt> function call blocked on the list element <tt>
+tail-&gt;value</tt> and enabled by the assignment <tt> tail-&gt;value=msg</tt> could
+read the pointer <tt> tail-&gt;next</tt> before it is set to reference a
+newly created element.
+<P>
+<BR><HR><H2><A NAME=SECTION03253000000000000000>5.5.3 Mutual Exclusion</A></H2>
+<P>
+<A NAME=secccme>&#160;</A>
+<P>
+The <tt> sync</tt> variable allows us to synchronize the transfer of data
+from a producer to a consumer.  In other situations, we may wish to
+<A NAME=7249>&#160;</A>
+allow two threads to operate on the same nonsync data structure while
+<A NAME=7250>&#160;</A>
+ensuring that they do not interfere with each other's execution.  For
+example, the <tt> enqueue</tt> and <tt> dequeue</tt> operations of
+Example <A HREF="node56.html#exccch1" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#exccch1">5.3</A> allow a single sender and receiver to
+communicate by enqueuing to and dequeuing from a shared queue.  What
+if we want multiple senders to be able to append messages to the same
+queue?  We cannot allow two producers to make concurrent calls to <tt>
+enqueue</tt>, as an arbitrary interleaving of two <tt> enqueue</tt> calls
+could have bizarre results.  What we need is a mechanism to ensure
+that only one message can be enqueued at a time.
+<P>
+This requirement is satisfied by CC++
+ 's <tt> atomic</tt> keyword.  Member
+functions of an object can be declared atomic. This declaration
+<A NAME=7257>&#160;</A>
+specifies that the execution of such a function will not be
+interleaved with the execution of any other atomic function of the
+same object.  For example, to allow multiple producers to append to
+the same queue, we would declare the <tt> enqueue</tt> function to be <tt>
+atomic</tt>, as follows.
+<P>
+<PRE>atomic void Queue::enqueue(int msg) {
+   tail-&gt;next  = new IntQData;
+   tail-&gt;value = msg;
+   tail        = tail-&gt;next;
+}
+</PRE>
+<P>
+This ensures that even if multiple producers attempt to append to the
+same queue concurrently, the actual <tt> enqueue</tt> operations will
+occur in some sequential order and a valid queue will be generated.
+<P>
+<H2><A NAME=SECTION03254000000000000000>5.5.4 Data Transfer Functions</A></H2>
+<P>
+<A NAME=secccpack>&#160;</A>
+<P>
+In C++
+ , declarations of the form
+<P>
+<PRE>ostream&amp; operator&lt;&lt;(ostream&amp;, const TYPE&amp; obj_in);
+istream&amp; operator&gt;&gt;(istream&amp;, TYPE&amp; obj_out); 
+</PRE>
+<P>
+in the class <tt> ios</tt> of the <tt> iostream</tt> library define infix
+operators <tt> &lt;&lt;</tt> and <tt> &gt;&gt;</tt>, which can be used to write and read
+data of a specified <tt> TYPE</tt> to and from files.  These operators are
+predefined for simple types and can be provided by the programmer for
+more complex types.  This facility enhances modularity by allowing a
+class definition to specify how its data structures should be read and
+written.  A program can then read and write instances of that class
+without being aware of their internal structure.
+<P>
+CC++
+  uses an analogous mechanism for communicating data structures
+<A NAME=7286>&#160;</A>
+between processor objects.  Associated with every CC++
+  datatype is a
+pair of <em> data transfer functions
+ </em> that define how to transfer
+that type to another processor object.  The function
+<P>
+<PRE>CCVoid&amp; operator&lt;&lt;(CCVoid&amp;, const TYPE&amp; obj_in); 
+</PRE>
+<P>
+defines how <tt> TYPE</tt> should be packaged for communication.  It is
+called automatically by the compiler whenever an object of <tt> TYPE</tt>
+needs to be transferred to another processor object, that is, whenever
+an RPC call takes an argument of that type or returns a value of that
+type.  Similarly, the function
+<P>
+<PRE>CCVoid&amp; operator&gt;&gt;(CCVoid&amp;, TYPE&amp; obj_out);
+</PRE>
+<P>
+defines how <tt> TYPE</tt> should be unpackaged. It is called by the
+compiler whenever an object of <tt> TYPE</tt> is received from another
+processor object.  Upon termination of this call, <tt> obj_out</tt> will
+be a copy of the <tt> obj_in</tt> used as the argument to the operator
+<tt> &lt;&lt;</tt> in the initial processor object.
+<P>
+<P><A NAME=progccdt>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img847.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img847.gif"><P>
+<P>
+<P><A NAME=8317>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img848.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img848.gif">
+<BR><STRONG>Figure 5.5:</STRONG> <em> Using data transfer functions to communicate an instance
+of the user-defined type <tt> DVector</tt> between two processor objects.
+The global pointer <tt> gp</tt> is assumed to reference <tt> pobj2</tt>.  The
+function <tt> &lt;&lt;</tt> is used to package the data structure at the source,
+and the function <tt> &gt;&gt;</tt> is used to unpackage the data structure at
+the destination.</em><A NAME=figccfock>&#160;</A><BR>
+<P>
+<P>
+The type <tt> CCVoid</tt> is a compiler-defined type analogous to the
+types <tt> istream</tt> and <tt> ostream</tt> used in the <tt> iostream</tt>
+library.  Data transfer functions are generated automatically by the
+CC++
+  compiler for simple data types, but must be constructed by the
+programmer for local pointers, arrays, and structures that contain
+local pointers.  For example, Program <A HREF="node56.html#progccdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#progccdt">5.7</A> shows both data
+transfer and <tt> iostream</tt> functions for a type <tt> DVector</tt>
+comprising a vector of doubles.  These functions send (write) the
+vector length followed by the vector elements, and receive (read)
+these values in the same order.  (The C++
+  qualifier <tt> friend</tt>
+names nonmember functions that can access a class's private
+variables.)  Having defined these data transfer functions, we can make
+an RPC with a <tt> DVector</tt> as an argument, as follows; the vector
+will be transferred correctly, as illustrated in
+Figure <A HREF="node56.html#figccfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#figccfock">5.5</A>.
+<P>
+<PRE>DVector V;
+V.elements = new double[2];
+V.length = 2;
+V.elements[0] = 42.0; V.elements[1] = 17.0;
+gp-&gt;transfer(V);
+</PRE>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2607 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2615 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2613 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2617 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2618 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2616 HREF="node57.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node57.html">5.6 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html2614 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2608 HREF="node55.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html">5.4 Locality</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

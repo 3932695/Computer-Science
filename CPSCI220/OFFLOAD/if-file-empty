@@ -1,0 +1,8 @@
+if [ -s /etc/passwd ]; then
+ echo "/etc/passwd is not empty"
+fi
+
+touch /tmp/file1
+if [ ! -s /tmp/file1 ]; then
+ echo "/tmp/file1 is empty!" 
+fi

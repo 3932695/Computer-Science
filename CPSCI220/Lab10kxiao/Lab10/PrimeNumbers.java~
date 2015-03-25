@@ -1,0 +1,18 @@
+import java.util.List;
+import java.util.Arrays;
+
+public class PrimeNumbers {
+  /** The method for sorting the numbers */
+  public List<Integer> PrimeNumbers(int max) {
+      int[] array = range(max);
+      List<Integer> result = Arrays.asList(words);
+      return result;
+  }
+
+ 
+
+  /** A test method */
+  public static void main(String[] args) {
+    
+  }
+}

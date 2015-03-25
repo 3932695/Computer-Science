@@ -1,0 +1,5 @@
+trap 'echo Error occurred $i' ERR
+for (( i=1; i<3; i++))
+do
+   sleepp $i
+done

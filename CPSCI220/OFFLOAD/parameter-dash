@@ -1,0 +1,3 @@
+fname="John"
+name=${fname:-Jason}
+echo $name

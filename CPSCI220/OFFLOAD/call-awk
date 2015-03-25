@@ -1,0 +1,8 @@
+echo "1. Simple usage"
+INPUT=/etc/passwd
+awk -F: '/root/ {print $1}' $INPUT
+
+echo "2. Using bash variables in awk"
+INPUT=/etc/passwd
+search="root"
+awk -F: '/'"$search"'/ {print $1}' $INPUT

@@ -1,0 +1,12 @@
+stateabbr=${1}
+case $stateabbr in
+ CA )
+  state="California"
+  capital="Sacramento"
+  ;;
+ NV )
+  state="Nevada"
+  capital="Carson City"
+  ;;
+esac
+echo "$state Capital is $capital"

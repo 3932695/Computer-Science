@@ -1,0 +1,10 @@
+array=("one" "two" "three" "four")
+
+echo ${array[@]/%e/E-what}
+
+echo ${array[@]//*/E-what}
+
+echofn() {
+ echo -n "testing sir!"
+}
+echo ${array[@]//*/$(echofn)}

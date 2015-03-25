@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Chapter Notes</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Chapter Notes">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3225 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3231 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3229 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3233 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3234 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3232 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B>Up:</B> <A NAME=tex2html3230 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3226 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"> Exercises</A>
+<BR><HR><P>
+<H1><A NAME=SECTION035110000000000000000> Chapter Notes</A></H1>
+<P>
+Message-passing functions were incorporated in specialized libraries
+developed for early distributed-memory computers such as the Cosmic
+<A NAME=13773>&#160;</A>
+Cube [<A HREF="node132.html#Cosmic" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Cosmic">254</A>], iPSC [<A HREF="node132.html#NX2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#NX2">227</A>], and nCUBE [<A HREF="node132.html#Vertex" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Vertex">211</A>].
+<A NAME=13777>&#160;</A>
+Subsequent developments emphasized portability across different
+<A NAME=13778>&#160;</A>
+computers and explored the functionality required in message-passing
+<A NAME=13779>&#160;</A>
+systems.  Systems such as Express [<A HREF="node132.html#express" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#express">219</A>],
+<A NAME=13781>&#160;</A>
+p4 [<A HREF="node132.html#p4article" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#p4article">44</A>,<A HREF="node132.html#p4book" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#p4book">194</A>], PICL [<A HREF="node132.html#PICL" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#PICL">118</A>],
+<A NAME=13784>&#160;</A>
+PARMACS [<A HREF="node132.html#parmacs1" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#parmacs1">143</A>,<A HREF="node132.html#parmacs2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#parmacs2">144</A>], and PVM [<A HREF="node132.html#PVM1" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#PVM1">275</A>] all run on a
+<A NAME=13787>&#160;</A>
+variety of homogeneous and heterogeneous systems.  Each focused on a
+<A NAME=13788>&#160;</A>
+different set of issues, with the commercially supported Express and
+PARMACS systems providing the most extensive functionality, p4
+integrating shared-memory support, PICL incorporating instrumentation,
+and PVM permitting dynamic process creation.  A special issue of <em>
+Parallel Computing
+ </em> includes articles on many of these
+systems [<A HREF="node132.html#PCissue" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#PCissue">196</A>].
+<P>
+An unfortunate consequence of this exploration was that although
+various vendor-supplied and portable systems provided similar
+functionality, syntactic differences and numerous minor
+incompatibilities made it difficult to port applications from one
+computer to another.  This situation was resolved in 1993 with the
+<A NAME=13791>&#160;</A>
+formation of the Message Passing Interface Forum, a consortium of
+industrial, academic, and governmental organizations interested
+in standardization [<A HREF="node132.html#mpi1" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#mpi1">203</A>].  This group produced the MPI
+specification in early 1994.  MPI incorporates ideas developed
+<A NAME=13793>&#160;</A>
+previously in a range of systems, notably p4, Express, PICL, and
+PARMACS.  An important innovation is the use of communicators to
+support modular design.  This feature builds on ideas previously
+<A NAME=13794>&#160;</A>
+explored in Zipcode [<A HREF="node132.html#zipcode" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#zipcode">266</A>], CHIMP [<A HREF="node132.html#chimp1" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#chimp1">90</A>,<A HREF="node132.html#chimp2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#chimp2">91</A>], and
+<A NAME=13797>&#160;</A>
+research systems at IBM Yorktown [<A HREF="node132.html#IBMreport1" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#IBMreport1">24</A>,<A HREF="node132.html#IBMreport2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#IBMreport2">25</A>].
+<P>
+The presentation of MPI provided in this chapter is intended to be
+self-contained.  Nevertheless, space constraints have prevented
+inclusion of its more complex features.  The MPI standard provides a
+detailed technical description [<A HREF="node132.html#mpi" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#mpi">202</A>].  Gropp, Lusk, and
+Skjellum [<A HREF="node132.html#GLS94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#GLS94">126</A>] provide an excellent, more accessible tutorial
+text that includes not only a description of MPI but also material on
+the development of SPMD libraries and on MPI implementation.
+<P>
+
+
+<P>
+
+Here is a
+<A HREF="../../../tppmsgs/msgs0.htm#25" tppabs="http://www.mcs.anl.gov/dbpp/web-tours/mpi.html">Web Tour</A>
+
+providing access to additional information on programming in MPI,
+including public domain implementations, a tutorial, and example
+programs.
+<P>
+<A NAME=13807>&#160;</A>
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3225 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3231 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3229 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3233 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3234 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3232 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B>Up:</B> <A NAME=tex2html3230 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3226 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"> Exercises</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

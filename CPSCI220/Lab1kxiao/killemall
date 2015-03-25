@@ -1,0 +1,4 @@
+#!/bin/bash 
+# Kills all subprocesses currently running
+# To execute, type ". ./killemall.sh"
+kill $(jobs -p)

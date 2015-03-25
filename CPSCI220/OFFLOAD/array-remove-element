@@ -1,0 +1,10 @@
+declare -a state=(CA NV NY UT TX)
+echo "state[@] before delete = ${state[@]}"
+unset state[1]
+echo "state[@] after delete = ${state[@]}"
+
+echo "state[0] = ${state[0]}"
+echo "state[1] = ${state[1]}"
+echo "state[2] = ${state[2]}"
+echo "state[3] = ${state[3]}"
+echo "state[4] = ${state[4]}"

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3060 HREF="node91.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node91.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3068 HREF="node93.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node93.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3066 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3070 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3071 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3069 HREF="node93.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node93.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3067 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3061 HREF="node91.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node91.html">7.9 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION034100000000000000000> Exercises</A></H1>
+<P>
+<OL><LI>
+Write an HPF program to multiply two matrices <em> A</em>
+ and <em> B</em>
+ of
+size <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1004.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1004.gif"><em> N</em>
+.  (Do not use the <tt> MATMUL</tt> intrinsic!)
+Estimate the communication costs associated with this program if
+<em> A</em>
+ and <em> B</em>
+ are distributed blockwise in a single dimension or
+blockwise in two dimensions.
+<P>
+<LI>
+Compare the performance of your matrix multiplication program with
+that of the <tt> MATMUL</tt> intrinsic.  Explain any differences.
+<P>
+<LI>
+<A NAME=exhpf1>&#160;</A>
+Complete Program <A HREF="node85.html#proghpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpf1">7.2</A> and study its performance as a
+function of <em> N</em>
+ and <em> P</em>
+ on one or more networked or parallel
+computers.  Modify the program to use a two-dimensional data
+decomposition, and repeat these performance experiments.  Use
+performance models to interpret your results.
+<P>
+<LI>
+Compare the performance of the programs developed in
+Exercise <A HREF="node92.html#exhpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node92.html#exhpf1">3</A> with equivalent CC++
+ , FM, or MPI programs.
+Account for any differences.
+<P>
+<LI>
+Complete Program <A HREF="node85.html#proghpfpair" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpfpair">7.3</A> and study its performance on one
+or more parallel computers as a function of problem size <em> N</em>
+ and
+number of processors <em> P</em>
+.  Compare with the performance obtained
+by a CC++
+ , FM, or MPI implementation of this algorithm, as described
+in Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  Explain any performance
+differences.
+<P>
+<LI>
+<A NAME=exhpfsym>&#160;</A>
+Develop an HPF implementation of the symmetric pairwise interactions
+algorithm of Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  Compare its performance
+with an equivalent CC++
+ , Fortran M, or MPI program.  Explain any
+differences.
+<P>
+<LI>
+Learn about the data-parallel languages Data-parallel C and
+pC++
+ , and use one of these languages to implement the finite-difference and pairwise interactions programs presented in this
+chapter.
+<P>
+<LI>
+Develop a performance model for the HPF Gaussian elimination program
+of Section <A HREF="node90.html#sechpfgauss" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html#sechpfgauss">7.8</A>, assuming a one-dimensional cyclic
+decomposition of the array <tt> A</tt>.  Compare your model with observed
+execution times on a parallel computer.  Account for any differences
+that you see.
+<P>
+<LI>
+Develop a performance model for the HPF Gaussian elimination program
+of Section <A HREF="node90.html#sechpfgauss" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html#sechpfgauss">7.8</A>, assuming a two-dimensional cyclic
+decomposition of the array <tt> A</tt>.  Is it more efficient to maintain
+one or multiple copies of the one-dimensional arrays <tt> Row</tt> and
+<tt> X</tt>?  Explain.
+<P>
+<LI>
+Study the performance of the HPF global operations for different data
+sizes and numbers of processors.  What can you infer from your results
+about the algorithms used to implement these operations?
+<P>
+<LI>
+Develop an HPF implementation of the convolution algorithm described
+in Section <A HREF="node43.html#eximage" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eximage">4.4</A>.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3060 HREF="node91.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node91.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3068 HREF="node93.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node93.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3066 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3070 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3071 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3069 HREF="node93.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node93.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3067 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3061 HREF="node91.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node91.html">7.9 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

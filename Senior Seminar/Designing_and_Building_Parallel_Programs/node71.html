@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.4 Unstructured Communication</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.4 Unstructured Communication">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2799 HREF="node70.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2807 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2805 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2809 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2810 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2808 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html">6.5 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html2806 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2800 HREF="node70.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html">6.3 Communication</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03340000000000000000>6.4 Unstructured Communication</A></H1>
+<P>
+<A NAME=9016>&#160;</A>
+In the preceding section, we saw how channels are used to implement
+<A NAME=9017>&#160;</A>
+regular communication structures such as a ring and a tree.  Next, we
+examine the techniques used to implement <em> unstructured
+ </em>
+communication algorithms in which the identity of communication
+partners changes during program execution
+(Section <A HREF="node17.html#seccommunstruc" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommunstruc">2.3.3</A>).  These patterns require many-to-one
+and many-to-many communication structures, which can be implemented
+using FM's <tt> MERGER</tt> construct.  They can also require the dynamic
+creation of channels during program execution.
+<P>
+<H2><A NAME=SECTION03341000000000000000>6.4.1 Many-to-One Communication</A></H2>
+<P>
+<A NAME=secfmmerge>&#160;</A>
+<P>
+FM's <tt> MERGER</tt> statement creates a first-in/first-out message
+<A NAME=9024>&#160;</A>
+queue, just as <tt> CHANNEL</tt> does.  Unlike <tt> CHANNEL</tt>, however, it
+allows multiple outports
+<A NAME=9027>&#160;</A>
+to reference this queue and hence defines a many-to-one communication
+structure.  Messages sent on any outport are appended to the queue,
+with the order of messages sent on each outport being preserved and
+any message sent on an outport eventually appearing in the queue.  The
+<tt> MERGER</tt> statement has the general form
+<tt> MERGER(in=</tt><em> inport</em>, <tt> out=</tt><em> outport_specifier</em><tt> )</tt>
+<P>
+where an <em> outport_specifier
+ </em> can be a single outport, a
+comma-separated list of <em> outport_specifiers</em>, or an array section
+from an outport array.  The statement creates a new merger and
+associates the named inport
+and
+outports with this merger.  The inport and the outports must be of the
+same type.  Optional <tt> iostat=</tt> and <tt> err=</tt> specifiers can be
+used to detect error conditions, as in the <tt> CHANNEL</tt> statement.
+<P>
+<P><A NAME=10197>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img884.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img884.gif">
+<BR><STRONG>Figure 6.3:</STRONG> <em> A many-to-one communication structure connecting four
+producer processes to a single consumer.</em><A NAME=figfmmerge>&#160;</A><BR>
+<P>
+<P>
+The following code fragment implements a typical many-to-one
+communication structure.  As illustrated in Figure <A HREF="node71.html#figfmmerge" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#figfmmerge">6.3</A>,
+<A NAME=9046>&#160;</A>
+this uses a merger to connect four <tt> producer</tt> processes with a
+<A NAME=9048>&#160;</A>
+single consumer.
+<P>
+
+<PRE><TT> 
+		<tt> INPORT (integer) pi</tt>            						 ! Single inport
+<P>
+		<tt> OUTPORT(integer) pos(4)</tt>        						 ! Four outports
+<P>
+		<tt> MERGER(in=pi,out=pos(:))</tt>      						 ! Merger
+<P>
+		<tt> PROCESSES</tt>                      						 !
+<P>
+				<tt> call consumer(pi)</tt>              				 ! Single consumer
+<P>
+				<tt> PROCESSDO i=1,4</tt>                				 !
+<P>
+						<tt> PROCESSCALL producer(pos(i))</tt>   		 ! Four producers
+<P>
+				<tt> ENDPROCESSDO</tt>                   				 !
+<P>
+		<tt> ENDPROCESSES</tt>                   						 !
+<P>
+</TT></PRE>
+
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img887.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img887.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img885.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img885.gif">    Manager/Worker</b>:<A NAME=exmwx>&#160;</A>
+<P>
+<A NAME=9062>&#160;</A>
+As an additional example of many-to-one communication, we consider the
+manager/worker structure used in the parameter study problem described
+in Section <A HREF="node10.html#exdatabase" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exdatabase">1.4.4</A>.  As illustrated in
+Figure <A HREF="node10.html#figmerge" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figmerge">1.14</A>, this structure comprises one manager task, one
+output task, and multiple workers.  The FM implementation
+(Programs <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A> and <A HREF="node71.html#progfmmw1" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw1">6.5</A>) comprises a main
+program and two process definitions.  The <tt> output</tt> process
+definition is not shown.
+<P>
+<P><A NAME=progfmmw2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img886.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img886.gif"><P>
+<P>
+The main program (Program <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A>) creates two mergers to
+implement the many-to-one communication structures connecting the
+workers to the manager and output tasks.  It also creates <tt> NW</tt>
+channels to connect the manager to each worker.
+<P>
+Each worker (Program <A HREF="node71.html#progfmmw1" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw1">6.5</A>) repeatedly requests a task
+descriptor from the manager, waits to receive this task descriptor,
+and executes the task represented by the descriptor.  A worker
+terminates when the channel from the manager is closed.  The manager
+repeatedly receives and replies to requests for task descriptors until
+no more tasks remain.  A request comprises the identifier of the
+requesting worker, an integer in the range <tt> 1..NW</tt>.  The manager
+responds to the request by sending a new task descriptor (generated by
+the function <tt> newtask</tt>, and represented by a real number) on the
+appropriate channel.  When all task descriptors have been allocated,
+the manager signals termination by closing the channels to the
+workers.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmmw1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img888.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img888.gif"><P><H2><A NAME=SECTION03342000000000000000>6.4.2 Many-to-Many Communication</A></H2>
+<P>
+<P><A NAME=10255>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img889.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img889.gif">
+<BR><STRONG>Figure 6.4:</STRONG> <em> A many-to-many communication structure connecting four
+producer processes to three consumers.  Each producer has an array of
+three outports, and each consumer has a single inport.  Three mergers
+connect the outports with the inports.</em><A NAME=figfmmany>&#160;</A><BR>
+<P>
+<P>
+A many-to-many communication structure allows multiple senders to
+<A NAME=9140>&#160;</A>
+communicate with multiple receivers.  This structure is just a
+<A NAME=9141>&#160;</A>
+generalization of the many-to-one structure and can be implemented in
+a similar fashion, by using multiple mergers.  The following code
+fragment implements a typical many-to-many structure.  As illustrated
+in Figure <A HREF="node71.html#figfmmany" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#figfmmany">6.4</A>, this code uses three mergers to connect
+four producer processes with three consumers.  Each producer has an
+array of three outports; messages sent on outport <em> i</em>
+ are routed
+to consumer <em> i</em>
+.  Each consumer has a single inport.
+<P>
+
+<PRE><TT> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#175; \
+		<tt> OUTPORT(integer) pos(3,4)</tt>  						 ! <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img890.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img890.gif"> outports
+<P>
+		<tt> INPORT (integer) pis(4)</tt>    						 ! 3 inports
+<P>
+		<tt> do i=1,3</tt>                   						 ! 3 mergers
+<P>
+				<tt> MERGER(in=pis(i),out=pos(i,:))</tt>  				 !
+<P>
+		<tt> enddo</tt>                      						 !
+<P>
+		<tt> PROCESSES</tt>                  						 !
+<P>
+				<tt> PROCESSDO i=1,4</tt>            				 !
+<P>
+						<tt> PROCESSCALL producer(pos(1,i))</tt> 		 ! 4 producers
+<P>
+				<tt> ENDPROCESSDO</tt>              				 !
+<P>
+				<tt> PROCESSDO i=1,3</tt>           				 !
+<P>
+						<tt> PROCESSCALL consumers(pis(i))</tt> 		 ! 3 consumers
+<P>
+				<tt> ENDPROCESSDO</tt>              				 !
+<P>
+		<tt> ENDPROCESSES</tt>              						 !
+<P>
+</TT></PRE>
+
+<P>
+<H2><A NAME=SECTION03343000000000000000>6.4.3 Dynamic Channel Structures</A></H2>
+<P>
+<A NAME=9161>&#160;</A>
+Port variables can be incorporated in messages, hence transferring the
+<A NAME=9162>&#160;</A>
+ability to send or receive on a channel from one process to another.
+A port that is to be used to communicate port values must have an
+appropriate type.  For example, the following declaration specifies
+that inport <tt> pi</tt> will be used to receive integer outports.
+<P>
+<tt> INPORT (OUTPORT (integer)) pi</tt>
+<P>
+A receive statement applied to this port must specify as an argument
+an integer outport variable into which the incoming port is to be
+placed.  For example, the following code fragment first declares an
+integer outport variable <tt> qo</tt> and then receives an outport of the
+same type into that variable.
+<P>
+
+<PRE><TT> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#175; \
+		<tt> INPORT (OUTPORT (integer)) pi</tt> 						 ! Inport
+<P>
+		<tt> OUTPORT (integer) qo</tt>          						 ! Outport
+<P>
+		<tt> RECEIVE(pi) qo</tt>                						 ! Receive outport
+<P>
+</TT></PRE>
+
+<P>
+<P><A NAME=10276>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img891.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img891.gif">
+<BR><STRONG>Figure 6.5:</STRONG> <em> Dynamic channel creation in the bridge construction problem.
+In (a), the <tt> bridge</tt> process creates a new channel.  In (b), the
+new channel's outport is communicated to the <tt> foundry</tt> process.
+In (c), the new channel is used to return a datum (<tt> girder</tt>) to
+<tt> bridge</tt>.  In (d), the communication is
+complete.</em><A NAME=figfmback>&#160;</A><BR>
+<P>
+<P>
+Program <A HREF="node71.html#progfmd" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmd">6.6</A> illustrates the transfer of ports in messages.
+<A NAME=9181>&#160;</A>
+This program implements a variant of the bridge construction
+<A NAME=9182>&#160;</A>
+program (Program <A HREF="node68.html#progfmbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node68.html#progfmbuild">6.1</A>) in which the <tt> bridge</tt>
+process makes explicit requests for data from the <tt> foundry</tt>
+process.  Recall that in the original program, a stream of girders was
+communicated on a channel connecting <tt> foundry</tt> to <tt> bridge</tt>.
+In Program <A HREF="node71.html#progfmd" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmd">6.6</A>, things are reversed.  A stream of requests
+is communicated on a channel connecting <tt> bridge</tt> to <tt> foundry</tt>.
+Each request comprises an outport that <tt> foundry</tt> uses to return a
+single data value to <tt> bridge</tt>.  Hence, when <tt> bridge</tt> requires
+data, it creates a new channel, sends the outport to <tt> foundry</tt>,
+and waits for a reply on the inport (Figure <A HREF="node71.html#figfmback" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#figfmback">6.5</A>).  This
+<A NAME=9196>&#160;</A>
+implements a <em> synchronous
+ </em> communication protocol: the
+<A NAME=9198>&#160;</A>
+producer (<tt> foundry</tt>) produces data at the rate specified by the
+consumer (<tt> bridge</tt>) and hence cannot ``run ahead'' of the consumer.
+<P>
+<P><A NAME=progfmd>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img892.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img892.gif"><P>
+<P>
+<A NAME=9237>&#160;</A>
+In this example, it would perhaps be simpler to specify the desired
+behavior by using static ``request'' and ``data'' channels.  With this
+<A NAME=9238>&#160;</A>
+structure, the producer sends a datum on the data channel each time it
+receives a request on the request channel.  However, dynamic channels
+can be useful in more complex communication structures where a request
+must be routed through several intermediate steps before being
+serviced.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2799 HREF="node70.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2807 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2805 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2809 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2810 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2808 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html">6.5 Asynchronous Communication</A>
+<B>Up:</B> <A NAME=tex2html2806 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2800 HREF="node70.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html">6.3 Communication</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+echo "Basic Arithmetic Operators"
+
+total=10
+echo "total = $total"
+
+let total=$total+1
+echo "total+1 = $total"
+
+(( total=$total-1 ))
+echo "total-1 = $total"
+
+total=`expr 10 \* 2`
+echo "total*2 = $total"
+
+let total=$total/2
+echo "total/2 = $total"
+
+((total=$total**4))
+echo "total%5 = $total"
+
+total=`expr $total % 3`
+echo "total%3 = $total"
+
+echo "Shortcut Arithmetic Operators"
+
+total=10
+echo "total = $total"
+
+let total+=5
+echo "total+=5 is $total"
+
+((total-=5))
+echo "total-=5 is $total"
+
+let total*=5
+echo "total*=5 is $total"
+
+let total/=5
+echo "total/=5 is $total"
+
+let total%=3
+echo "total%=3 is $total"
+
+echo "Auto increment and decrement"
+
+let total++
+echo "total++ is $total"
+
+((total--))
+echo "total-- is $total"

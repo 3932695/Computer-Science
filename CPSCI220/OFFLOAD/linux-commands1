@@ -1,0 +1,5 @@
+datestring=$(echo day:$(date +"%d") month:$(date +"%m") year:$(date +"%y"))
+echo $datestring
+
+datestring=`echo year:\`date +"%Y"\``
+echo $datestring

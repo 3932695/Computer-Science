@@ -1,0 +1,16 @@
+echo "MAIN MENU"
+echo "---------"
+echo "a. Backup Log files"
+echo "b. Backup Config files"
+echo "c. Backup Home Directory"
+echo "d. Exit"
+echo "Enter your choice:"
+read choice
+
+case $choice in
+a | A ) echo "Backing up log files..";;
+b | B ) echo "Backing up config files..";;
+c | C ) echo "Backing up home directory..";;
+d | D ) exit;;
+    * ) echo "Invalid choice!";;
+esac

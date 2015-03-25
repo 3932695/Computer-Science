@@ -1,0 +1,9 @@
+coproc ./coproc-1.sh
+echo "COPROC_PID=$COPROC_PID"
+echo "COPROC[0]=${COPROC[0]}"
+echo "COPROC[1]=${COPROC[1]}"
+
+coproc CUSTOM { ls -l; sleep 2; cat /etc/passwd; sleep 2; }
+echo "CUSTOM_PID=$CUSTOM_PID"
+echo "CUSTOM[0]=${CUSTOM[0]}"
+echo "CUSTOM[1]=${CUSTOM[1]}"

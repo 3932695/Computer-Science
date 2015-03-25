@@ -1,0 +1,16 @@
+city1="Los Angeles"
+city2="San Francisco"
+city3="New York"
+echo "1. \${!city*}: ${!city*}"
+
+IFS="<^"
+echo "2. \${!city*} [with IFS]: ${!city*}"
+
+echo "3. Loop through the references"
+for varname in ${!city*}
+do
+ echo $varname
+done
+
+cities=("Los Angeles" "San Francisco" "New York")
+echo "4. Array Reference: ${!cities[*]}"

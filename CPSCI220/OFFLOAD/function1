@@ -1,0 +1,7 @@
+function getstate () {
+ state="CA"
+ local city="Los Angeles"
+ echo "Inside function: state=[$state] city=[$city]"
+}
+getstate
+echo "Outside function: state=[$state] city=[$city]"

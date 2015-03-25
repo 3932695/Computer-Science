@@ -1,0 +1,10 @@
+# automatically generated on system sentinal.chem.hamilton.edu timestamp: Thu Sep 23 12:28:23 EDT 2004
+nwchem_basis_library /usr/local/Dist/nwchem/usr.local.lib.nwchem/libraries/
+ffield amber
+amber_1 /usr/local/Dist/nwchem/usr.local.lib.nwchem/amber_s/
+amber_2 /usr/local/Dist/nwchem/usr.local.lib.nwchem/amber_q/
+ amber_3 /usr/local/Dist/nwchem/usr.local.lib.nwchem/amber_x/
+ amber_4 /usr/local/Dist/nwchem/usr.local.lib.nwchem/amber_u/
+spce /usr/local/Dist/nwchem/usr.local.lib.nwchem/solvents/spce.rst
+charmm_s /usr/local/Dist/nwchem/usr.local.lib.nwchem/charmm_s/
+charmm_x /usr/local/Dist/nwchem/usr.local.lib.nwchem/charmm_x/

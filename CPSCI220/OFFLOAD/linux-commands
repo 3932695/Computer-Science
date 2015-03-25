@@ -1,0 +1,5 @@
+datestring=$(date +"%d-%m-%Y")
+echo $datestring
+
+datestring=`date +"%Y%m%d"`
+echo $datestring

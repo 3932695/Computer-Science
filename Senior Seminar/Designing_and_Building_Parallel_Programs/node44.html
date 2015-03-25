@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>4.5 Case Study: Tuple Space</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="4.5 Case Study: Tuple Space">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2386 HREF="node43.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2394 HREF="node45.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2392 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2396 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2397 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2395 HREF="node45.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html">4.6 Case Study: Matrix Multiplication</A>
+<B>Up:</B> <A NAME=tex2html2393 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2387 HREF="node43.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html">4.4 Case Study: Convolution</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02550000000000000000>4.5 Case Study: Tuple Space</A></H1>
+<P>
+<A NAME=secmodts>&#160;</A>
+<P>
+<A NAME=5813>&#160;</A>
+In the second case study, we illustrate how concurrent composition
+<A NAME=5814>&#160;</A>
+allows us to define reusable program components that support
+<A NAME=5815>&#160;</A>
+asynchronous operations on distributed sets.  Various types of set can
+<A NAME=5816>&#160;</A>
+be defined, each distinguished by the particular operations that it
+<A NAME=5817>&#160;</A>
+supports.  Here, we consider the example of the <em> tuple space</em>,
+<A NAME=5819>&#160;</A>
+which forms the basis for the Linda parallel programming language.
+<P>
+A tuple space is a collection of <em> tuples
+ </em>---terms with a key
+and zero or more arguments.  Five operations are supported: insert
+(<tt> out</tt>), blocking read (<tt> rd</tt>), nonblocking read (<tt> rdp</tt>),
+blocking read and delete (<tt> in</tt>), and nonblocking read and delete
+(<tt> inp</tt>).  An element can be updated by first deleting it and then
+reinserting a modified version of it.  The insert operation provides a
+key and values for a new tuple's arguments, while the read and the
+read/delete operations specify the key and arity (number of arguments)
+of the tuple that is to be retrieved.  Duplicate tuples are supported,
+so the element retrieved by a read or delete operation is not
+necessarily uniquely determined by the key and arity provided.  The
+predicate operations <tt> inp</tt> and <tt> outp</tt> are guaranteed to locate
+a matching tuple <em> if and only if
+ </em> it can be shown that a
+matching tuple must have been added to tuple space before the request
+was generated and that this tuple could not have been removed before
+the request was processed.  Figure <A HREF="node44.html#figlinda" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html#figlinda">4.7</A> shows the tuple
+space in action.
+<P>
+<P><A NAME=6382>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img775.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img775.gif">
+<BR><STRONG>Figure 4.7:</STRONG> <em> A tuple space, here used to contain personnel data.  Tasks
+can generate asynchronous requests to read (<tt> rd</tt>), remove (<tt>
+inp</tt>), and add (<tt> out</tt>) tuples.</em><A NAME=figlinda>&#160;</A><BR>
+<P>
+<P>
+The tuple space abstraction is a good candidate for encapsulation in a
+module.  It is a useful structure with a well-defined interface and
+hence is both likely to be reused and easy to modularize.  We may also
+wish to modify its implementation in order to optimize performance on
+different parallel computers.  Hence, we define a tuple space module
+suitable for concurrent composition.  This encapsulates the
+representation of the tuple space and provides an interface comprising
+an array of channels on which can be sent messages representing the
+various types of request.
+<P>
+<H2><A NAME=SECTION02551000000000000000>4.5.1 Application</A></H2>
+<P>
+We first illustrate the use of the tuple space module by showing how
+it can be used to implement a database search problem.  We are given a
+file containing a set of search data, a target, and a routine that
+computes a numeric score for a single datum/target pair.  We are
+<A NAME=5837>&#160;</A>
+required to identify the search datum that yields the highest score.
+This problem is prototypical of many database search problems.  For
+<A NAME=5838>&#160;</A>
+example, the target may be a new genetic sequence and the database a
+collection of such sequences; in this case, a score is computed by a
+dynamic programming computation and reveals the degree to which two
+sequences are ``related.''  Alternatively, the target may be a
+description of a physical process and the database a collection of
+alternative parameter values; a score is then obtained by simulating
+the process using a set of parameter values.
+<P>
+A straightforward solution to this programming problem is to create a
+single manager and a large number of workers, with all tasks having
+access to a shared tuple space (Figure <A HREF="node44.html#figmodts" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html#figmodts">4.8</A>).  The logic
+executed by the manager and workers is summarized in
+Program <A HREF="node44.html#progtsdb" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html#progtsdb">4.2</A>.  The manager makes a series of <tt> out</tt>
+requests to place the search data in the tuple space and then performs
+<tt> in</tt> operations to retrieve the results generated by workers.
+When all results have been retrieved, it signals the workers to
+terminate by placing <tt> stop</tt> tuples into tuple space, a technique
+known as a ``poison pill.''  Each worker repeatedly removes a search
+<A NAME=5844>&#160;</A>
+datum from tuple space, compares it with the target, and puts the
+resulting score back in tuple space.  Notice that this was essentially
+the technique used to parallelize the parameter study problem in
+Section <A HREF="node10.html#exdatabase" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exdatabase">1.4.4</A>.  However, here we use a standard module
+(tuple space) in our solution---a good example of code reuse.
+<P>
+<P><A NAME=6394>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img776.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img776.gif">
+<BR><STRONG>Figure 4.8:</STRONG> <em> A database search program constructed by the concurrent
+composition of a tuple space module, a manager task, and multiple
+worker tasks.</em><A NAME=figmodts>&#160;</A><BR>
+<P>
+<P>
+Notice that, because an <tt> in</tt> request blocks until a corresponding <tt>
+out</tt> request is processed by the tuple space, the order in which
+requests are generated by the manager and workers does not affect the
+result computed.  In particular, workers can ``run ahead'' of the
+manager, generating <tt> in</tt> requests for which there are not yet any
+matching tuples.
+<P>
+<P><A NAME=progtsdb>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img777.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img777.gif"><P><H2><A NAME=SECTION02552000000000000000>4.5.2 Implementation</A></H2>
+<P>
+<P><A NAME=6426>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img778.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img778.gif">
+<BR><STRONG>Figure 4.9:</STRONG> <em> Two alternative implementation strategies for a tuple space
+module.  The structure on the left uses a central server, while the
+structure on the right distributes the tuple space among multiple
+tasks using a hash function.  Both structures provide the same
+interface, an array of channels.</em><A NAME=figdictimpln>&#160;</A><BR>
+<P>
+<P>
+A variety of implementation strategies can be pursued for the tuple
+space module (Figure <A HREF="node44.html#figdictimpln" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html#figdictimpln">4.9</A>).  One simple, although
+nonscalable, approach is to encapsulate the tuple space in a single
+task that maintains a set of tuples and a set of pending <tt> rd</tt>
+<A NAME=5861>&#160;</A>
+requests.  Both sets can be represented by using hash tables.  A hash
+function is applied to the key supplied with an <tt> out</tt>, <tt> rd</tt>,
+etc., operation, and the value returned is used to identify the hash
+bucket in which the associated element is stored.
+<P>
+<A NAME=5864>&#160;</A>
+The hashing approach is easily adapted to obtain a scalable parallel
+implementation.  The first few bits of the hash value are used to
+determine the processor on which an item is located; the rest of the
+hash value locates the item within that processor.  This strategy has
+the desirable property that no tuple space operation requires more
+than two communications: one to forward the request to the task in
+which the relevant tuple is located, and one to return a result.  It
+also has the important attributes of being both highly concurrent and
+well balanced: if requests are generated in a distributed fashion and
+the hash function yields a balanced mapping of keys to processors,
+then <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img779.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img779.gif"> accesses can proceed concurrently on <em> P</em>
+ processors.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2386 HREF="node43.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2394 HREF="node45.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2392 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2396 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2397 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2395 HREF="node45.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html">4.6 Case Study: Matrix Multiplication</A>
+<B>Up:</B> <A NAME=tex2html2393 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2387 HREF="node43.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html">4.4 Case Study: Convolution</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

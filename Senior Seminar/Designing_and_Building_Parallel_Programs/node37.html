@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2297 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2305 HREF="node38.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node38.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2303 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2307 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2308 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2306 HREF="node38.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node38.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2304 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2298 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html">3.10 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION024110000000000000000> Exercises</A></H1>
+<P>
+The exercises in this chapter are designed to provide experience in
+the development and use of performance models.  When an exercise asks
+you to implement an algorithm, you should use one of the programming
+tools described in Part II.
+<P>
+<OL><LI>
+Discuss the relative importance of the various performance metrics
+listed in Section <A HREF="node27.html#secmetrics" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html#secmetrics">3.1</A> when designing a parallel
+floorplan optimization program for use in VLSI design.
+<P>
+<LI>
+Discuss the relative importance of the various performance metrics
+listed in Section <A HREF="node27.html#secmetrics" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html#secmetrics">3.1</A> when designing a video server that
+uses a parallel computer to generate many hundreds of thousands of
+concurrent video streams.  Each stream must be retrieved from disk,
+decoded, and output over a network.
+<P>
+<LI>
+<A NAME=exch21>&#160;</A>
+The self-consistent field (SCF) method in computational chemistry
+<A NAME=4248>&#160;</A>
+involves two operations: Fock matrix construction and matrix
+<A NAME=4249>&#160;</A>
+diagonalization.  Assuming that diagonalization accounts for 0.5 per
+cent of total execution time on a uniprocessor computer, use Amdahl's
+law to determine the maximum speedup that can be obtained if only the
+Fock matrix construction operation is parallelized.
+<P>
+<LI>
+You are charged with designing a parallel SCF program.  You estimate
+your Fock matrix construction algorithm to be 90 percent efficient on
+your target computer.  You must choose between two parallel
+diagonalization algorithms, which on five hundred processors achieve
+speedups of 50 and 10, respectively.  What overall efficiency do you
+expect to achieve with these two algorithms?  If your time is as
+valuable as the computer's, and you expect the more efficient
+algorithm to take one hundred hours longer to program, for how many
+hours must you plan to use the parallel program if the more efficient
+algorithm is to be worthwhile?
+<P>
+<LI>
+Some people argue that in the future, processors will become
+essentially free as the cost of computers become dominated by the
+cost of storage and communication networks.  Discuss how this
+situation may affect algorithm design and performance analysis.
+<P>
+<LI>
+Generate an execution profile similar to that in Figure <A HREF="node30.html#figfdcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#figfdcomp">3.8</A> for
+an implementation of a parallel finite difference algorithm based on a
+2-D decomposition.  Under which circumstances will message startups
+contribute more to execution time than will data transfer costs?
+<P>
+<LI>
+<A NAME=experf2>&#160;</A>
+Derive expressions that indicate when a 2-D decomposition of a finite
+difference computation on an <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img699.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img699.gif"> grid will be superior
+to a 1-D decomposition and when a 3-D decomposition will be superior
+to a 2-D decomposition.  Are these conditions likely to apply in
+practice?  Let <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img700.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img700.gif">sec, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img701.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img701.gif">sec, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img702.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img702.gif">sec, and
+<em> P=1000</em>
+.  For what values of <em> N</em>
+ does the use of a 3-D
+decomposition rather than a 2-D decomposition reduce execution time by
+more than 10 percent?
+<P>
+<LI>
+<A NAME=experf3>&#160;</A>
+Adapt the analysis of Example <A HREF="node30.html#experfgrid" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#experfgrid">3.4</A> to consider 1-D and
+2-D decompositions of a 2-D grid.  Let
+<em> N=1024</em>
+, and fix other parameters as in Exercise <A HREF="node37.html#experf2" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#experf2">7</A>.  For
+what values of <em> P</em>
+ does the use of a 2-D decomposition rather than
+a 1-D decomposition reduce execution time by more than 10 percent?
+<P>
+<LI>
+<A NAME=experf99>&#160;</A>
+Implement a simple ``ping-pong'' program that bounces messages between
+a pair of processors.  Measure performance as a function of message
+size on a workstation network and on one or more parallel computers.
+Fit your results to Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> to obtain values for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img703.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img703.gif">
+and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img704.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img704.gif">.  Discuss the quality of your results and of the fit.
+<P>
+<LI>
+<A NAME=experf4>&#160;</A>
+Develop a performance model for the program constructed in
+Exercise <A HREF="node24.html#exfd87" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exfd87">5</A> in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> that gives execution
+time as a function of <em> N</em>
+, <em> P</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img705.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img705.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img706.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img706.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img707.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img707.gif">.
+Perform empirical studies to determine values for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img708.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img708.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img709.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img709.gif">, and
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img710.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img710.gif"> on different parallel computer systems.  Use the results of
+these studies to evaluate the adequacy of your model.
+<P>
+<LI>
+Develop performance models for the parallel algorithms developed in
+Exercise <A HREF="node24.html#exgs" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exgs">10</A> in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>.  Compare these models
+with performance data obtained from implementations of these
+algorithms.
+<P>
+<LI>
+Determine the isoefficiency function for the program developed in
+Exercise <A HREF="node37.html#experf4" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#experf4">10</A>.  Verify this experimentally.
+<P>
+<LI>
+Use the ``ping-pong'' program of Exercise <A HREF="node37.html#experf99" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#experf99">9</A> to study
+the impact of bandwidth limitations on performance, by writing a
+program in which several pairs of processors perform exchanges
+concurrently.  Measure execution times on a workstation network and on
+one or more parallel computers.  Relate observed performance to
+Equation <A HREF="node33.html#eqcomm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#eqcomm1">3.10</A>.
+<P>
+<LI>
+Implement the parallel summation algorithm of Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.
+Measure execution times as a function of problem size on a network of
+workstations and on one or more parallel computers.  Relate observed
+performance to the performance models developed in this chapter.
+<P>
+<LI>
+Determine the isoefficiency function for the butterfly summation
+algorithm of Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>, with and without bandwidth
+limitations.
+<P>
+<LI>
+Design a communication structure for the algorithm Floyd 2 discussed
+in Section <A HREF="node35.html#secfloyd" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#secfloyd">3.9.1</A>.
+<P>
+<LI>
+<A NAME=exmod>&#160;</A>
+Assume that a cyclic mapping is used in the atmosphere model of
+Section <A HREF="node20.html#secclim" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#secclim">2.6</A> to compensate for load imbalances.  Develop an
+analytic expression for the additional communication cost associated
+with various block sizes and hence for the load imbalance that must
+exist for this approach to be worthwhile.
+<P>
+<LI>
+Implement a two-dimensional finite difference algorithm using a nine-point
+stencil.  Use this program to verify experimentally the analysis of
+Exercise <A HREF="node37.html#exmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#exmod">17</A>.  Simulate load imbalance by calling a ``work''
+function that performs different amounts of computation at different
+grid points.
+<P>
+<LI>
+<A NAME=exgr1>&#160;</A>
+Assume that <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img711.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img711.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img712.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img712.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img713.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img713.gif">sec.  Use the
+performance models summarized in Table <A HREF="node35.html#tabgrsp" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#tabgrsp">3.7</A> to determine
+the values of <em> N</em>
+ and <em> P</em>
+ for which the various shortest-path
+algorithms of Section <A HREF="node35.html#secperfsp" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#secperfsp">3.9</A> are optimal.
+<P>
+<LI>
+Assume that a graph represented by an adjacency matrix of size <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img714.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img714.gif">
+is distributed among <em> P</em>
+ tasks prior to the execution of the
+all-pairs shortest-path algorithm.  Repeat the analysis of
+Exercise <A HREF="node37.html#exgr1" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#exgr1">19</A> but allow for the cost of data replication
+in the Dijkstra algorithms.
+<P>
+<LI>
+Extend the performance models developed for the shortest-path
+algorithms to take into account bandwidth limitations on a 1-D mesh
+architecture.
+<P>
+<LI>
+Implement algorithms Floyd 1 and Floyd 2, and compare their
+performance with that predicted by Equations <A HREF="node35.html#eqgrfl1" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#eqgrfl1">3.12</A>
+and <A HREF="node35.html#eqgrfl2" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#eqgrfl2">3.13</A>.  Account for any differences.
+<P>
+<LI>
+In so-called nondirect Fock matrix construction algorithms, the <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img715.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img715.gif">
+integrals of Equation <A HREF="node22.html#eqnfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#eqnfock">2.3</A> are cached on disk and reused at
+each step.  Discuss the performance issues that may arise when
+developing a code of this sort.
+<P>
+<LI>
+The <em> bisection width
+ </em> of a computer is the minimum number of
+<A NAME=4288>&#160;</A>
+wires that must be cut to divide the computer into two equal parts.
+Multiplying this by the channel bandwidth gives the <em> bisection
+<A NAME=4289>&#160;</A>
+bandwidth</em>.  For example, the bisection bandwidth of a 1-D mesh with
+bidirectional connections is 2/<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img716.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img716.gif">.  Determine the bisection
+bandwidth of a bus, 2-D mesh, 3-D mesh, and hypercube.
+<P>
+<P><A NAME=5440>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img717.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img717.gif">
+<BR><STRONG>Figure 3.29:</STRONG> <em> Parallel matrix transpose of a matrix <em> A</em>
+ decomposed
+by column, with <em> P=4</em>
+.  The components of the matrix allocated to
+a single task are shaded black, and the components required from other
+tasks are stippled.</em><A NAME=figlatrans1>&#160;</A><BR>
+<P>
+<P>
+<LI>
+<A NAME=extrans2>&#160;</A>
+An array transpose operation reorganizes an array partitioned in one
+<A NAME=4296>&#160;</A>
+dimension so that it is partitioned in the second dimension
+<A NAME=4297>&#160;</A>
+(Figure <A HREF="node37.html#figlatrans1" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#figlatrans1">3.29</A>).  This can be achieved in
+<em> P-1</em>
+ steps, with each processor exchanging <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img718.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img718.gif"> of its data with another
+processor in each step.  Develop a performance model for this
+operation.
+<P>
+<LI>
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> can be extended to account for the distance
+<em> D</em>
+ between originating and destination processors:
+<P><A NAME=eq987>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img719.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img719.gif"><P>
+The time per hop <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img720.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img720.gif"> typically has magnitude comparable to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img721.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img721.gif">.
+<A NAME=4305>&#160;</A>
+Under what circumstances might the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img722.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img722.gif"> term be significant?
+<P>
+<LI>
+Develop a performance model for the matrix transpose algorithm on a
+1-D mesh that takes into account per-hop costs, as specified by
+Equation <A HREF="node37.html#eq987" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#eq987">3.14</A>.  Assume that <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img723.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img723.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img724.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img724.gif">, and
+identify <em> P</em>
+ and <em> N</em>
+ values for which per-hop costs make a
+significant (<em> &gt;5</em>
+ percent) difference to execution time.
+<P>
+<LI>
+<A NAME=extrans>&#160;</A>
+Demonstrate that the transpose algorithm's messages travel a total of
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img725.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img725.gif"> hops on a 1-D mesh.  Use this information to refine the
+performance model of Exercise <A HREF="node37.html#extrans2" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#extrans2">25</A> to account for
+competition for bandwidth.
+<P>
+<LI>
+In the array transpose algorithm of Exercise <A HREF="node37.html#extrans2" tppabs="http://www.mcs.anl.gov/dbpp/text/node37.html#extrans2">25</A>, roughly
+half of the array must be moved from one half of the computer to the
+other.  Hence, we can obtain a lower time bound by dividing the data
+volume by the bisection bandwidth.  Compare this bound with times
+predicted by simple and bandwidth-limited performance models, on a
+bus, one-dimensional mesh, and two-dimensional mesh.
+<P>
+<LI>
+Implement the array transpose algorithm and study its performance.
+Compare your results to the performance models developed in preceding
+exercises.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2297 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2305 HREF="node38.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node38.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2303 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2307 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2308 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2306 HREF="node38.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node38.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2304 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2298 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html">3.10 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

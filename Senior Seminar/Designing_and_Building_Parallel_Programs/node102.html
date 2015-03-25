@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.8 Case Study: Earth System Model</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.8 Case Study: Earth System Model">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3189 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3197 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3195 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3199 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3200 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3198 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html">8.9 Summary</A>
+<B>Up:</B> <A NAME=tex2html3196 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3190 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html">8.7 Performance Issues</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03580000000000000000>8.8 Case Study: Earth System Model</A></H1>
+<P>
+<P><A NAME=14234>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1053.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1053.gif">
+<BR><STRONG>Figure 8.14:</STRONG> <em> Communicators and intercommunicators in an earth system model.
+Available processes are partitioned into three disjoint groups, each
+with its own communicator used for internal communication.
+Intercommunicators allow the atmosphere model to communicate with the
+ocean model and graphics model.</em><A NAME=figmp4>&#160;</A><BR>
+<P>
+<P>
+We conclude by showing how the earth system model introduced in
+Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> can be constructed in a modular fashion by using
+MPI communicators.  In particular, we consider a hypothetical model
+constructed
+<A NAME=13413>&#160;</A>
+as a parallel composition of atmosphere, ocean, and graphics
+<A NAME=13414>&#160;</A>
+components.  The atmosphere and ocean models execute concurrently and
+exchange data periodically; in addition, the atmosphere model sends
+data periodically to the graphics component, which performs data
+reduction and rendering functions and outputs high-quality graphics.
+We allocate the same number of processes to each component; this
+approach is unlikely to be efficient in practice, but simplifies the
+presentation.
+<P>
+<P><A NAME=progmpes>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1054.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1054.gif"><P>
+<P>
+Program <A HREF="node102.html#progmpes" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html#progmpes">8.9</A> implements this modular structure
+(Figure <A HREF="node102.html#figmp4" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html#figmp4">8.14</A>).  The first two lines partition available
+processes into the three equal-sized, disjoint process groups that
+will be used to execute the three components.  The code following the
+``if'' statement establishes intercommunicators that link the
+atmosphere model with the ocean and graphics components, and initiates
+execution of the three components.  Part of the ocean model code is
+shown also.  This performs a reduction within the ocean model
+processes by using <tt> MPI_ALLREDUCE</tt> and the intracommunicator <tt>
+comm</tt>.  Then, it exchanges data with corresponding processes in the
+atmosphere model by using the intercommunicator <tt> atm_ocn</tt>.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3189 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3197 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3195 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3199 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3200 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3198 HREF="node103.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html">8.9 Summary</A>
+<B>Up:</B> <A NAME=tex2html3196 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3190 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html">8.7 Performance Issues</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

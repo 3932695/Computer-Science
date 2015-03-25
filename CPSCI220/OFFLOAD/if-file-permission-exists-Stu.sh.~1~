@@ -1,0 +1,10 @@
+filename=/
+if [ -r $filename ]; then
+ echo "You have read permission on $filename";
+fi
+if [ -w $filename ]; then
+ echo "You have write permission on $filename";
+fi
+if [ -x $filename ]; then
+ echo "You have execute permission on $filename";
+fi

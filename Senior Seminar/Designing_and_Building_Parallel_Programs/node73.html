@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.6 Determinism</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.6 Determinism">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2823 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2831 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2829 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2833 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2834 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2832 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html">6.7 Argument Passing</A>
+<B>Up:</B> <A NAME=tex2html2830 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2824 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html">6.5 Asynchronous Communication</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03360000000000000000>6.6 Determinism</A></H1>
+<P>
+<A NAME=secdeterm>&#160;</A>
+<P>
+An important property of FM is that programs that do not use the
+nondeterministic constructs <tt> MERGER</tt> or <tt> PROBE</tt> can be
+<A NAME=9317>&#160;</A>
+guaranteed to be deterministic even if tasks and channels are created
+<A NAME=9318>&#160;</A>
+and deleted and channels are reconnected dynamically.  The compiler
+and/or runtime system signal nondeterministic execution of programs
+that do not use nondeterministic constructs.  As noted in
+Section <A HREF="node9.html#secc1det" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#secc1det">1.3.1</A>, determinism can greatly simplify program
+development.
+<P>
+Individual FM processes execute deterministically.  In addition, FM's
+send and receive operations maintain determinism as long as each
+channel has at most a single writer and a single reader.  Hence,
+nondeterminism can arise only if an inport or outport is duplicated.
+This duplication would allow two or more processes to read or write
+<A NAME=9320>&#160;</A>
+the same channel, in which case the value retrieved from a channel
+with a receive operation would depend on the order in which different
+send and receive operations were executed.  Situations in which this
+undesirable behavior could occur, and the FM mechanisms that avoid it,
+are as follows:
+<P>
+<OL><LI> A port occurs more than once in a process block or process
+      do-loop.  The compiler and/or runtime system detects this and
+      signals an error.
+<P>
+<LI> A port is communicated in a message and then used locally.
+      The compiler generates code to invalidate a port that has been
+      communicated.  Hence, in the following code fragment the second
+      <tt> send</tt> statement is erroneous and would be flagged as such either
+      at compile time or at runtime.
+<P>
+
+<PRE><TT> 
+		<tt> OUTPORT (OUTPORT (real)) po</tt> 		 ! Interface port
+<P>
+		<tt> OUTPORT (real) qo</tt>           		 ! Other port
+<P>
+		<tt> SEND(po) qo</tt>  		 ! Send <tt> qo</tt> on <tt> po</tt>; invalidates <tt> qo</tt>
+<P>
+		<tt> SEND(qo) x</tt>   		 ! Try to send on <tt> qo</tt>; error!
+<P>
+</TT></PRE>
+
+<P>
+<LI> A port occurs in an assignment statement.  This situation is detected and
+      flagged as an error by the compiler.  The value of a
+      port variable can be assigned to another port variable by using
+<A NAME=9333>&#160;</A>
+      the <tt> MOVEPORT</tt> statement, but in this case the source port variable is
+      invalidated.  For example, the following code both sets <tt> p2</tt> to
+      the value of <tt> p1</tt> and invalidates <tt> p1</tt> by setting it to
+      <tt> NULL</tt>.
+<P>
+
+<PRE><TT> 
+		<tt> INPORT (real) p1, p2</tt> 		  ! <tt> p1</tt> and <tt> p2</tt> are inports,
+type real
+<P>
+		<tt> MOVEPORT(from=p1, to=p2)</tt> 		 ! Set <tt> p2</tt> to <tt> p1</tt>; invalidate <tt> p1</tt>
+<P>
+</TT></PRE>
+
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2823 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2831 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2829 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2833 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2834 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2832 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html">6.7 Argument Passing</A>
+<B>Up:</B> <A NAME=tex2html2830 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2824 HREF="node72.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node72.html">6.5 Asynchronous Communication</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

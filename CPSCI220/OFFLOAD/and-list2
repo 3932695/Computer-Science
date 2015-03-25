@@ -1,0 +1,3 @@
+passwd=/etc/passwd
+group=/etc/group
+[ -f $passwd ] && x=`wc -l $passwd|awk '{print $1}'` && [ -f $group ] && y=`wc -l $group|awk '{print $1}'` && let total=$x+$y && echo "Total number of files in $passwd and $group files are: $total"

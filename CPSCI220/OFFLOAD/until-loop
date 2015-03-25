@@ -1,0 +1,9 @@
+IP=192.168.101.10
+while true
+do
+ ping -c 2 $IP > /dev/null
+ if [ $? -ne 0 ]; then
+   echo "Server $IP is not responding"
+ fi
+ sleep 2
+done

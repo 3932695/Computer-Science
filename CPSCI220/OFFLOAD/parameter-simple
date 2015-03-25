@@ -1,0 +1,5 @@
+shell="bash"
+echo "1. Shell is : $shell"
+echo "2. Shell is : ${shell}"
+echo "3. Shell is : $shellv4"
+echo "4. Shell is : ${shell}v4"

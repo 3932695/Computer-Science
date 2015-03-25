@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.9 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.9 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2119 HREF="node22.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2127 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2125 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2129 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2130 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2128 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html2126 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2120 HREF="node22.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html">2.8 Case Study: Computational Chemistry</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02390000000000000000>2.9 Summary</A></H1>
+<P>
+<A NAME=2176>&#160;</A>
+In this chapter, we have described a four-step approach to parallel
+algorithm design in which we start with a problem specification and
+proceed as follows:
+<OL><LI>
+We first <em> partition
+ </em> a problem into many small pieces, or
+tasks.  This partitioning can be achieved by using either domain or
+functional decomposition techniques.
+<LI>
+Next, we organize the <em> communication
+ </em> required to obtain data
+required for task execution.  We can distinguish between local and
+global, static and dynamic, structured and unstructured, and
+synchronous and asynchronous communication structures.
+<LI>
+Then, we use <em> agglomeration
+ </em> to decrease communication and
+development costs, while maintaining flexibility if possible.
+<LI>
+Finally, we <em> map
+ </em> tasks to processors, typically with the
+goal of minimizing total execution time.  Load balancing or task
+scheduling techniques can be used to improve mapping quality.
+</OL>
+<P>
+We have also provided <em> design checklists
+ </em> that can be used to
+evaluate designs as they are developed.  These informal questions are
+intended to highlight nonscalable or inefficient features in designs.
+<P>
+Successful application of this design methodology, together with the
+use of the performance modeling techniques described in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>, produces one or more parallel algorithms that
+balance in an appropriate fashion the potentially conflicting
+requirements for concurrency, scalability, and locality.  The next
+stage in the design process is to consider how such algorithms fit
+into the larger context of a complete program.  As we shall see in
+Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, additional concerns must be addressed at that
+level, which may require revisions to the designs of individual
+components.  Agglomeration and mapping decisions are particularly
+prone to modification; therefore, we make these decisions
+last, when they can be most easily changed.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2119 HREF="node22.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2127 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2125 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2129 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2130 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2128 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html2126 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2120 HREF="node22.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html">2.8 Case Study: Computational Chemistry</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

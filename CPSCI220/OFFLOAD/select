@@ -1,0 +1,4 @@
+select state in CA NV NY
+do
+ echo "Your selection is: $state"
+done

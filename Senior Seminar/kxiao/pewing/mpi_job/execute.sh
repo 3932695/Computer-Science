@@ -1,0 +1,2 @@
+qsub -I mpi_job.run
+mpiexec -np 4 ~/bin/$1

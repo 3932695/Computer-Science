@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.4 Concurrency</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.4 Concurrency">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2988 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2996 HREF="node87.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2994 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2998 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2999 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2997 HREF="node87.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html">7.5 Dummy Arguments and Modularity</A>
+<B>Up:</B> <A NAME=tex2html2995 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2989 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html">7.3 Data Distribution</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03440000000000000000>7.4 Concurrency</A></H1>
+<P>
+At this point, we have presented all the HPF features needed to write
+simple programs.  Array assignment statements provide a mechanism for
+specifying fine-grained concurrency, while data distribution
+directives provide control over agglomeration and mapping.
+<P>
+The F90 array assignment statement provides a convenient and succinct
+notation for specifying data-parallel operations.  However, it applies 
+<A NAME=11076>&#160;</A>
+only to a limited set of such operations.  For example, it
+requires that operands of right-hand-side expressions be conformant
+with (of the same shape as) the left-hand-side array.  Two other HPF
+constructs allow an explicitly parallel representation of a wider
+range of data-parallel operations.  These are the <tt> FORALL</tt>
+statement and the <tt> INDEPENDENT</tt> directive.
+<P>
+<H2><A NAME=SECTION03441000000000000000>7.4.1 The  FORALL Statement</A></H2>
+<P>
+<A NAME=secforall>&#160;</A>
+<P>
+<A NAME=11081>&#160;</A>
+The <tt> FORALL</tt> statement allows for more general assignments to
+sections of an array.  A <tt> FORALL</tt> statement has the 
+general form
+<P>
+<PRE><TT> 
+		<tt> FORALL (<em> triplet</em>, ..., <em> triplet</em>, <em> mask
+ </em>) <em> assignment</em></tt>
+<P>
+</TT></PRE>
+where <em> assignment
+ </em> is an arithmetic or pointer assignment and
+<em> triplet
+ </em> has the general form
+<PRE><TT> 
+		<tt> <em> subscript</em> = <em> lower-bound</em> : <em> upper-bound</em> : <em> stride</em></tt>
+<P>
+</TT></PRE>
+(with <tt> : <em> stride
+ </em></tt> being optional) and specifies a set of
+indices.
+<P>
+<A NAME=11099>&#160;</A>
+The assignment statement is evaluated for those index values specified
+by the list of triplets that are not rejected by the optional <em>
+mask</em>.  For example, the following statements set each element of <tt>
+X</tt> to the sum of its indices, zero the upper right triangle of <tt>
+Y</tt>, and zero the diagonal of <tt> Z</tt>, respectively.
+<P>
+<PRE>       FORALL (i=1:m, j=1:n)      X(i,j) = i+j
+       FORALL (i=1:n, j=1:n, i&lt;j) Y(i,j) = 0.0
+       FORALL (i=1:n)             Z(i,i) = 0.0
+</PRE>
+<P>
+A <tt> FORALL</tt> statement is evaluated as follows.  First, the
+right-hand-side expression is evaluated for all index values; these
+evaluations can be performed in any order.  Second, the assignments
+are performed, again in any order.  To ensure determinism, a <tt>
+FORALL</tt> statement cannot assign to the same element of an array more
+than once.  A compiler can attempt to detect that this requirement is
+violated but is not required to do so.  Hence, the following
+statement is valid only if the array <tt> Index</tt> does not contain
+duplicate values.
+<P>
+<tt> FORALL (i=1:n) A(Index(i)) = B(i)</tt>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img974.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img974.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img973.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img973.gif">    Use of <tt> FORALL</tt></b>:<A NAME=exfod>&#160;</A>
+<P>
+The array assignment used to update the array <tt> New</tt> in
+Program <A HREF="node85.html#proghpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpf1">7.2</A> can also be expressed using <tt> FORALL</tt>, as
+<A NAME=11115>&#160;</A>
+follows.
+<P>
+
+<PRE><TT> 
+				<tt> forall(i=2:99, j=2:99)</tt>
+<P>
+		<tt> $</tt> 				<tt> New(i,j) = (X(i-1, j) + X(i+1, j) +</tt>
+<P>
+		<tt> $</tt> 						 <tt> X(i, j-1) + X(i, j+1))/4</tt>
+<P>
+</TT></PRE>
+
+<P>
+Of course, in this case there is no reason not to use an array
+assignment.
+<P>
+<BR><HR><H2><A NAME=SECTION03442000000000000000>7.4.2 The  INDEPENDENT Directive and Do-Loops</A></H2>
+<P>
+<A NAME=secindependent>&#160;</A>
+<P>
+An HPF program can reveal additional opportunities for parallel
+<A NAME=11125>&#160;</A>
+execution by using the <tt> INDEPENDENT</tt> directive to assert that the
+iterations of a do-loop can be performed independently---that is, in
+any order or concurrently---without changing the result computed.
+In effect, this directive changes a do-loop from an implicitly
+parallel construct to an explicitly parallel construct.
+<P>
+The <tt> INDEPENDENT</tt> directive must immediately precede the do-loop
+to which it applies.  In its simplest form, it has no additional
+argument and asserts simply that no iteration of the do-loop can
+affect any other iteration.  (An iteration <em> I</em>
+ affects an
+iteration <em> J</em>
+ if <em> I</em>
+ leads to an assignment to a value read by
+<em> J</em>
+.)  For example, in the following code fragment the assertion
+implies both that the array <tt> Index</tt> does not contain duplicate
+indices and that <tt> A</tt> and <tt> B</tt> do not share storage, for example
+because of an <tt> equivalence</tt> statement.
+<P>
+<PRE>        !HPF$   INDEPENDENT
+                do i=1,n
+                  A(Index(i)) = B(i)
+                enddo
+</PRE>
+<P>
+In the following code fragment, the directives indicate that the outer
+two loops are independent.  The inner loop assigns elements of <tt> A</tt>
+repeatedly and hence is not independent.
+<P>
+
+<PRE><TT> 
+<tt> !HPF$</tt> 				 <tt> INDEPENDENT</tt>
+<P>
+             				<tt> do i=1,n1</tt>   								 ! Loop over <tt> i</tt> independent
+<P>
+<tt> !HPF$</tt> 						<tt> INDEPENDENT</tt>
+<P>
+             						<tt> do j=1,n2</tt>   						 ! Loop over <tt> j</tt> independent
+<P>
+             								<tt> do k=1,n3</tt>   				 ! Inner loop not independent
+<P>
+             										<tt> A(i,j) = A(i,j) + B(i,j,k)*C(i,j)</tt>
+<P>
+             								<tt> enddo</tt>
+<P>
+             						<tt> enddo</tt>
+<P>
+             				<tt> enddo</tt>
+<P>
+</TT></PRE>
+
+<P>
+An <tt> INDEPENDENT</tt> directive can also specify that the assertion
+would be correct <em> if
+ </em> distinct storage were to be used for a
+<A NAME=11154>&#160;</A>
+specified set of variables for each iteration of the nested do-loop.
+This is achieved by postfixing a <tt> NEW</tt> specifier, as in the
+following example.  In this code fragment, interleaved execution of
+different loop iterations would cause erroneous results if values of
+<tt> tmp1</tt> and <tt> tmp2</tt> computed in one iteration were used in
+another.  The <tt> NEW</tt> specifier ensures that this situation does not
+arise.
+<P>
+<PRE>!HPF$   INDEPENDENT
+        do i=1,n1
+!HPF$     INDEPENDENT, NEW(tmp1,tmp2)
+          do j=1,n2
+            tmp1 = B(i,j) + C(i,j)
+            tmp1 = B(i,j) - C(i,j)
+            A(i,j) = tmp1*tmp2
+          ENDDO
+        ENDDO
+</PRE>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img976.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img976.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img975.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img975.gif">    Parallel Fast Fourier Transform</b>:<A NAME=exfftx>&#160;</A>
+<P>
+<A NAME=11161>&#160;</A>
+A 2-D FFT applies a 1-D FFT operation first to each column of a
+<A NAME=11162>&#160;</A>
+two-dimensional array and then to each row.  An initial column
+distribution allows the first set of FFTs to proceed without
+communication; the array is then transposed before performing the
+second set of FFTs. (A similar technique is used in
+Section <A HREF="node43.html#eximage" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eximage">4.4</A>, but here we distribute by column to improve
+locality in a Fortran implementation.)  The transpose involves
+considerable communication but is frequently more efficient than an
+algorithm based on a static decomposition and parallel FFTs.
+Program <A HREF="node86.html#progdp" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html#progdp">7.4</A> implements the transpose algorithm.  Notice the
+initial distribution of <tt> A</tt> (blocked, by column) and the call to
+the <tt> transpose</tt> intrinsic.  Notice also the use of the <tt>
+INDEPENDENT</tt> directive to specify that the <tt> colfft</tt> calls in the
+do-loop can proceed independently, even though each is passed the
+entire <tt> A</tt> array.  This assertion is valid because each call to
+<tt> colfft</tt> operates on a single column.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progdp>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img977.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img977.gif"><P>
+<P>
+
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2988 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2996 HREF="node87.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2994 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2998 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2999 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2997 HREF="node87.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html">7.5 Dummy Arguments and Modularity</A>
+<B>Up:</B> <A NAME=tex2html2995 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2989 HREF="node85.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html">7.3 Data Distribution</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

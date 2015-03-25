@@ -1,0 +1,25 @@
+(define (prime? n) (prime-help n 2))
+
+(define (prime-help n h)
+  (if (> h (/ n 2))
+      #t
+      (if (= (modulo n h) 0)
+	  #f
+	  (prime-help n (+ h 1))
+      )
+  )
+)
+
+(define (pascal row col)
+  (if (< row col)
+      (display "Error: 'col' cannot exceed 'row' on '(pascal row col)'")
+      (if (or (= col 1) (= row col) )
+	   1
+	   (+ (pascal (- row 1) (- col 1)) (pascal (- row 1) col))
+      )
+  )
+)
+
+
+
+(define fhello (lambda () "Hello world"))

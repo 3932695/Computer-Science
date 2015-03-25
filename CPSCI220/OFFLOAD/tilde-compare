@@ -1,0 +1,13 @@
+set -x 
+cd /var/opt/gg 
+if [ -f gg.c ] 
+then 
+echo "File1 exists" 
+fi 
+
+cd /var/opt1/gg 
+if [ -f gg.c ] 
+then 
+echo "File2 exists" 
+cmp ~+/gg.c ~-/gg.c 
+fi

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3542 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3550 HREF="node130.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node130.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3548 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3552 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3553 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3551 HREF="node130.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node130.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3549 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3543 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html">11.5 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04360000000000000000> Exercises</A></H1>
+<P>
+<OL><LI>
+Execute the hypercube summation algorithm by hand for <b>N=8</b>, and
+satisfy yourself that you obtain the correct answer.
+<P>
+<LI>
+Use Equations <A HREF="node125.html#eqxxxx" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#eqxxxx">11.1</A> and <A HREF="node125.html#hsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#hsum">11.2</A> to identify problem size,
+processor count, and machine parameter regimes in which each of the
+two vector reduction algorithms of Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A> will be
+more efficient.
+<P>
+<LI>
+Implement the hybrid vector reduction algorithm described in
+Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A>.  Use empirical studies to determine the
+vector length at which the switch from recursive halving to exchange
+algorithm should occur.  Compare the performance of this algorithm
+with pure recursive halving and exchange algorithms.
+<P>
+<LI>
+<A NAME=exbsort>&#160;</A>
+A variant of the parallel mergesort algorithm performs just <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1175.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1175.gif">
+compare-exchange operations and then switches to a parallel
+bubblesort [<A HREF="node132.html#Knuth3" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Knuth3">174</A>].  In the bubblesort phase, tasks are
+<A NAME=15251>&#160;</A>
+connected in a logical ring and each task performs compare-exchange
+operations with its neighbors until a global reduction shows that no
+exchanges occurred.  Design an implementation of this algorithm, using
+hypercube and ring structures as building blocks.
+<P>
+<LI>
+Implement the modified parallel mergesort of Exercise <A HREF="node129.html#exbsort" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html#exbsort">4</A>.
+Compare its performance with regular parallel mergesort for different
+input sequences and for a variety of <em> P</em>
+ and <em> N</em>
+.
+<P>
+<LI>
+<A NAME=exlatrans>&#160;</A>
+Extend Equations <A HREF="node126.html#eqlatransP" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html#eqlatransP">11.3</A> and <A HREF="node126.html#eqlatransL" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html#eqlatransL">11.4</A> to account
+for bandwidth limitations in a one-dimensional mesh.
+<P>
+<LI>
+Modify the performance models developed for the convolution algorithm
+in Section <A HREF="node43.html#eximage" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eximage">4.4</A> to reflect the use of the hypercube-based
+transpose.  Can the resulting algorithms ever provide superior
+performance?
+<P>
+<LI>
+Use the performance models given in Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A> for the
+simple and recursive halving vector reduction algorithms to determine
+situations in which each algorithm would give superior performance.
+<P>
+<LI>
+Design and implement a variant of the vector sum algorithm that does
+not require the number of tasks to be an integer power of 2.
+<P>
+<LI>
+<A NAME=excube2>&#160;</A>
+Develop a CC++
+ , Fortran M, or MPI implementation of a ``hypercube
+template.''  Use this template to implement simple reduction, vector
+reduction, and broadcast algorithms.  Discuss the techniques that you
+used to facilitate reuse of the template.
+<P>
+<LI>
+Implement a ``torus template'' and use this together with the template
+developed in Exercise <A HREF="node129.html#excube2" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html#excube2">10</A> to implement the finite
+difference computation of Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>.
+<P>
+<LI>
+<A NAME=exhcmm8>&#160;</A>
+Develop a performance model for a 2-D matrix multiplication algorithm
+that uses the vector broadcast algorithm of Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A>
+in place of the tree-based broadcast assumed in
+Section <A HREF="node45.html#secmodmm2" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#secmodmm2">4.6.1</A>.  Discuss the advantages and disadvantages
+of this algorithm.
+<P>
+<LI>
+Implement both the modified matrix multiplication algorithm of
+Exercise <A HREF="node129.html#exhcmm8" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html#exhcmm8">12</A> and the original algorithm of
+Section <A HREF="node45.html#secmodmm2" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#secmodmm2">4.6.1</A>, and compare their performance.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3542 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3550 HREF="node130.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node130.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3548 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3552 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3553 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3551 HREF="node130.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node130.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html3549 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3543 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html">11.5 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

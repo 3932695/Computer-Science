@@ -1,0 +1,282 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>1.4 Parallel Algorithm Examples</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="1.4 Parallel Algorithm Examples">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1954 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1962 HREF="node11.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node11.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1960 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1964 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1965 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1963 HREF="node11.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node11.html">1.5 Summary</A>
+<B>Up:</B> <A NAME=tex2html1961 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1955 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html">1.3 A Parallel Programming Model</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02240000000000000000>1.4 Parallel Algorithm Examples</A></H1>
+<P>
+We conclude this chapter by presenting four examples of parallel
+algorithms.  We do not concern ourselves here with the process by
+which these algorithms are derived or with their efficiency; these
+<A NAME=524>&#160;</A>
+issues are discussed in Chapters <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> and <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>,
+respectively.  The goal is simply to introduce
+parallel algorithms and their description in terms of tasks and
+channels.
+<P>
+The first two algorithms described have an SPMD structure,
+the third creates tasks dynamically during program execution, and
+the fourth uses a fixed number of tasks but has different tasks
+perform different functions.
+<P>
+<H2><A NAME=SECTION02241000000000000000>1.4.1 Finite Differences</A></H2>
+<P>
+<A NAME=exfd>&#160;</A>
+<P>
+<P><A NAME=973>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img108.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img108.gif">
+<BR><STRONG>Figure 1.11:</STRONG> <em> A parallel algorithm for the one-dimensional finite
+difference problem.  From top to bottom: the one-dimensional vector
+<em> X</em>
+, where <em> N=8</em>
+; the task structure, showing the 8 tasks,
+each encapsulating a single data value and connected to left and right
+neighbors via channels; and the structure of a single
+task, showing its two inports and
+outports.</em><A NAME=figvc>&#160;</A><BR>
+<P>
+<P>
+We first consider a one-dimensional finite difference problem,
+in which we have a vector <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img109.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img109.gif"> of size <em> N</em>
+ and must compute
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img110.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img110.gif">, where
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img111.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img111.gif"><P>
+That is, we must repeatedly update each element of <em> X</em>
+, with no
+element being updated in step <em> t+1</em>
+ until its neighbors have been
+updated in step <em> t</em>
+.
+<P>
+A parallel algorithm for this problem creates <em> N</em>
+ tasks, one for
+each point in <em> X</em>
+.  The <em> i</em>
+th task is given the value
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img112.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img112.gif"> and is responsible for computing, in <em> T</em>
+ steps, the
+values <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img113.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img113.gif">.  Hence, at step
+<em> t</em>
+, it must obtain the values <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img114.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img114.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img115.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img115.gif">
+from tasks <em> i-1</em>
+ and <em> i+1</em>
+.  We specify this data transfer by
+defining channels that link each task with ``left'' and ``right''
+neighbors, as shown in Figure <A HREF="node10.html#figvc" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figvc">1.11</A>, and requiring that at step
+<em> t</em>
+, each task <em> i</em>
+ other than task 0 and task <em> N-1</em>
+<P>
+<OL><LI>
+sends its data <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img116.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img116.gif"> on its left and right outports,
+<LI>
+receives <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img117.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img117.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img118.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img118.gif"> from its left and right inports,
+and
+<LI>
+uses these values to compute <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img119.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img119.gif">.
+</OL>
+Notice that the <em> N</em>
+ tasks can execute independently, with the only
+<A NAME=575>&#160;</A>
+constraint on execution order being the synchronization enforced by
+the receive operations.  This synchronization ensures that no data
+value is updated at step <em> t+1</em>
+ until the data values in
+neighboring tasks have been updated at step <em> t</em>
+.  Hence, execution
+is deterministic.
+<P>
+<H2><A NAME=SECTION02242000000000000000>1.4.2 Pairwise Interactions</A></H2>
+<P>
+<A NAME=exinteractions>&#160;</A>
+<P>
+<P><A NAME=1008>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img120.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img120.gif">
+<BR><STRONG>Figure 1.12:</STRONG> <em> Task structures for computing pairwise interactions
+for <em> N=5</em>
+.  (a) The unidirectional ring used in the simple,
+nonsymmetric algorithm.  (b) The unidirectional ring with additional
+channels used to return accumulated values in the symmetric algorithm;
+the path taken by the accumulator used for task 0 is shown as a solid
+line.</em><A NAME=fignb>&#160;</A><BR>
+<P>
+<P>
+<A NAME=584>&#160;</A>
+Our second example uses a similar channel structure but requires a
+more complex communication algorithm.  Many problems require the
+computation of all <em> N(N-1)</em>
+ pairwise interactions <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img121.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img121.gif">,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img122.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img122.gif">, between <em> N</em>
+ data, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img123.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img123.gif">.  Interactions
+may be symmetric, in which case <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img124.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img124.gif"> and only
+<em> N(N-1)/2</em>
+ interactions need be computed.  For example, in
+molecular dynamics we may require the total force vector <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img125.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img125.gif"> acting
+on each atom <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img126.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img126.gif">, defined as follows:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img127.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img127.gif"><P>
+Each atom is represented by its mass and Cartesian coordinates.
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img128.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img128.gif"> denotes the mutual attraction or repulsion between atoms
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img129.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img129.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img130.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img130.gif">; in this example, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img131.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img131.gif">, so
+interactions are symmetric.
+<P>
+A simple parallel algorithm for the general pairwise interactions
+problem might create <em> N</em>
+ tasks.  Task <em> i</em>
+ is given the datum
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img132.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img132.gif"> and is responsible for computing the interactions <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img133.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img133.gif">.  One might think that as each task needs a
+datum from every other task, <em> N(N-1)</em>
+ channels would be needed to
+perform the necessary communications.  However, a more economical
+structure is possible that uses only <em> N</em>
+ channels.  These channels
+are used to connect the <em> N</em>
+ tasks in a unidirectional ring
+(Figure <A HREF="node10.html#fignb" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#fignb">1.12</A>(a)).  Hence, each task has one inport and one
+outport.  Each task first initializes both a buffer (with the value of
+its local datum) and an accumulator that will maintain the result of
+the computation.  It then repeatedly
+<OL><LI>
+sends the value contained in its buffer on its outport,
+<LI>
+receives a datum on its inport into its buffer,
+<LI>
+computes the interaction between this datum and its local datum, and
+<LI>
+uses the computed interaction to update its local accumulator.
+</OL>
+This send-receive-compute cycle is repeated <em> N-1</em>
+ times, causing
+the <em> N</em>
+ data to flow around the ring.  Every task sees every datum
+and is able to compute all <em> N-1</em>
+ interactions involving its datum.
+The algorithm involves <em> N-1</em>
+ communications per task.
+<P>
+It turns out that if interactions are symmetric, we can halve both the
+number of interactions computed and the number of communications by
+refining the communication structure.  Assume for simplicity that
+<em> N</em>
+ is odd.  An additional <em> N</em>
+ communication channels are
+created, linking each task to the task offset <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img134.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img134.gif">
+around the ring (Figure <A HREF="node10.html#fignb" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#fignb">1.12</A>(b)).  Each time an interaction
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img135.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img135.gif"> is computed between a local datum <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img136.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img136.gif"> and an incoming
+datum <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img137.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img137.gif">, this value is accumulated not only in the accumulator for
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img138.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img138.gif"> but also in another accumulator that is circulated with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img139.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img139.gif">.
+After <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img140.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img140.gif"> steps, the accumulators associated with the
+circulated values are returned to their home task using the new
+channels and combined with the local accumulators.  Hence, each
+symmetric interaction is computed only once: either as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img141.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img141.gif"> on
+the node that holds <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img142.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img142.gif"> or as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img143.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img143.gif"> on the node that holds
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img144.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img144.gif">.
+<P>
+<A NAME=608>&#160;</A>
+<P>
+<H2><A NAME=SECTION02243000000000000000>1.4.3 Search</A></H2>
+<P>
+<A NAME=exsearch1>&#160;</A>
+<P>
+<A NAME=611>&#160;</A>
+The next example illustrates the dynamic creation of tasks and
+channels during program execution.  Algorithm <A HREF="node10.html#algsearch" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#algsearch">1.1</A>
+explores a search tree looking for nodes that correspond to
+``solutions.''  A parallel algorithm for this problem can be
+structured as follows.  Initially, a single task is created for the
+root of the tree.  A task evaluates its node and then, if that node is
+not a solution, creates a new task for each <tt> search</tt> call
+(subtree).  A channel created for each new task is used to return to
+the new task's parent any solutions located in its subtree.  Hence,
+new tasks and channels are created in a wavefront as the search
+progresses down the search tree (Figure <A HREF="node10.html#figtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figtree">1.13</A>).
+<P>
+<P><A NAME=algsearch>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img145.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img145.gif"><P>
+<P>
+<P><A NAME=1054>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img146.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img146.gif">
+<BR><STRONG>Figure 1.13:</STRONG> <em> Task structure for the search example.  Each circle
+represents a node in the search tree and hence a call to the <tt>
+search</tt> procedure.  A task is created for each node in the tree as it
+is explored.  At any one time, some tasks are actively engaged in
+expanding the tree further (these are shaded in the figure); others
+have reached solution nodes and are terminating, or are waiting for
+their offspring to report back with solutions.  The lines represent
+the channels used to return solutions.</em><A NAME=figtree>&#160;</A><BR>
+<P><H2><A NAME=SECTION02244000000000000000>1.4.4 Parameter Study</A></H2>
+<P>
+<A NAME=exdatabase>&#160;</A>
+<P>
+<A NAME=625>&#160;</A>
+In so-called embarrassingly parallel problems, a computation
+consists of a number of tasks that can execute more or less
+independently, without communication.  These problems are usually easy
+to adapt for parallel execution.  An example is a parameter study,
+in which the same computation must be performed using a range of
+<A NAME=626>&#160;</A>
+different input parameters.  The parameter values are read from an
+input file, and the results of the different computations are written
+to an output file.
+<P>
+<P><A NAME=1071>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img147.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img147.gif">
+<BR><STRONG>Figure 1.14:</STRONG> <em> Task structure for parameter study problem.  Workers (W)
+request parameters from the input task (I) and send results to the
+<A NAME=1065>&#160;</A>
+output task (O).  Note the many-to-one connections: this program is
+<A NAME=1066>&#160;</A>
+nondeterministic in that the input and output tasks receive data from
+workers in whatever order the data are generated.  Reply channels,
+represented as dashed lines, are used to communicate parameters from
+the input task to workers.</em><A NAME=figmerge>&#160;</A><BR>
+<P>
+<P>
+If the execution time per problem is constant and each processor has
+the same computational power, then it suffices to partition available
+problems into equal-sized sets and allocate one such set to each
+processor.  In other situations, we may choose to use the task
+structure illustrated in Figure <A HREF="node10.html#figmerge" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figmerge">1.14</A>.  The input and output
+tasks are responsible for reading and writing the input and output
+files, respectively.  Each worker task (typically one per processor)
+repeatedly requests parameter values from the input task, computes
+using these values, and sends results to the output task.  Because
+execution times vary, the input and output tasks cannot expect to
+receive messages from the various workers in any particular order.
+Instead, a many-to-one communication structure is used that allows
+them to receive messages from the various workers in arrival order.
+<P>
+The input task responds to a worker request by sending a parameter to
+that worker.  Hence, a worker that has sent a request to the input
+task simply waits for the parameter to arrive on its reply channel.
+<A NAME=633>&#160;</A>
+In some cases, efficiency can be improved by <em> prefetching
+ </em>,
+<A NAME=635>&#160;</A>
+that is, requesting the next parameter before it is needed.  The
+worker can then perform computation while its request is being
+processed by the input task.
+<P>
+<A NAME=636>&#160;</A>
+Because this program uses many-to-one communication structures, the
+order in which computations are performed is not necessarily
+determined.  However, this nondeterminism affects only the allocation
+of problems to workers and the ordering of results in the output file,
+not the actual results computed.
+<P>
+
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1954 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1962 HREF="node11.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node11.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1960 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1964 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1965 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1963 HREF="node11.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node11.html">1.5 Summary</A>
+<B>Up:</B> <A NAME=tex2html1961 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1955 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html">1.3 A Parallel Programming Model</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

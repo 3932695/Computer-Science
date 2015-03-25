@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.4 Scalability Analysis</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.4 Scalability Analysis">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2213 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2221 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2219 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2223 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2224 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2222 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html">3.5 Experimental Studies</A>
+<B>Up:</B> <A NAME=tex2html2220 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2214 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html">3.3 Developing Models</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02440000000000000000>3.4 Scalability Analysis</A></H1>
+<P>
+<A NAME=3361>&#160;</A>
+<P>
+Performance models of the type developed in preceding sections are
+tools that we can use to explore and refine a parallel algorithm
+design.  These models can be used without further refinement to
+perform <em> qualitative
+ </em> analyses of performance.  For example,
+from Equations <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A> and <A HREF="node29.html#eqfdte" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdte">3.7</A> the following
+observations can be made about the finite difference algorithm:
+<A NAME=3365>&#160;</A>
+<P>
+<UL><LI>
+Efficiency decreases with increasing <em> P</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img433.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img433.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img434.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img434.gif">.
+<P>
+<LI>
+Efficiency increases with increasing <em> N</em>
+, <em> Z</em>
+, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img435.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img435.gif">.
+<P>
+<LI>
+Execution time decreases with increasing <em> P</em>
+ but is bounded
+from below by the cost of exchanging two array slices.
+<P>
+<LI>
+Execution time increases with increasing <em> N</em>
+, <em> Z</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img436.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img436.gif">,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img437.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img437.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img438.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img438.gif">.
+</UL>
+<P>
+These observations provide interesting insights into algorithm
+characteristics.  However, they are not a sufficient basis for making
+<A NAME=3374>&#160;</A>
+design tradeoffs.  This task requires quantitative results, which in
+turn require that we substitute machine-specific numeric values for
+the various parameters in performance models.  In general, we seek to
+obtain these numeric values by empirical studies, as will be discussed
+in Section <A HREF="node31.html#secexper" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#secexper">3.5</A>.  Once augmented with empirical data,
+models can be used to answer questions such as the following.
+<P>
+<UL><LI>
+<A NAME=3377>&#160;</A>
+Does the algorithm meet design requirements (for execution time,
+memory requirements, etc.) on the target parallel computer?
+<P>
+<LI>
+How adaptable is the algorithm?  That is, how well does it adapt to
+increases in problem size and processor counts?  How sensitive is to
+machine parameters such as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img439.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img439.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img440.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img440.gif">?
+<P>
+<LI>
+How does the algorithm compare with other algorithms for the same
+problem?  What difference in execution time can be expected from
+different algorithms?
+</UL>
+<P>
+It is important to remember that performance models are idealizations
+of more complex phenomena.  Once an algorithm has been implemented, we
+are able to validate our models and hence increase our confidence in
+their quality.  However, in the early stages of a design we must
+necessarily be cautious, especially if we are making quantitative
+predictions or if the target computer has an architecture very
+different from the idealized multicomputer.
+<P>
+<H2><A NAME=SECTION02441000000000000000>3.4.1 Scalability with Fixed Problem Size</A></H2>
+<P>
+An important aspect of performance analysis is the study of how
+algorithm performance varies with parameters such as problem size,
+processor count, and message startup cost.  In particular, we may
+evaluate the scalability of a parallel algorithm, that is, how
+effectively it can use an increased number of processors.  One
+approach to quantifying scalability is to determine how execution time
+<em> T</em>
+ and efficiency <em> E</em>
+ vary with increasing processor count
+<A NAME=3382>&#160;</A>
+<em> P</em>
+ for a fixed problem size and machine parameters.  This <em>
+fixed problem
+ </em> analysis allows us to answer questions such as,
+What is the fastest I can solve problem <em> A</em>
+ on computer <em> X</em>
+?
+and What is the greatest number of processors I can utilize if I want
+to maintain an efficiency of 50 percent?  The latter question may be
+of interest if a computer is shared and there is a charge for each
+processor used.
+<P>
+It is important to consider both <em> E</em>
+ and <em> T</em>
+ when evaluating
+scalability.  While <em> E</em>
+ will generally decrease monotonically with
+<em> P</em>
+, <em> T</em>
+ may actually increase if the performance model includes a
+term proportional to a positive power of <em> P</em>
+.  In such cases, it
+may not be productive to use more than some maximum number of
+processors for a particular problem size and choice of machine
+parameters.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img443.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img443.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img441.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img441.gif">    Scalability of Finite Difference</b>:<A NAME=experffdfd>&#160;</A>
+<P>
+Figure <A HREF="node30.html#figfd9" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#figfd9">3.6</A> illustrates fixed problem analysis applied to the
+finite difference algorithm (Equations <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A>
+and <A HREF="node29.html#eqfdte" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdte">3.7</A>).  This figure plots <em> T</em>
+ and <em> E</em>
+ as a
+function of <em> P</em>
+ and <em> N</em>
+, using machine parameters
+characteristic of a relatively fine-grained multicomputer.  The
+computation cost <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img442.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img442.gif">sec has been obtained by experiment, as
+will be described in Example <A HREF="node31.html#exfdc" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html#exfdc">3.5</A>.  Recall that because the
+algorithm requires each task to have at least two grid columns, at
+most 64 processors can be used productively when <em> N=128</em>
+ and 256
+processors when <em> N=512</em>
+.  Later in the chapter, we shall see how
+these predictions compare with observed performance.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=4704>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img450.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img450.gif">
+<BR><STRONG>Figure 3.6:</STRONG> <em> Scalability of the 1-D decomposition finite difference
+algorithm, as predicted by Equations 3.4 and 3.7 when <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img447.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img447.gif">sec,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img448.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img448.gif">sec, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img449.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img449.gif">sec, and <em> Z=10</em>
+: (a) execution time
+as a function of <em> P</em>
+; (b) efficiency as a function of <em> P</em>
+.
+Note that when <b>N=128</b>, only 64 processors can be used
+productively.</em><A NAME=figfd9>&#160;</A><BR>
+<P><H2><A NAME=SECTION02442000000000000000>3.4.2 Scalability with Scaled Problem Size</A></H2>
+<P>
+Large parallel computers are frequently used not only to solve
+fixed-size problems faster, but also to solve larger problems.  This
+observation encourages a different approach to the analysis of
+algorithms called <em> scaled problem
+ </em> analysis, whereby we
+consider not how <em> E</em>
+ varies with <em> P</em>
+, but how the amount of
+computation performed must scale with <em> P</em>
+ to keep
+<em> E</em>
+ constant.  This function of <em> N</em>
+ is called an
+<A NAME=3419>&#160;</A>
+algorithm's <em> isoefficiency function
+ </em> and can provide valuable
+insights into algorithm behavior.  An algorithm with an isoefficiency
+function of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img451.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img451.gif"> is highly scalable, since the amount of
+computation needs to increase only linearly with respect to <em> P</em>
+ to
+keep efficiency constant.  In contrast, an algorithm with a quadratic
+or exponential isoefficiency function would be poorly scalable.
+<P>
+Recall that efficiency <em> E</em>
+ is defined as the ratio between
+execution time on a single processor and total execution time summed
+over <em> P</em>
+ processors:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img452.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img452.gif"><P>
+Hence, to maintain constant efficiency <em> E</em>
+, the
+following relation must hold for increasing <em> P</em>
+:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img453.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img453.gif"><P>
+That is, uniprocessor time must increase at the same rate as total
+parallel time or, equivalently, the amount of essential computation
+must increase at the same rate as overheads due to replicated
+computation, communication, and idle time.
+<P>
+Scaled problem analysis does not make sense for all problems.
+Real-time constraints, for example in weather forecasting, may require
+that computation be completed in a fixed amount of time.  In other
+applications, scaling is not possible because of physical constraints
+on problem size.  For example, in molecular modeling, the number of
+atoms in a molecule is fixed, as is the number of pixels in
+image-processing applications.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img477.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img477.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img454.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img454.gif">    Isoefficiency of Finite Difference Algorithms</b>:<A NAME=experfgrid>&#160;</A>
+<P>
+We use isoefficiency analysis to examine the scalability of two
+<A NAME=3439>&#160;</A>
+parallel finite difference algorithms.  Recall that the efficiency of
+an algorithm based on a 1-D decomposition of an <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img455.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img455.gif">
+grid is given by Equation <A HREF="node29.html#eqfdte" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdte">3.7</A>.  For constant efficiency, a
+function of <em> P</em>
+, when substituted for <em> N</em>
+, must satisfy the
+following relation for increasing <em> P</em>
+ and constant <em> E</em>
+:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img456.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img456.gif"><P>
+<P>
+The function <em> N=P</em>
+ satisfies this requirement, and yields the
+following relation, which is valid for all except small
+<em> P</em>
+, when the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img457.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img457.gif"> term becomes significant:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img458.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img458.gif"><P>
+Because the finite difference computation operates on a square grid,
+scaling <em> N</em>
+ with <em> P</em>
+ causes the number of grid points and thus
+the amount of computation to scale as <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img459.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img459.gif">.  Hence, we say that the
+isoefficiency function for this algorithm is <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img460.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img460.gif">, meaning that
+the amount of computation must increase as the square of the number of
+processors in order for constant efficiency to be maintained.
+Figure <A HREF="node30.html#figfd15" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#figfd15">3.7</A> illustrates why this is so.
+<P>
+<P><A NAME=4756>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img463.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img463.gif">
+<BR><STRONG>Figure 3.7:</STRONG> <em> Scaling a finite difference algorithm based on a 1-D
+decomposition.  In (a), <em> N=8</em>
+ and <em> P=2</em>
+.  Each task has 32
+grid points and must communicate with two neighbors.  In (b),
+<em> P</em>
+ is doubled while <em> N</em>
+ stays the same.  Total computation costs stay
+the same but communication costs double, so efficiency is reduced.  In
+(c), both <em> P</em>
+ and <em> N</em>
+ are doubled, thereby increasing both
+computation costs and the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img462.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img462.gif"> component of communication costs by a
+factor of four; hence, efficiency remains the
+same.</em><A NAME=figfd15>&#160;</A><BR>
+<P>
+<P>
+As a second example, consider a two-dimensional decomposition of the
+finite difference problem.  Here, each task is responsible for
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img464.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img464.gif"> points and must exchange
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img465.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img465.gif"> points with each of four neighbors at each time step.
+Hence,
+<P><A NAME=eqfd2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img466.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img466.gif"><P>
+For constant efficiency, a function of <em> P</em>
+, when
+substituted for <em> N</em>
+, must satisfy the following relation for
+increasing <em> P</em>
+:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img467.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img467.gif"><P>
+The function <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img468.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img468.gif"> meets this requirement and gives the
+following relation which is valid for all values of <em> P</em>
+:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img469.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img469.gif"><P>
+Because total computation is again proportional to <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img470.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img470.gif">, the
+isoefficiency function is <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img471.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img471.gif">.  This analysis shows that a 2-D
+decomposition is more scalable than a 1-D decomposition.
+<P>
+This example illustrates a general rule: Higher-dimensional
+decompositions tend to be more efficient than lower-dimensional
+decompositions.  To understand why, consider Equations <A HREF="node29.html#eqfdte" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdte">3.7</A>
+<A NAME=3479>&#160;</A>
+and <A HREF="node30.html#eqfd2" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#eqfd2">3.8</A>.  While the 2-D decomposition sends slightly more
+messages (four instead of two), data volume is reduced by a factor of
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img472.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img472.gif">, from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img473.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img473.gif"> to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img474.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img474.gif">.  Total communication
+costs are reduced unless <em> P</em>
+ and <em> N</em>
+ are small or <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img475.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img475.gif"> is
+much larger than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img476.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img476.gif">.
+<P>
+<BR><HR><H2><A NAME=SECTION02443000000000000000>3.4.3 Execution Profiles</A></H2>
+<P>
+<A NAME=sec3prof>&#160;</A>
+<P>
+If scalability analysis suggests that performance is poor on problem
+sizes and computers of interest, we can use models to identify likely
+sources of inefficiency and hence areas in which an algorithm can be
+improved.
+<P>
+Poor performance may be due to excessive replicated computation, idle
+time, message startups, data transfer costs, or some combination of
+these factors.  An important first step when attempting to improve an
+algorithm is to identify which of these factors is dominant.  We can
+do this by computing an expected <em> execution profile
+ </em> for the
+<A NAME=3486>&#160;</A>
+algorithm, indicating the contributions of these different factors to
+execution time as a function of <em> N</em>
+ and/or <em> P</em>
+.  This approach
+is illustrated in Figure <A HREF="node30.html#figfdcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#figfdcomp">3.8</A> for the 1-D finite
+difference algorithm.  The model predicts that when this algorithm is
+executed on a multicomputer with a single vertical layer (<em> Z=1</em>
+),
+data transfer costs dominate execution time when <em> P</em>
+ is large;
+message startup costs are also significant.  If the number of vertical
+levels is increased, message startup costs become negligible, and
+overall efficiency improves.
+<P>
+<P><A NAME=4794>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img484.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img484.gif">
+<BR><STRONG>Figure 3.8:</STRONG> <em> Contributions of computation, message startup, and message
+transfer costs to total execution time in the 1-D finite difference
+algorithm, for <em> N=512</em>
+, <em> Z=1</em>
+, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img481.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img481.gif">sec,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img482.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img482.gif">sec, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img483.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img483.gif">sec, and varying <em> P</em>
+.  There is no
+replicated computation or idle time in this
+example.</em><A NAME=figfdcomp>&#160;</A><BR>
+<P>
+<P>
+Cost information of this sort can be used to guide a redesign of an
+algorithm.  Often, it may motivate us to reconsider decisions made
+earlier in the design process.  For example, if replicated computation
+is reducing performance, then we may wish to reconsider an alternative
+algorithm, previously discarded, that avoids replicated computation at
+the expense of increased communication.  Alternatively, high message
+startup costs may suggest further agglomeration so as to increase
+granularity.  Similarly, if data transfer costs are high, we may seek
+to replicate computation or send more, smaller messages if doing so
+can reduce the total volume of data transferred.
+<P>
+<A NAME=3498>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2213 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2221 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2219 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2223 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2224 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2222 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html">3.5 Experimental Studies</A>
+<B>Up:</B> <A NAME=tex2html2220 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2214 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html">3.3 Developing Models</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

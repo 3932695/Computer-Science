@@ -1,0 +1,26 @@
+compatible actuals & formals.
+
+check if identifiers are defined. 
+
+foo(x)
+foo(Bar y)
+
+- same type or
+- subclass or
+- implements interface
+
+x = a + b * c
+
+check types in expression, they must all be ints if x is an int.
+
+x==y
+
+x and y have to be same type. 
+
+Bar x;
+Foo y ...x==y
+
+legal when
+	Foo extends * Bar or...
+	Bar extends * Foo.
+	that is, Foo is above Bar in hierarchy or Bar is above Foo in hiearchy.

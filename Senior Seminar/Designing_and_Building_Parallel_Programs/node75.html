@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.8 Mapping</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.8 Mapping">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2847 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2855 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2853 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2857 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2858 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2856 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html">6.9 Modularity</A>
+<B>Up:</B> <A NAME=tex2html2854 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2848 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html">6.7 Argument Passing</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03380000000000000000>6.8 Mapping</A></H1>
+<P>
+<A NAME=9464>&#160;</A>
+Process blocks and do-loops define concurrent processes; channels and
+<A NAME=9465>&#160;</A>
+mergers define how these processes communicate and synchronize.  A
+parallel program defined in terms of these constructs can be executed
+on both uniprocessor and multiprocessor computers.  In the latter
+case, a complete program must also specify how processes are mapped to
+processors.  Recall from Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> that this is an
+important part of parallel algorithm design.
+<P>
+FM provides three mapping constructs.  The <tt> PROCESSORS</tt>
+<A NAME=9468>&#160;</A>
+declaration specifies the shape and dimension of a virtual processor
+<A NAME=9469>&#160;</A>
+array in which a program is assumed to execute, the <tt> LOCATION</tt>
+<A NAME=9471>&#160;</A>
+annotation maps processes to specified elements of this array, and the
+<tt> SUBMACHINE</tt> annotation specifies that a process should execute in
+a subset of the array.  An important aspect of these constructs is
+that they <em> influence performance but not correctness</em>.  Hence, we
+can develop a program on a uniprocessor and then tune performance on a
+parallel computer by changing mapping constructs.  This is consistent
+with the PCAM design methodology discussed in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>, in which
+mapping is the fourth and final stage of the design process.
+<P>
+<H2><A NAME=SECTION03381000000000000000>6.8.1 Virtual Computers</A></H2>
+<P>
+<A NAME=secfmmap>&#160;</A>
+<P>
+FM's process placement constructs are based on the concept of a <em>
+<A NAME=9477>&#160;</A>
+virtual computer
+ </em>, a collection of virtual processors that may
+<A NAME=9478>&#160;</A>
+or may not have the same topology as the physical computer(s) on which
+a program executes.  For consistency with Fortran concepts, an FM
+virtual computer is an <em> N</em>
+-dimensional array, and the constructs
+that control the placement of processes within this array are modeled
+on Fortran's array manipulation constructs.
+<P>
+The <tt> PROCESSORS</tt> declaration is used to specify the shape and size
+<A NAME=9481>&#160;</A>
+of the (implicit) processor array on which a process executes.  This
+declaration is similar in form and function to the array <tt>
+DIMENSION</tt> statement.  It has the general form
+<tt> PROCESSORS(I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img901.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img901.gif">,...,I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img902.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img902.gif">)</tt> ,
+<P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img903.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img903.gif"> and the <tt> I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img904.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img904.gif"></tt> have the same form as the arguments
+to a <tt> DIMENSION</tt> statement.  See Figure <A HREF="node75.html#figfmprocessor" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html#figfmprocessor">6.7</A> for
+some examples.
+<P>
+<P><A NAME=10397>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img905.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img905.gif">
+<BR><STRONG>Figure 6.7:</STRONG> <em> Three different <tt> PROCESSORS</tt> configurations, all
+involving 16 processors.</em><A NAME=figfmprocessor>&#160;</A><BR>
+<P>
+<P>
+The <tt> PROCESSORS</tt> declaration in the main (top-level) program
+specifies the shape and size of the virtual processor array on which
+that program is to execute.  The mapping of these virtual processors
+to physical processors is specified at load time.  This mapping may be
+achieved in different ways on different computers.  Usually, there is
+a one-to-one mapping of virtual processors to physical processors.
+However, it can sometimes be useful to have more virtual processors
+than physical processors, for example, if a multicomputer program is
+being developed on one processor.  The mapping of virtual processors
+to physical processors is not defined in FM, but is typically
+specified using a configuration file or command line arguments.
+<P>
+A <tt> PROCESSORS</tt> declaration in a process definition specifies the
+shape and size of the virtual processor array on which that particular
+process is to execute.  As with a regular array passed as an argument,
+this processor array cannot be larger than that declared in its
+parent, but it can be smaller or of a different shape.
+<P>
+<H2><A NAME=SECTION03382000000000000000>6.8.2 Process Placement</A></H2>
+<P>
+<A NAME=secfmlocn>&#160;</A>
+<P>
+The <tt> LOCATION</tt> annotation is similar in form and function to an
+<A NAME=9498>&#160;</A>
+array reference.  It has the general form
+<A NAME=9499>&#160;</A>
+<tt> LOCATION(I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img906.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img906.gif">, ..., I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img907.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img907.gif">)</tt>
+<P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img908.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img908.gif"> and the <tt> I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img909.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img909.gif"></tt> have the same form as the
+indices in an array reference, and specifies the processor on which
+the annotated process is to execute.  The indices must not reference a
+processor array element that is outside the bounds specified by the
+<tt> PROCESSORS</tt> declaration provided in the process or subroutine in
+which the annotation occurs.
+<P>
+The following code fragment shows how the ring pipeline code of
+Program <A HREF="node70.html#progfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmring">6.2</A> might be extended to specify process
+placement.  The <tt> PROCESSORS</tt> declaration indicates that this
+program is to execute in a virtual computer with <tt> P</tt> processors,
+while the <tt> LOCATION</tt> annotation placed on the process call
+specifies that each <tt> ringnode</tt> process is to execute on a separate
+virtual processor.
+<P>
+
+<PRE><TT> 
+		<tt> program ring</tt>              						 !
+<P>
+		<tt> parameter(P=3)</tt>            						 !
+<P>
+		<tt> PROCESSORS(P)</tt>          						 ! Three virtual processors
+<P>
+		<tt> ...</tt>                       						 !
+<P>
+		<tt> PROCESSDO i = 1,P</tt>         						 ! Each process on a processor
+<P>
+				<tt> PROCESSCALL ringnode(i, P, pi(i), po(i)) LOCATION(i)</tt>
+<P>
+		<tt> ENDPROCESSDO</tt>            						 !
+<P>
+</TT></PRE>
+
+<P>
+<H2><A NAME=SECTION03383000000000000000>6.8.3 Submachines</A></H2>
+<P>
+<A NAME=secfmsubm>&#160;</A>
+<P>
+A <tt> SUBMACHINE</tt> annotation is similar in form and function to an
+array section passed as an argument to a subroutine.  It has the
+general form
+<A NAME=9522>&#160;</A>
+<tt> SUBMACHINE(I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img910.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img910.gif">, ..., I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img911.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img911.gif">)</tt>
+<P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img912.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img912.gif"> and the arguments <tt> I<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img913.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img913.gif"></tt> have the same form as an
+array section and denote a set of processors in the current virtual
+computer.  The annotated process executes in a new virtual computer
+comprising just these virtual processors.  The <tt> PROCESSORS</tt>
+declaration in the process definition should agree in size and shape.
+<P>
+The <tt> SUBMACHINE</tt> annotation allows us to create ``subcomputers,''
+<A NAME=9529>&#160;</A>
+each comprising a subset of available processors, and hence to control
+resource allocation in programs comprising multiple components.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img916.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img916.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img914.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img914.gif">    Coupled Climate Model</b>:<A NAME=exccmx>&#160;</A>
+<P>
+<A NAME=9532>&#160;</A>
+A coupled climate modeling system comprising an ocean model and an
+atmosphere model can be structured as a <em> parallel
+<A NAME=9533>&#160;</A>
+composition
+ </em> of the two component models.  This organization is
+illustrated in Figure <A HREF="node75.html#figmap" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html#figmap">6.8</A>(a) and can be specified as
+follows.
+<P>
+
+<PRE>    parameter(P=4)
+    PROCESSORS(P,2*P)
+    ...
+    PROCESSES
+       PROCESSCALL atmosphere(...) SUBMACHINE(1:P, 1:P)
+       PROCESSCALL ocean(...)      SUBMACHINE(1:P, P+1:2*P)
+    ENDPROCESSES
+</PRE>
+
+<P>
+The <tt> ocean</tt> and <tt> atmosphere</tt> processes are invoked in disjoint
+virtual computers of size <tt> P</tt> <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img915.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img915.gif"> <tt> P</tt>; hence, both
+process definitions should incorporate a declaration <tt>
+PROCESSORS(P,P)</tt>.  In some situations, it may be more efficient to
+structure the coupled model as a <em> concurrent composition
+ </em> of
+<A NAME=9542>&#160;</A>
+the two components, as illustrated in Figure <A HREF="node75.html#figmap" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html#figmap">6.8</A> (b).  This
+effect can be achieved
+<A NAME=9544>&#160;</A>
+by changing the <tt> PROCESSORS</tt> declaration to <tt> PROCESSORS(P,P)</tt>
+and omitting the <tt> SUBMACHINE</tt> annotations.  No change to the
+component programs is required.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=10421>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img919.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img919.gif">
+<BR><STRONG>Figure 6.8:</STRONG> <em> Alternative mapping strategies in climate model.  In (a),
+the two components are mapped to disjoint sets of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img918.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img918.gif">
+processors.  In (b), they are mapped to the same
+processors.</em><A NAME=figmap>&#160;</A><BR>
+<P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img922.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img922.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img920.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img920.gif">    Search</b>:<A NAME=exsearchy>&#160;</A>
+<P>
+The following code fragment shows how virtual computers and the <tt>
+<A NAME=9554>&#160;</A>
+SUBMACHINE</tt> annotation can be used to control mapping in
+<A NAME=9555>&#160;</A>
+Program <A HREF="node70.html#progfmtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmtree">6.3</A>.
+<PRE><TT> 
+		<tt> PROCESS tree(id, n, toparent)</tt>
+<P>
+		<tt> PROCESSORS(n)</tt>               						 ! Size of my computer
+<P>
+		<tt> ...</tt>
+<P>
+		<tt> PROCESSES</tt>                   						 ! 		 Create children
+<P>
+				<tt> PROCESSCALL tree(id, n/2, lo) SUBMACHINE(1:n/2)</tt>
+<P>
+				<tt> PROCESSCALL tree(id+n/2, n/2, ro) SUBMACHINE(1+n/2:n)</tt>
+<P>
+				<tt> call nonleaf(id, li, ri, toparent)</tt>
+<P>
+		<tt> ENDPROCESSES</tt>
+<P>
+</TT></PRE>
+<P>
+Recall that Program <A HREF="node70.html#progfmtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmtree">6.3</A> creates a set of
+<em> 2n-1</em>
+ (<em> n</em>
+ a power of 2) processes connected in a binary tree of depth
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img921.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img921.gif">.  As illustrated in Figure <A HREF="node75.html#figfmtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html#figfmtree">6.9</A>, mapping can be
+achieved by using <tt> SUBMACHINE</tt> annotations to place processes
+located at the same depth in the tree on different processors
+(assuming that at least <em> n</em>
+ processors are available).
+<P>
+<BR><HR>
+<P>
+<A NAME=9573>&#160;</A>
+<P>
+<P><A NAME=10449>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img923.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img923.gif">
+<BR><STRONG>Figure 6.9:</STRONG> <em> Using submachines to control mapping in a tree-based algorithm
+executing on four processors.  The figures shows both the nodes in the
+process tree (circles) and the virtual computer in which each process
+executes (the shaded portion of the original four-processor virtual
+<A NAME=10444>&#160;</A>
+computer).</em><A NAME=figfmtree>&#160;</A><BR>
+<P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2847 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2855 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2853 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2857 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2858 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2856 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html">6.9 Modularity</A>
+<B>Up:</B> <A NAME=tex2html2854 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2848 HREF="node74.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html">6.7 Argument Passing</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

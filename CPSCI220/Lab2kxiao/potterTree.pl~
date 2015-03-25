@@ -1,0 +1,147 @@
+% ==== Documentation ====
+% Format: 
+% - "ancestor(X, Y)." means Y is an ancestor of X.
+% - "sister(X, Y)." means Y is a sister of X.
+% - "descendant(molly, X)." will list all the descendants of molly.
+%
+% Recommended commands:
+% - husband(X, Y)
+% - wife(X, Y)
+% - mother(X, Y)
+% - father(X, Y)
+% - parent(X, Y)
+% - child(X, Y)
+% - son 
+% - daughter
+% - grandparent
+% - grandpa
+% - grandma
+% - sibling
+% - brother
+% - sister
+% - aunt
+% - uncle
+% - cousin
+% - nephew
+% - niece
+% - ancestor
+% - descendant
+%
+% Additional commands:
+% - male(X)
+% - female(X)
+% - pair(X, Y)
+% - born(X, Y)
+
+
+
+%  ==== Base cases: Gender, Pairs, Births ====
+
+% Genders
+male(james).
+male(arthur).
+male(lucius).
+male(harry).
+male(ron).
+male(fred).
+male(george).
+male(percy).
+male(charlie).
+male(bill).
+male(draco).
+male(albus).
+male(james_II).
+male(hugo).
+male(fred_II).
+male(louis).
+male(teddy).
+male(scorpius).
+male(lupin).
+female(lily).
+female(molly).
+female(narcissa).
+female(ginny).
+female(hermione).
+female(angelina).
+female(audrey).
+female(fleur).
+female(astoria).
+female(lily_II).
+female(rose).
+female(roxanne).
+female(molly_II).
+female(lucy).
+female(dominique).
+female(victoire).
+female(tonks).
+
+
+% Pairs
+pair(james, lily).
+pair(arthur, molly).
+pair(lucius, narcissa).
+pair(harry, ginny).
+pair(ron, hermione).
+pair(george, angelina).
+pair(percy, audrey).
+pair(bill, fleur).
+pair(draco, astoria).
+pair(lupin, tonks).
+pair(teddy, victoire).
+
+% Births
+born(harry, lily).
+born(ginny, molly).
+born(ron, molly).
+born(fred, molly).
+born(george, molly).
+born(percy, molly).
+born(charlie, molly).
+born(bill, molly).
+born(draco, narcissa).
+born(albus, ginny).
+born(lily_II, ginny).
+born(james_II, ginny).
+born(rose, hermione).
+born(hugo, hermione).
+born(fred_II, angelina).
+born(roxanne, angelina).
+born(molly_II, audrey).
+born(lucy, audrey).
+born(dominique, fleur).
+born(louis, fleur).
+born(victoire, fleur).
+born(scorpius, astoria).
+born(teddy, tonks).
+
+
+%  ==== Inferences ====
+
+husband(Y, X):- pair(X, Y).
+wife(X, Y):- pair(X, Y).
+mother(X, Y):- born(X, Y).
+father(X, Z):- born(X, Y), pair(Z, Y).
+parent(X, Z):- mother(X, Z).
+parent(X, Z):- father(X, Z).
+child(Z, X):- parent(X, Z).
+son(Z, X):- child(Z, X), male(X).
+daughter(Z, X):- child(Z, X), female(X).
+
+grandparent(X, Z):- parent(X, Y), parent(Y, Z).
+grandpa(X, Z):- grandparent(X, Z), male(Z).
+grandma(X, Z):- grandparent(X, Z), female(Z).
+
+sibling(X, Z):- born(X, Y), born(Z, Y), X \= Z.
+brother(X, Z):- sibling(X, Z), male(Z).
+sister(X, Z):- sibling(X, Z), female(Z).
+
+aunt(X, Z):- parent(X, Y), sibling(Y, Z), female(Z).
+uncle(X, Z):- parent(X, Y), sibling(Y, Z), male(Z).
+cousin(X, Z):- aunt(X, Y), child(Y, Z).
+cousin(X, Z):- uncle(X, Y), child(Y, Z).
+nephew(Z, X):- sibling(Z, Y), son(Y, X).
+niece(Z, X):- sibling(Z, Y), daughter(Y, X).
+
+ancestor(X, Z):- parent(X, Z).
+ancestor(X, Z):- parent(X, Y), ancestor(Y, Z).
+descendant(Z, X):- ancestor(X, Z).

@@ -1,0 +1,11 @@
+INPUT=/etc/passwd
+echo "1. Simple sed search"
+sed -n '/root/ p' $INPUT
+
+echo "2. Simple sed substitute"
+sed -n 's/root/superuser/ p' $INPUT
+
+echo "3. Sed substitute using bash variables"
+original=root
+replacement=superuser
+sed -n "s/$original/$replacement/ p" $INPUT

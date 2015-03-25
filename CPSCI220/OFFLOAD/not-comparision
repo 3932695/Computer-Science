@@ -1,0 +1,5 @@
+input=${1}
+if [ ! "$input" == "apple" ]
+then
+ echo "No. $input is not a fruit."
+fi

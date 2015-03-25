@@ -1,0 +1,16 @@
+# Checking exists condition for files and directories
+if [ -e /etc/ ]; then
+ echo "/etc directory exists"
+fi
+if [ -e /etc/passwd ]; then
+ echo "/etc/passwd regular file exists"
+fi
+if [ -e /dev/sda1 ]; then
+ echo "/dev/sda1 block device file exists"
+fi
+if [ -e /dev/tty1 ]; then
+ echo "/dev/tty1 character device file exists"
+fi
+if [ -e /etc/rc.local ]; then
+ echo "/etc/rc.local symbolic link file exists"
+fi

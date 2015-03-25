@@ -1,0 +1,7 @@
+cities=("los angeles" "los altos" "las vegas" "san francisco") 
+for city in "${cities[@]}" 
+do 
+  if [[ $city =~ ^los ]]; then 
+   echo "$city starts with los" 
+  fi 
+done

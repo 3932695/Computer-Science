@@ -1,0 +1,282 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.3 Communication</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.3 Communication">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2787 HREF="node69.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node69.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2795 HREF="node71.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2793 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2797 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2798 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2796 HREF="node71.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html">6.4 Unstructured Communication</A>
+<B>Up:</B> <A NAME=tex2html2794 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2788 HREF="node69.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node69.html">6.2 Concurrency</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03330000000000000000>6.3 Communication</A></H1>
+<P>
+<A NAME=8802>&#160;</A>
+FM processes, like the tasks introduced in Part I, cannot share data
+directly.  Instead, they coordinate their execution and exchange data
+<A NAME=8803>&#160;</A>
+by sending and receiving messages on single-producer, single-consumer
+channels and multiple-producer, single-consumer mergers.  Hence, the
+next step in program implementation after processes have been defined
+is to establish the channels and mergers needed for communication.
+<P>
+In this section, we focus on the constructs and techniques used to
+specify structured, ``synchronous'' communication operations
+(Section <A HREF="node17.html#seccomm" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccomm">2.3</A>).  In subsequent sections we examine both
+unstructured and asynchronous communication.
+<P>
+<H2><A NAME=SECTION03331000000000000000>6.3.1 Creating Channels</A></H2>
+<P>
+<A NAME=secfmchan>&#160;</A>
+<P>
+<A NAME=8807>&#160;</A>
+The basic building block from which communication structures are
+<A NAME=8808>&#160;</A>
+constructed is the channel, created by executing the <tt> CHANNEL</tt>
+<A NAME=8810>&#160;</A>
+statement.  This statement has the general form
+<P>
+<tt> CHANNEL(in=</tt><em> inport</em>, <tt> out=</tt><em> outport</em><tt> )</tt>
+<P>
+and both creates a new channel and defines <em> inport
+ </em> and <em>
+outport
+ </em> to be references to this channel, with <em> inport
+ </em>
+able to receive messages and <em> outport
+ </em> able to send messages.
+The two ports must be of the same type.
+<P>
+Optional <tt> iostat=</tt> and <tt> err=</tt> specifiers can be used to detect
+error conditions, as in Fortran file input/output statements.  An <tt>
+err=<em> label
+ </em></tt> specifier causes execution to continue at the
+statement with the specified <em> label
+ </em> if an error occurs while
+creating the channel.  An <tt> iostat=<em> intval
+ </em></tt> specifier
+causes the integer variable <em> intval
+ </em> to be set to zero if no
+error occurs and to a nonzero value otherwise.  If neither <tt> err=</tt>
+nor <tt> iostat=</tt> specifiers are provided, an error causes the FM
+computation to terminate.
+<P>
+For succinctness, we use Fortran 90 <em> array sections
+ </em> in the
+<tt> CHANNEL</tt> statement.  An array section is like an array element
+but with a range rather than an index provided for one or more of its
+subscripts.  A range is represented by a triplet with the following
+general form.
+<em> lower-bound
+ </em> : <em> upper-bound
+ </em> : <em> stride</em>
+<P>
+Bounds
+can be omitted if the corresponding bounds of the array are required;
+a stride of 1 is assumed if <em> stride
+ </em> is omitted.
+See Figure <A HREF="node84.html#figasection" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#figasection">7.1</A> in Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A> for examples
+of array sections.
+<P>
+Array sections provided in the <tt> in=</tt> and <tt> out=</tt> components of
+a <tt> CHANNEL</tt> statement must be <em> conformant</em>, that is, of the same
+<A NAME=8844>&#160;</A>
+size and shape.  A channel is created for each pair of corresponding
+<A NAME=8845>&#160;</A>
+elements, as illustrated in Figure <A HREF="node70.html#figfmchan" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#figfmchan">6.1</A>.
+<P>
+<P><A NAME=10108>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img875.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img875.gif">
+<BR><STRONG>Figure 6.1:</STRONG> <em> Array sections and the FM <tt> CHANNEL</tt> statement.  
+In (a), a single statement creates four channels and, for <em> i=1..4</em>
+,
+defines outport <tt> po(<em> i</em>
+)</tt> and inport <tt> pi(<em> i</em>
+)</tt> to
+reference the same channel.  Hence, for example, a message sent on
+<tt> po(1)</tt> can be received on <tt> pi(1)</tt>.  In (b), two statements
+are used to define a ``staggered'' mapping of inports to outports, in
+which outport <tt> qo(mod(<em> i</em>
+,4)+1)</tt> and inport <tt> qi(<em> i</em>
+)</tt>
+reference the same channel.  Therefore, a message sent on <tt> qo(1)</tt> can
+be received on <tt> qi(4)</tt>.</em><A NAME=figfmchan>&#160;</A><BR>
+<P><H2><A NAME=SECTION03332000000000000000>6.3.2 Sending Messages</A></H2>
+<P>
+<A NAME=secfmsend>&#160;</A>
+A process sends a message by applying the <tt> SEND</tt> statement to an
+<A NAME=8863>&#160;</A>
+outport.  Doing this adds the message to the message queue associated
+with the outport, with the outport declaration specifying the message
+format.  For example, in the following code fragment the <tt> SEND</tt>
+statement sends a message consisting of the integer <tt> i</tt> followed
+by the first ten elements of the real array <tt> a</tt>.
+<P>
+
+<PRE>    OUTPORT (integer, real x(10)) po
+    ...
+    SEND(po) i, a
+</PRE>
+
+<P>
+A process sends a sequence of messages by repeated calls to <tt>
+<A NAME=8868>&#160;</A>
+SEND</tt>; it can also call <tt> ENDCHANNEL</tt> to send an end-of-channel
+<A NAME=8870>&#160;</A>
+(EOC) message.  This usage is illustrated in
+Program <A HREF="node68.html#progfmbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node68.html#progfmbuild">6.1</A>, where the <tt> foundry</tt> process uses the
+<tt> SEND</tt> and <tt> ENDCHANNEL</tt> statements to send a total of 100
+integer messages.  <tt> ENDCHANNEL</tt> also sets the value of the outport
+variable to be <tt> NULL</tt>, thereby preventing further messages from
+being sent on that port.
+<P>
+Like Fortran's <tt> write</tt> and <tt> endfile</tt> statements, <tt> SEND</tt>
+and <tt> ENDCHANNEL</tt> are nonblocking (asynchronous); that is, they complete
+immediately.  Variables named in a <tt> SEND</tt> statement can be
+modified in subsequent statements, without affecting the send
+operation.
+<P>
+An operation on an undefined port is treated as erroneous.  Optional
+<tt> err=</tt> and <tt> iostat=</tt> specifiers (described in
+Section <A HREF="node70.html#secfmchan" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#secfmchan">6.3.1</A>) can be included in <tt> SEND</tt> and <tt>
+ENDCHANNEL</tt> statements to indicate how to recover from this and other
+exceptional conditions.
+<P>
+<H2><A NAME=SECTION03333000000000000000>6.3.3 Receiving Messages</A></H2>
+<P>
+<A NAME=secfmrecv>&#160;</A>
+<P>
+A process receives a value by applying the <tt> RECEIVE</tt> statement to
+<A NAME=8890>&#160;</A>
+an inport.  The inport declaration specifies the message format.  For
+example, the <tt> bridge</tt> process in Program <A HREF="node68.html#progfmbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node68.html#progfmbuild">6.1</A> makes
+repeated calls to the <tt> RECEIVE</tt> statement to receive a sequence of
+integer messages, detecting end-of-sequence by using the <tt> iostat</tt>
+specifier.  A <tt> RECEIVE</tt> statement is blocking (synchronous); that is, it
+does not complete until data is available.  Hence, a consumer process
+such as <tt> bridge</tt> cannot ``run ahead'' of the corresponding
+producer.
+<P>
+An array size can be included in a message, thereby allowing arrays of
+different sizes to be communicated on the same channel.  For example,
+the following code fragment receives a message comprising the integer
+<tt> num</tt> followed by <tt> num</tt> real values.  The incoming data are
+placed in array elements <tt> a(1,offset), a(1,offset+1), ...,
+a(1,offset+num-1)</tt>.
+<P>
+
+<PRE>    INPORT (integer n, real x(n)) pi
+    integer num
+    real a(128, 128)
+    RECEIVE(pi) num, a(1,offset)
+</PRE>
+
+<P>
+An operation on an undefined port is treated as erroneous.  A <tt>
+RECEIVE</tt> statement can include optional <tt> err=</tt> and <tt> iostat=</tt>
+specifiers to indicate how to recover from this and various
+exceptional conditions.  In addition, an <tt> end=<em> label
+ </em></tt>
+specifier causes execution to continue at the statement with the
+specified <em> label
+ </em> upon receipt of a end-of-channel message.
+This mechanism can be used to rewrite the <tt> bridge</tt> process of
+Program <A HREF="node68.html#progfmbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node68.html#progfmbuild">6.1</A> as follows.
+<P>
+<PRE><TT> 
+		<tt> PROCESS bridge(pi)</tt>           				 ! Process definition
+<P>
+		<tt> INPORT (integer) pi</tt>          				 ! Argument: inport
+<P>
+		<tt> integer num</tt>                  				 ! Local variable
+<P>
+		<tt> do while(.true.)</tt>             				 ! While not done:
+<P>
+				<tt> RECEIVE(port=pi, end=10) num</tt> 		 ! 		 Receive message
+<P>
+				<tt> call use_girder(num)</tt>   		 ! 		 Process message
+<P>
+		<tt> enddo</tt>                        				 !
+<P>
+<tt> 10</tt> 		<tt> end</tt>                 				 ! End of process
+<P>
+</TT></PRE>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img877.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img877.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img876.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img876.gif">    Ring Pipeline</b>:<A NAME=exfmring1>&#160;</A>
+<P>
+Program <A HREF="node70.html#progfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmring">6.2</A> implements the ring-based pairwise
+<A NAME=10013>&#160;</A>
+interactions algorithm of Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  It comprises
+<A NAME=8924>&#160;</A>
+a main program and a process definition.  The main program uses two
+<A NAME=8925>&#160;</A>
+channel statements to create <tt> P</tt> channels
+(Figure <A HREF="node70.html#figfmchan" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#figfmchan">6.1</A>) and a process do-loop to create <tt> P</tt>
+processes.  One inport and one outport are passed to each process as
+arguments, thereby connecting the processes in a unidirectional ring
+(Figure <A HREF="node70.html#figfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#figfmring">6.2</A>).  The variables <tt> i</tt> and <tt> P</tt> are
+also passed to the processes as arguments; this capability is
+discussed in Section <A HREF="node74.html#secarg" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html#secarg">6.7</A>.
+<P>
+The <tt> ringnode</tt> process's four arguments are a unique identifier,
+the total number of processes, and an inport and outport referencing
+channels from one neighbor and to the other neighbor in the ring.  The
+process first initializes its local state and then performs <tt> n-1</tt>
+send-receive-compute steps before terminating.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmring>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img878.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img878.gif"><P>
+<P>
+<A NAME=8968>&#160;</A>
+<P>
+<P><A NAME=10154>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img879.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img879.gif">
+<BR><STRONG>Figure 6.2:</STRONG> <em> FM implementation of three-process ring pipeline showing channel
+connections.</em><A NAME=figfmring>&#160;</A><BR>
+<P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img882.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img882.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img880.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img880.gif">    Search</b>:<A NAME=exsearchx>&#160;</A>
+<P>
+Program <A HREF="node70.html#progfmtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmtree">6.3</A> implements a prototypical tree-structured
+computation.  The program explores a binary tree recursively in the
+manner of
+<A NAME=8976>&#160;</A>
+Algorithm <A HREF="node10.html#algsearch" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#algsearch">1.1</A>, creating a task for each tree node and
+<A NAME=8978>&#160;</A>
+returning the total number of leaf nodes that represent solutions.  In
+this simple program, the tree is not represented by an explicit data
+structure; instead, a process's position in the tree is represented by
+an integer.
+<P>
+The main program makes an initial call to the process <tt> tree</tt>.
+This process uses a process block to create recursively a set of
+<em> 2n-1</em>
+ (<em> n</em>
+ a power of 2) processes connected in a binary tree
+of depth <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img881.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img881.gif">.  Each process is connected to its parent by a
+channel; nonleaf processes also have channels from their two
+offspring.  Notice the use of a subroutine call within a process
+block, as discussed in Section <A HREF="node69.html#secfmproc" tppabs="http://www.mcs.anl.gov/dbpp/text/node69.html#secfmproc">6.2.2</A>.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmtree>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img883.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img883.gif"><P>
+<P>
+<A NAME=9014>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2787 HREF="node69.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node69.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2795 HREF="node71.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2793 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2797 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2798 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2796 HREF="node71.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html">6.4 Unstructured Communication</A>
+<B>Up:</B> <A NAME=tex2html2794 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2788 HREF="node69.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node69.html">6.2 Concurrency</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,7 @@
+declare -a city
+city[0]="Los Angeles"
+city[1]="San Francisco"
+city[5]="New York"
+city[12]="Beverly Hills"
+
+echo ${city[5]}

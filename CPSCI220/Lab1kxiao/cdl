@@ -1,0 +1,11 @@
+#!/bin/bash 
+# Accepts directory name as sole parameter
+# Switches to specified directory and lists its contents.
+# To execute, type ". ./cdl.sh TARGET_DIRECTORY" (Need to 'source' script)
+
+if [ -d $1 ]; then
+	cd $1
+	ls
+else
+	echo "Could not locate: " $1
+fi

@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>4.4 Case Study: Convolution</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="4.4 Case Study: Convolution">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2374 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2382 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2380 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2384 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2385 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2383 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html">4.5 Case Study: Tuple Space</A>
+<B>Up:</B> <A NAME=tex2html2381 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2375 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html">4.3 Performance Analysis</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02540000000000000000>4.4 Case Study: Convolution</A></H1>
+<P>
+<A NAME=eximage>&#160;</A>
+<P>
+<A NAME=5692>&#160;</A>
+In the remainder of this chapter, we apply the modular design
+<A NAME=5693>&#160;</A>
+techniques discussed in preceding sections in three case studies.  We
+<A NAME=5694>&#160;</A>
+start with an example from image processing, which we
+<A NAME=5695>&#160;</A>
+use to study design tradeoffs that can arise when constructing
+<A NAME=5696>&#160;</A>
+parallel programs from several components.  We consider the problem of
+<A NAME=5697>&#160;</A>
+applying a series of <em> convolution
+ </em> operations to a sequence
+of images.  Images, represented as arrays of size
+<em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img745.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img745.gif"><em> N</em>
+, are input in pairs on streams <em> A</em>
+ and
+<em> B</em>
+; convolution generates a new array of the same size that is output
+on stream <em> C</em>
+ (Figure <A HREF="node43.html#figmodpipe" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#figmodpipe">4.4</A>).  A single convolution
+operation involves the transformation of two input arrays using
+independent two-dimensional fast Fourier transforms (2-D FFTs), a
+pointwise multiplication of the two transformed arrays, and the
+transformation of the resulting array using an inverse 2-D FFT,
+thereby generating an output array.  A 2-D FFT performs 1-D FFTs first
+on each row and then on each column of an array.  A 1-D Fourier
+transform, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img746.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img746.gif">, of a sequence of <em> N</em>
+ values,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img747.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img747.gif">, is given by
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img748.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img748.gif"><P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img749.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img749.gif">.  The FFT exploits symmetry to perform this
+computation in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img750.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img750.gif"> steps, each involving <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img751.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img751.gif"> operations.
+<P>
+<P><A NAME=6308>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img752.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img752.gif">
+<BR><STRONG>Figure 4.4:</STRONG> <em> Dataflow diagram for an image-processing pipeline.
+Two streams of images, <em> A</em>
+ and <em> B</em>
+, are passed through FFT
+modules and then into an inverse FFT module, which first multiplies
+them and then applies an inverse FFT.</em><A NAME=figmodpipe>&#160;</A><BR>
+<P><H2><A NAME=SECTION02541000000000000000>4.4.1 Components</A></H2>
+<P>
+<A NAME=secmodfft2>&#160;</A>
+<P>
+<A NAME=5721>&#160;</A>
+We first consider the three components from which the convolution
+algorithm is constructed: forward 2-D FFT, multiplication, and inverse
+2-D FFT.  The pointwise multiplication is the simplest: Its
+communication requirements are zero as long as the arrays on which it
+operates have the same data distribution.
+<P>
+<P><A NAME=6325>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img753.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img753.gif">
+<BR><STRONG>Figure 4.5:</STRONG> <em> Two parallel algorithms for computing a series of
+2-D FFTs.  In each case, the activity on each of four
+processors (P0--3) is shown over time, with arrows denoting communication and I
+and O denoting input and output operations.  The algorithm illustrated
+in the upper part of the figure is a sequential composition of program
+components that perform 1-D FFTs, first on rows and then on columns of
+each input 2-D array; all-to-all communication is required to
+transpose the array after performing row FFTs and before performing
+column FFTs.  In the second algorithm, data flow from a first set of
+processors performing row FFTs (P0, P1) to a second set performing
+column FFTs (P2, P3).  Communication is required to move data from P0
+and P1 to P2 and P3.</em><A NAME=figmodfft>&#160;</A><BR>
+<P>
+<P>
+A variety of parallel algorithms are possible for the forward and
+inverse 2-D FFTs.  A fine-grained algorithm can exploit concurrency
+within the 1-D FFTs performed on individual rows and columns of the
+input array, at the cost of considerable communication.  A more
+coarse-grained algorithm performs independent 1-D FFTs in parallel,
+thereby avoiding a need for communication within the 1-D FFTs, but
+requiring communication when moving from a row-based to a column-based
+decomposition.  We consider two algorithms based on the latter
+strategy.  The first processes the input image stream sequentially,
+performing row FFTs and then column FFTs on each image in turn.  The
+second algorithm pipelines the image stream, performing column FFTs
+for one image in parallel with the row FFTs for the next
+(Figure <A HREF="node43.html#figmodfft" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#figmodfft">4.5</A>).  These two algorithms are in effect
+sequential and parallel compositions, respectively, of code fragments
+that perform 1-D FFTs on the rows and columns of a two-dimensional
+array.
+<P>
+<A NAME=5727>&#160;</A>
+The first parallel algorithm is termed the <em> transpose
+ </em>
+<A NAME=6150>&#160;</A>
+algorithm, since it performs a series of one-dimensional transforms on
+<A NAME=5730>&#160;</A>
+<em> P</em>
+ processors while the array is partitioned in one dimension,
+then transposes the array and performs transforms in the second
+dimension using the same processors.  The transpose operation requires
+that each processor send one message of size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img754.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img754.gif"> to each of the
+<em> P-1</em>
+ other processors.  Hence, total communication costs summed
+over <em> P</em>
+ processors are
+<P><A NAME=eq877>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img755.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img755.gif"><P>
+<P>
+<A NAME=5740>&#160;</A>
+The second algorithm is termed the <em> pipeline
+ </em> algorithm, since it partitions processors into
+two sets of size <em> P/2</em>
+ which perform FFTs on rows and columns,
+respectively.  Each processor in the first set must communicate with
+each processor in the other set, for a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img756.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img756.gif"> messages.  The
+entire array is communicated.  Hence, total communication costs are
+<P><A NAME=eq878>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img757.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img757.gif"><P>
+<P>
+Notice that communication costs are not necessarily distributed
+equally among processors in the second algorithm, since the sending and
+receiving processors form distinct groups.  Nevertheless,
+Equations <A HREF="node43.html#eq877" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eq877">4.1</A> and <A HREF="node43.html#eq878" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eq878">4.2</A> give a rough idea of the
+relative performance of the two algorithms.  The second algorithm
+sends significantly fewer messages and hence should be more efficient
+in situations in which message startup costs are dominant, for example,
+when <em> N</em>
+ and/or <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img758.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img758.gif"> are small or when
+<em> P</em>
+ or <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img759.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img759.gif"> are large.  On the other hand, the first algorithm
+probably incurs lower data transfer costs and hence may be superior in
+other situations.
+<P>
+<H2><A NAME=SECTION02542000000000000000>4.4.2 Composing Components</A></H2>
+<P>
+Having designed two alternative algorithms for the 2-D FFT, we now
+<A NAME=5754>&#160;</A>
+consider the parallel convolution algorithm proper.  Its four
+<A NAME=5755>&#160;</A>
+components---two parallel 2-D FFTs, one matrix multiplication, and one
+inverse 2-D FFT (Figure <A HREF="node43.html#figmodpipe" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#figmodpipe">4.4</A>)---can be combined using
+either sequential or parallel composition.  If sequential composition
+is used, the parallel convolution algorithm can be represented as
+follows, with the <tt> fft</tt> and <tt> fft<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img760.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img760.gif"></tt> calls invoking the
+transpose 2-D parallel FFT.
+<P>
+
+<PRE><TT> 
+		<tt> for each image</tt>
+<P>
+				<tt> A<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img761.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img761.gif"> = fft(A)</tt>
+<P>
+				<tt> B<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img762.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img762.gif"> = fft(B)</tt>
+<P>
+				<tt> C<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img763.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img763.gif"> = A<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img764.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img764.gif">.B<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img765.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img765.gif"></tt>
+<P>
+				<tt> C = fft<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img766.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img766.gif">(C<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img767.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img767.gif">)</tt>
+<P>
+		<tt> endfor</tt>
+<P>
+</TT></PRE>
+
+<P>
+If the input to this algorithm is decomposed appropriately (in one
+dimension, by rows), then because each FFT involves a transpose, total
+communication requirements are three times the cost of a single
+transpose:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img768.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img768.gif"><P>
+Notice that because the forward FFT operates first on rows and then on
+columns, the inverse FFT must operate first on columns and then on
+rows, so as to avoid the need for an additional transpose operation
+between the forward and inverse FFTs.
+<P>
+If parallel composition is used, the three FFTs execute
+concurrently, each on one third of the available processors.  (Because the
+<A NAME=5772>&#160;</A>
+multiplication involves <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img769.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img769.gif"> rather than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img770.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img770.gif">
+<A NAME=5773>&#160;</A>
+operations, we regard it as insignificant and compose it sequentially
+with the inverse FFT.)  Communication costing <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img771.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img771.gif"> is
+required to move data from the processors handling the forward FFTs to
+the processors handling the inverse FFT.
+<P>
+The 2-D FFTs within the parallel composition can be implemented by
+using either the transpose or pipeline algorithms, yielding two
+algorithm variants.  Costs are as specified by Equations <A HREF="node43.html#eq877" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eq877">4.1</A>
+and <A HREF="node43.html#eq878" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#eq878">4.2</A>, except that each algorithm is executed three times,
+with <em> P/3</em>
+ rather than <em> P</em>
+ processors involved in each
+execution.  Combining these costs with the cost of the data movement
+between components, we obtain the following models.
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img772.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img772.gif"><P>
+<P>
+<P><A NAME=6173>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img773.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img773.gif">
+<BR><STRONG>Table 4.1:</STRONG>  Approximate total message counts and data volumes for
+three parallel convolution algorithms, summed over <em> P</em>
+ processors
+and assuming that <em> P</em>
+ is reasonably large.
+<A NAME=tabmodconv>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=6364>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img774.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img774.gif">
+<BR><STRONG>Figure 4.6:</STRONG> <em> Performance of the sequential/transpose (Sequential)
+and parallel/transpose (Parallel) convolution algorithms on an IBM
+SP computer for different problem sizes and numbers of processors.
+The latter algorithm is more efficient for smaller problems and larger
+numbers of processors.</em><A NAME=figbook>&#160;</A><BR>
+<P>
+<P>
+The results of this brief analysis are summarized in
+Table <A HREF="node43.html#tabmodconv" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#tabmodconv">4.1</A>.  We see that the second and third algorithms
+perform fewer message startups but send more data.  Hence, they can be
+expected to be more efficient on smaller problems and larger numbers
+of processors.  This result can be confirmed experimentally, as
+illustrated in Figure <A HREF="node43.html#figbook" tppabs="http://www.mcs.anl.gov/dbpp/text/node43.html#figbook">4.6</A>.  A flexible parallel program
+might incorporate all three algorithms and select the appropriate
+alternative at runtime.  Of course, a programming tool that supports
+only sequential composition will allow only the first algorithm to be
+used.
+<P>
+<H2><A NAME=SECTION02543000000000000000>4.4.3 Convolution Problem Summary</A></H2>
+<P>
+The convolution problem illustrates the design tradeoffs that can
+arise when constructing even relatively simple parallel programs.
+These tradeoffs can arise at multiple levels.  First, we must identify
+candidate parallel algorithms for the component modules: in this case,
+the 2-D FFT.  Then, we must decide how to compose these building
+blocks so as to construct a complete parallel algorithm.  Aspects of
+the complete design in turn influence the techniques used within
+components, requiring for example that we operate on columns before
+rows in the inverse FFT.  The performance analysis must take into
+account all these design decisions.
+<A NAME=5810>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2374 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2382 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2380 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2384 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2385 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2383 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html">4.5 Case Study: Tuple Space</A>
+<B>Up:</B> <A NAME=tex2html2381 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2375 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html">4.3 Performance Analysis</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

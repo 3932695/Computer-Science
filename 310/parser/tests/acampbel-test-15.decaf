@@ -1,0 +1,12 @@
+void main() {
+	print(max(22,1));
+}
+
+
+int max(int x, int y) {
+	if (x > y)
+		return x;
+	else 	
+		return y;
+	return x;
+}

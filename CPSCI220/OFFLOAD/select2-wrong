@@ -1,0 +1,7 @@
+PS3="Enter your choice: "
+menuitems="CA NV NY Exit"
+select state in "$menuitems"
+do
+ echo "Your selection is: $state"
+ break
+done

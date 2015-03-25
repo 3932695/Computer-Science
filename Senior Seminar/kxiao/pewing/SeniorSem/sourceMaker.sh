@@ -1,0 +1,1 @@
+source #looking for path of setup.csh

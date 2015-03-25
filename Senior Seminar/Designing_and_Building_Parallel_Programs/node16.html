@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.2 Partitioning</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.2 Partitioning">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2035 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2043 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2041 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2045 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2046 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2044 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html">2.3 Communication</A>
+<B>Up:</B> <A NAME=tex2html2042 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2036 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html">2.1 Methodical Design</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02320000000000000000>2.2 Partitioning</A></H1>
+<P>
+<A NAME=secpartition>&#160;</A>
+<P>
+<A NAME=1109>&#160;</A>
+The partitioning stage of a design is intended to expose opportunities
+for parallel execution.  Hence, the focus is on defining a large
+number of small tasks in order to yield what is termed a <em>
+<A NAME=1110>&#160;</A>
+fine-grained
+ </em> decomposition of a problem.  Just as fine sand is
+more easily poured than a pile of bricks, a fine-grained decomposition
+provides the greatest flexibility in terms of potential parallel
+algorithms.  In later design stages, evaluation of communication
+requirements, the target architecture, or software engineering issues
+may lead us to forego opportunities for parallel execution identified
+at this stage.  We then revisit the original partition and agglomerate
+tasks to increase
+<A NAME=1111>&#160;</A>
+their size, or granularity.  However, in this first stage we
+wish to avoid prejudging alternative partitioning strategies.
+<P>
+A good partition divides into small pieces both the <em>
+computation
+ </em> associated with a problem and the <em> data
+ </em> on
+which this computation operates.  When designing a partition, programmers
+most commonly first focus on the data associated with a problem, then
+determine an appropriate partition for the data, and finally 
+work out how to associate computation with data.  This partitioning
+<A NAME=1114>&#160;</A>
+technique is termed <em> domain decomposition</em>.  The alternative
+<A NAME=1116>&#160;</A>
+approach---first decomposing the computation to be performed and
+<A NAME=1117>&#160;</A>
+then dealing with the data---is termed <em> functional decomposition</em>.
+These are complementary techniques which may be applied to different
+components of a single problem or even applied to the same problem to
+obtain alternative parallel algorithms.
+<P>
+In this first stage of a design, we seek to avoid replicating
+computation and data; that is, we seek to define tasks that partition
+both computation and data into disjoint sets.  Like granularity, this
+is an aspect of the design that we may revisit later.  It
+can be worthwhile replicating either computation or data if doing so
+allows us to reduce communication requirements.
+<P>
+<H2><A NAME=SECTION02321000000000000000>2.2.1 Domain Decomposition</A></H2>
+<P>
+<A NAME=1120>&#160;</A>
+In the domain decomposition approach to problem partitioning, we seek
+<A NAME=2306>&#160;</A>
+first to decompose the data associated with a problem.  If possible,
+we divide these data into small pieces of approximately equal size.
+Next, we partition the computation that is to be performed, typically
+by associating each operation with the data on which it operates.
+This partitioning yields a number of tasks, each comprising some data
+and a set of operations on that data.  An operation may require data
+from several tasks.  In this case, communication is required to move
+data between tasks.  This requirement is addressed in the next phase
+of the design process.
+<P>
+The data that are decomposed may be the input to the program, the
+output computed by the program, or intermediate values maintained by
+the program.  Different partitions may be possible, based on different
+data structures.  Good rules of thumb are to focus first on the
+largest data structure or on the data structure that is accessed most
+frequently.  Different phases of the computation may operate on
+different data structures or demand different decompositions for the
+same data structures.  In this case, we treat each phase separately
+and then determine how the decompositions and parallel algorithms
+developed for each phase fit together.  The issues that arise in this
+situation are discussed in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>.
+<P>
+Figure <A HREF="node16.html#figfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#figfd">2.2</A> illustrates domain decomposition in a simple
+problem involving a three-dimensional grid.  (This grid could
+represent the state of the atmosphere in a weather model, or a
+three-dimensional space in an image-processing problem.)  Computation
+is performed repeatedly on each grid point.  Decompositions in the
+<em> x</em>
+, <em> y</em>
+, and/or <em> z</em>
+ dimensions are possible.  In the
+early stages of a design, we favor the most aggressive decomposition
+possible, which in this case defines one task for each grid point.
+Each task maintains as its state the various values associated with
+its grid point and is responsible for the computation required to
+update that state.
+<P>
+<P><A NAME=2374>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img161.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img161.gif">
+<BR><STRONG>Figure 2.2:</STRONG> <em> Domain decompositions for a problem involving a
+three-dimensional grid.  One-, two-, and three-dimensional
+decompositions are possible; in each case, data associated with a
+single task are shaded.  A three-dimensional decomposition offers the
+greatest flexibility and is adopted in the early stages of a
+design.</em><A NAME=figfd>&#160;</A><BR>
+<P><H2><A NAME=SECTION02322000000000000000>2.2.2 Functional Decomposition</A></H2>
+<P>
+<A NAME=1132>&#160;</A>
+Functional decomposition represents a different and complementary way
+of thinking about problems.  In this approach, the initial focus is on
+the computation that is to be performed rather than on the data
+manipulated by the computation.  If we are successful in dividing this
+computation into disjoint tasks, we proceed to examine the data
+requirements of these tasks.  These data requirements may be disjoint,
+in which case the partition is complete.  Alternatively, they may
+overlap significantly, in which case considerable communication will
+be required to avoid replication of data.  This is often a sign that a
+domain decomposition approach should be considered instead.
+<P>
+<A NAME=1133>&#160;</A>
+While domain decomposition forms the foundation for most parallel
+algorithms, functional decomposition is valuable as a different way of
+thinking about problems.  For this reason alone, it should be
+considered when exploring possible parallel algorithms.  A focus on
+the computations that are to be performed can sometimes reveal
+structure in a problem, and hence opportunities for optimization, that
+would not be obvious from a study of data alone.
+<P>
+As an example of a problem for which functional decomposition is most
+appropriate, consider Algorithm <A HREF="node10.html#algsearch" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#algsearch">1.1</A>.  This explores a
+search tree looking for nodes that correspond to ``solutions.''  The
+algorithm does not have any obvious data structure that can be
+decomposed.  However, a fine-grained partition can be obtained as
+described in Section <A HREF="node10.html#exsearch1" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exsearch1">1.4.3</A>.  Initially, a single task is
+created for the root of the tree.  A task evaluates its node and then,
+if that node is not a leaf, creates a new task for each <tt> search</tt>
+call (subtree).  As illustrated in Figure <A HREF="node10.html#figtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figtree">1.13</A>, new tasks
+are created in a wavefront as the search tree is expanded.
+<P>
+<A NAME=1138>&#160;</A>
+<P>
+<P><A NAME=2389>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img162.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img162.gif">
+<BR><STRONG>Figure 2.3:</STRONG> <em> Functional decomposition in a computer model of
+climate.  Each model component can be thought of as a separate task,
+to be parallelized by domain decomposition.  Arrows represent
+exchanges of data between components during computation: the
+atmosphere model generates wind velocity data that are used by the
+ocean model, the ocean model generates sea surface temperature data
+that are used by the atmosphere model, and so on.</em><A NAME=figenv>&#160;</A><BR>
+<P>
+<P>
+<A NAME=1143>&#160;</A>
+Functional decomposition also has an important role to play as a
+program structuring technique.  A functional decomposition that
+partitions not only the computation that is to be performed but also
+the code that performs that computation is likely to reduce the
+complexity of the overall design.  This is often the case in computer
+models of complex systems, which may be structured as collections of
+simpler models connected via interfaces.  For example, a simulation of
+<A NAME=1144>&#160;</A>
+the earth's climate may comprise components representing the
+atmosphere, ocean, hydrology, ice, carbon dioxide sources, and so on.
+<A NAME=1145>&#160;</A>
+While each component may be most naturally parallelized using domain
+decomposition techniques, the parallel algorithm as a whole is simpler
+if the system is first decomposed using functional decomposition
+techniques, even though this process does not yield a large number of
+tasks (Figure <A HREF="node16.html#figenv" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#figenv">2.3</A>).  This issue is explored in
+Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>.
+<A NAME=1148>&#160;</A>
+<P>
+<H2><A NAME=SECTION02323000000000000000>2.2.3 Partitioning Design Checklist</A></H2>
+<P>
+<A NAME=secrules1>&#160;</A>
+<P>
+<A NAME=1151>&#160;</A>
+The partitioning phase of a design should produce one or more possible
+<A NAME=1152>&#160;</A>
+decompositions of a problem.  Before proceeding to evaluate
+communication requirements, we use the following checklist to ensure
+that the design has no obvious flaws.  Generally, all these questions
+should be answered in the affirmative.
+<P>
+<OL><LI>
+Does your partition define at least an order of magnitude more tasks
+than there are processors in your target computer?  If not, you
+have little flexibility in subsequent design stages.
+<P>
+<LI>
+Does your partition avoid redundant computation and storage
+requirements?  If not, the resulting algorithm may not be scalable to
+deal with large problems.
+<P>
+<LI>
+Are tasks of comparable size?  If not, it may be hard to
+allocate each processor equal amounts of work.
+<P>
+<LI>
+Does the number of tasks scale with problem size?  Ideally, an
+increase in problem size should increase the number of tasks rather
+than the size of individual tasks.  If this is not the case, your
+parallel algorithm may not be able to solve larger problems when more
+processors are available.
+<P>
+<LI>
+Have you identified several alternative partitions?  You can maximize
+flexibility in subsequent design stages by considering alternatives
+now.  Remember to investigate both domain and functional
+decompositions.
+<P>
+</OL>
+<P>
+Answers to these questions may suggest that, despite careful thought
+in this and subsequent design stages, we have a ``bad'' design.  In
+this situation it is risky simply to push ahead with implementation.
+We should use the performance evaluation techniques described in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> to determine whether the design meets our
+performance goals despite its apparent deficiencies.  We may also wish
+to revisit the problem specification.  Particularly in science and
+engineering applications, where the problem to be solved may involve a
+simulation of a complex physical process, the approximations and
+numerical techniques used to develop the simulation can strongly
+influence the ease of parallel implementation.  In some cases, optimal
+sequential and parallel solutions to the same problem may use quite
+different solution techniques.  While detailed discussion of these
+issues is beyond the scope of this book, we present several
+illustrative examples of them later in this chapter.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2035 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2043 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2041 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2045 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2046 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2044 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html">2.3 Communication</A>
+<B>Up:</B> <A NAME=tex2html2042 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2036 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html">2.1 Methodical Design</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

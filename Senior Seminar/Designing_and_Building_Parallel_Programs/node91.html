@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.9 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.9 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3048 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3056 HREF="node92.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node92.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3054 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3058 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3059 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3057 HREF="node92.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node92.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3055 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3049 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html">7.8 Case Study: Gaussian Elimination</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03490000000000000000>7.9 Summary</A></H1>
+<P>
+In this chapter, we have presented fundamental concepts of
+data-parallel programming and illustrated the application of these
+concepts in the programming languages Fortran 90 and High Performance
+Fortran.  The eight HPF constructs described in this chapter are
+summarized in Table <A HREF="node91.html#tabhpfsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node91.html#tabhpfsum">7.2</A>.  These are in addition to the
+F90 array language described in Section <A HREF="node84.html#secf90" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#secf90">7.2</A>.
+<P>
+<P><A NAME=11780>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1003.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1003.gif">
+<BR><STRONG>Table 7.2:</STRONG>  HPF quick reference: the HPF functions described in this
+chapter, the section in which each is described, and the programs that
+illustrate the use of each.
+<A NAME=tabhpfsum>&#160;</A><BR>
+<P>
+<P>
+F90's array language and HPF's data distribution directives and
+related constructs provide a powerful notation for data-parallel
+computations in science and engineering.  Their chief features are as
+follows:
+<P>
+<OL><LI>
+An array language comprising array assignments, array intrinsics, and
+(in HPF) <tt> FORALL</tt> and <tt> INDEPENDENT</tt> constructs is used to
+reveal the fine-grained concurrency inherent in data-parallel
+operations on arrays.
+<P>
+<LI>
+Data distribution directives are introduced to provide the programmer
+with control over partitioning, agglomeration, and mapping (and hence
+locality).
+<P>
+<LI>
+An HPF compiler translates this high-level specification into an
+executable program by generating the communication code implied by a
+particular set of data-parallel operations and data distribution
+directives.
+<P>
+</OL>
+<P>
+<A NAME=11659>&#160;</A>
+The most attractive feature of the data-parallel approach as
+exemplified in HPF is that the compiler takes on the job of generating
+communication code.  This has two advantages.  First, it allows the
+programmer to focus on the tasks of identifying opportunities for
+concurrent execution and determining efficient partition,
+agglomeration, and mapping strategies.  Second, it simplifies the task
+of exploring alternative parallel algorithms; in principle, only data
+distribution directives need be changed.
+<P>
+A problematic feature of HPF is the limited range of parallel
+algorithms that can be expressed in HPF <em> and
+ </em> compiled
+efficiently for large parallel computers.  However, the range of
+problems for which HPF is an appropriate tool can be expected to grow
+as compiler technology improves.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3048 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3056 HREF="node92.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node92.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3054 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3058 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3059 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3057 HREF="node92.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node92.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3055 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3049 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html">7.8 Case Study: Gaussian Elimination</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

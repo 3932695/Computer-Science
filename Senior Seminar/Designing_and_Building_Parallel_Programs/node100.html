@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.6 Other MPI Features</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.6 Other MPI Features">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3165 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3173 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3171 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3175 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3176 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3174 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html">8.7 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html3172 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3166 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html">8.5 Modularity</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03560000000000000000>8.6 Other MPI Features</A></H1>
+<P>
+In this section, we discuss MPI's derived datatype
+mechanism.  We also list MPI features not covered in this book.
+<P>
+<H2><A NAME=SECTION03561000000000000000>8.6.1 Derived Datatypes</A></H2>
+<P>
+<A NAME=secmptyp>&#160;</A>
+<P>
+<A NAME=13203>&#160;</A>
+In earlier sections of this chapter, MPI routines have been used to communicate <em>
+simple
+ </em> datatypes, such as integers and reals, or arrays of
+these types.  The final set of MPI functions that we describe
+implements <em> derived types</em>, a mechanism allowing noncontiguous data
+elements to be grouped together in a message.  This mechanism permits
+us to avoid data copy operations.  Without it, the sending of a 
+row of a two-dimensional array stored by columns would require
+that these noncontiguous elements be copied into a buffer before being
+sent. 
+
+<P>
+<P><A NAME=13831>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1037.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1037.gif">
+<BR><STRONG>Figure 8.12:</STRONG>  MPI derived datatype functions.
+<A NAME=figmpiderived>&#160;</A><BR>
+<P>
+<A NAME=13252>&#160;</A>
+<P>
+Three sets of functions are applied for manipulating derived types.
+Derived datatypes are constructed by applying <i> constructor
+ </i>
+functions to simple or derived types; we describe three constructor
+functions <tt> MPI_TYPE_CONTIGUOUS</tt>, <tt> MPI_TYPE_VECTOR</tt>, and
+<tt> MPI_TYPE_INDEXED</tt>.  The <em> commit
+ </em> function, <tt>
+MPI_TYPE_COMMIT</tt>, must be applied to a derived type before it can be
+used in a communication operation.  Finally, the <em> free
+ </em>
+function, <tt> MPI_TYPE_FREE</tt>, should be applied to a derived type
+after use, in order to reclaim storage.  These functions are summarized in
+Figure <A HREF="node100.html#figmpiderived" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html#figmpiderived">8.12</A>.
+<P>
+The constructor <tt> MPI_TYPE_CONTIGUOUS</tt> is used to define a type
+<A NAME=13263>&#160;</A>
+comprising one or more contiguous data elements.  A call of the form
+<tt> MPI_TYPE_CONTIGUOUS(count, oldtype, newtype)</tt>
+<P>
+defines a derived type <tt> newtype</tt> comprising <tt> count</tt>
+consecutive occurrences of datatype <tt> oldtype</tt>.  For example, the
+sequence of calls
+<PRE>   call MPI_TYPE_CONTIGUOUS(10, MPI_REAL, tenrealtype, ierr)
+   call MPI_TYPE_COMMIT(tenrealtype, ierr)
+   call MPI_SEND(data, 1, tenrealtype, dest, tag,
+  $              MPI_COMM_WORLD, ierr)
+   CALL MPI_TYPE_FREE(tenrealtype, ierr)
+</PRE>
+is equivalent to the following single call.
+<PRE>   call MPI_SEND(data, 10, MPI_REAL, dest, tag,
+  $              MPI_COMM_WORLD, ierr)
+</PRE>
+Both code fragments send a sequence of ten contiguous real values at
+location <tt> data</tt> to process <tt> dest</tt>.
+<P>
+<A NAME=13272>&#160;</A>
+The constructor <tt> MPI_TYPE_VECTOR</tt> is used to define a type
+comprising one or more blocks of data elements separated by a constant
+stride in an array.  A call of the form
+<P>
+<tt> MPI_TYPE_VECTOR(count, blocklen, stride, oldtype, newtype)</tt>
+<P>
+defines a derived type <tt> newtype</tt> comprising <tt> count</tt>
+consecutive blocks of data elements with datatype <tt> oldtype</tt>, with
+each block containing <tt> blocklen</tt> data elements, and the start of
+successive blocks separated by <tt> stride</tt> data elements.  For
+example, the sequence of calls
+<PRE>  float data[1024];
+  MPI_Datatype floattype;
+  MPI_Type_vector(10, 1, 32, MPI_FLOAT, &amp;floattype);
+  MPI_Type_commit(&amp;floattype);
+  MPI_Send(data, 1, floattype, dest, tag, MPI_COMM_WORLD);
+  MPI_Type_free(&amp;floattype);
+</PRE>
+is equivalent to the following code.
+<PRE>  float data[1024], buff[10];
+  for (i=0; i&lt;10; i++) buff[i] = data[i*32];
+  MPI_Send(buff, 10, MPI_FLOAT, dest, tag, MPI_COMM_WORLD);
+</PRE>
+Both send ten floating-point numbers from locations <tt> data[0]</tt>,
+<tt> data[32]</tt>,..., <tt> data[288]</tt>.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1040.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1040.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1038.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1038.gif">    Finite Difference Stencil</b>:<A NAME=exfds>&#160;</A>
+<P>
+Program <A HREF="node100.html#progmpfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html#progmpfd">8.8</A> uses derived types to communicate the north
+and south rows and the west and east columns of a <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1039.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1039.gif"> Fortran
+array.
+<A NAME=13288>&#160;</A>
+As illustrated in Figure <A HREF="node100.html#figbounds" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html#figbounds">8.13</A>, a column of this array is
+stored in contiguous locations and can be accessed by using a contiguous
+derived type.  On the other hand, row <em> i</em>
+ of this array
+(comprising elements <tt> array(<em> i</em>
+,1)</tt>, <tt> (<em> i</em>
+,2)</tt>,
+<em> ...</em>
+, <tt> (<em> i</em>
+,6)</tt>) is located in elements <em> i</em>
+,
+<em> i</em>
++4, ..., <em> i</em>
++20.  As these elements are not stored in
+contiguous locations, a call to <tt> MPI_TYPE_VECTOR</tt> is used to
+define the appropriate type, <tt> rowtype</tt>.
+<P>
+Program <A HREF="node100.html#progmpfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html#progmpfd">8.8</A> frees the derived types that it defines
+immediately after they are used.  In practice, a type might be reused
+many times before being freed.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progmpfd>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1041.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1041.gif"><P>
+<P>
+<P><A NAME=14199>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1044.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1044.gif">
+<BR><STRONG>Figure 8.13:</STRONG> <em> A <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1043.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1043.gif"> finite difference grid.  Areas to be sent
+to west, east, north, and south neighbors are
+highlighted.</em><A NAME=figbounds>&#160;</A><BR>
+<P>
+<P>
+The third constructor, <tt> MPI_TYPE_INDEXED</tt>, is used to define a
+type comprising one or more blocks of a primitive or
+<A NAME=13330>&#160;</A>
+previously defined datatype, where block lengths and the
+displacements between blocks are specified in arrays.  A call of the
+form
+<P>
+<tt> MPI_TYPE_INDEXED(count, lengths, indices, oldtype, newtype)</tt>
+<P>
+defines a derived type <tt> newtype</tt> comprising <tt> count</tt>
+consecutive blocks of data elements with datatype <tt> oldtype</tt>, with
+block <em> i</em>
+ having a displacement of <tt> indices(<em> i</em>
+)</tt> data
+elements and containing <tt> lengths(<em> i</em>
+)</tt> data elements.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1046.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1046.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1045.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1045.gif">    Fock Matrix Problem</b>:<A NAME=exfff>&#160;</A>
+<P>
+In Example <A HREF="node98.html#exmpfock1" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#exmpfock1">8.4</A> and Program <A HREF="node98.html#progmpfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#progmpfock">8.6</A>, we
+<A NAME=13344>&#160;</A>
+developed an implementation for a Fock matrix task that receives read
+<A NAME=13345>&#160;</A>
+requests containing the address of a single data value.  A more
+realistic program might support messages comprising <tt> len/2</tt>
+indices followed by <tt> len/2</tt> block lengths.  The <tt>
+MPI_TYPE_INDEXED</tt> constructor can then be used to return the
+required values, as follows.
+<P>
+
+<PRE>  call MPI_TYPE_INDEXED(len/2, inbuf(len/2+1), inbuf(1),
+ $                      MPI_INTEGER, focktype, ierr)
+  call MPI_TYPE_COMMIT(focktype, ierr);
+  call MPI_SEND(data, 1, focktype, source, MPI_COMM_WORLD,
+                ierr)
+  call MPI_TYPE_FREE(focktype, ierr)
+</PRE>
+
+<P>
+An alternative approach that does not use the constructor is to
+accumulate the values that are to be returned in a buffer.  The
+relative efficiency of the two approaches depends on several factors,
+including the amount of data to be transferred and the capabilities of
+the computer used to execute the program.
+<P>
+<BR><HR>
+<P>
+
+<H2><A NAME=SECTION03562000000000000000>8.6.2 MPI Features Not Covered</A></H2>
+<P>
+For simplicity, we have focused on a subset of MPI in this chapter.
+Of necessity, numerous subtleties have been omitted in this brief
+description. Also, the following MPI features have not been
+covered.
+<P>
+<OL><LI>
+<em> Heterogeneous types</em>.  Different datatypes can be encapsulated
+in a single derived type, thereby allowing communication of heterogeneous
+messages.  In addition, data can be sent in ``raw'' format, without
+<A NAME=13353>&#160;</A>
+data conversion in heterogeneous networks.
+<P>
+<LI>
+<A NAME=13354>&#160;</A>
+<A NAME=13355>&#160;</A>
+<em> Environmental inquiry.</em> A program can obtain information about
+the environment in which it is running, including information that can
+be used to tune algorithm performance.
+<P>
+<LI>
+<em> Additional global operations</em>.  These operations support
+all-to-all communication and variable-sized contributions from
+different processes.  Additional reduction operations can be used to
+determine the location of minimum and maximum values and to perform
+reductions with user-defined functions.
+<P>
+<LI>
+<A NAME=13358>&#160;</A>
+<em> Specialized communication modes.</em> These modes include 
+<A NAME=13360>&#160;</A>
+synchronous communication, which causes the sender to block until the
+corresponding receive operation has begun; buffered communication,
+which allows the programmer to allocate buffers so as to ensure that
+system resources are not exhausted during communications; and
+<A NAME=13361>&#160;</A>
+nonblocking communication, which can be more efficient on
+computers that allow user computation to be overlapped with some of
+the sending of a message.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3165 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3173 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3171 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3175 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3176 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3174 HREF="node101.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node101.html">8.7 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html3172 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3166 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html">8.5 Modularity</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

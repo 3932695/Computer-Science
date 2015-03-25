@@ -1,0 +1,57 @@
+/* Testing closed quotes, be wary of which line error is reported. */
+
+// Here are some keywords.
+
+void int double bool
+string class interface null
+this extends implements for
+while if else return
+break New NewArray Print
+ReadInteger ReadLine
+
+// Decaf is case sensitive, IF should be an identifier.
+
+IF
+
+// Some regular identifiers
+
+Binky binky ifinthis
+
+// This should be four tokens.
+
+if(23this
+
+// Decaf has boolean constants "true" and "false".
+
+true false
+
+// Some integer constants.
+
+1234567890
+88 42 0xFFF 0X12a 0xaAf 0X999
+8
+012
+0x0
+0X12aE
+
+// This should be an integer + identifier.
+
+0x12aEgF12
+
+// Some double constants. 
+
+0.12 12. 12.2E+2 12.E-2 0.12E2
+
+// This should be a period + integer.
+
+.12 
+
+// Incoming missing quote error! Should be on line 50.
+"This is a string.
+
+"This string is followed by an" identifier
+
+// There should be a tokentype for every one of these characters.
++ - * / % < <= > >= = == != && || ! ; , . [ ] ( ) { }
+
+

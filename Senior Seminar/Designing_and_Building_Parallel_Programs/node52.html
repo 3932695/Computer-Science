@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.1 C++
+  Review</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.1 C++
+  Review">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2559 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2567 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2565 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2569 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2570 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2568 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html">5.2 CC++
+  Introduction</A>
+<B>Up:</B> <A NAME=tex2html2566 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2560 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<BR><HR><P>
+<H1><A NAME=SECTION03210000000000000000>5.1 C++
+  Review</A></H1>
+<P>
+<A NAME=seccpp>&#160;</A>
+<P>
+We first review some of the basic C++
+  constructs used in the rest of
+this chapter, so as to make subsequent material understandable to
+readers familiar with C but not C++
+ .  Readers familiar with C++
+  can
+skip this section.
+<P>
+With a few exceptions, C++
+  is a pure extension of ANSI C.  Most
+valid ANSI C programs are also valid C++
+  programs.  C++
+  extends C
+by adding strong typing and language support for data abstraction and
+object-oriented programming.
+<P>
+<H2><A NAME=SECTION03211000000000000000>5.1.1 Strong Typing and Memory Management</A></H2>
+<P>
+ANSI standard C introduced function prototypes to the C language.  A
+function prototype defines the type of each function argument and the
+function's return value (the function's <em> signature
+ </em>).  For
+example:
+<P>
+<PRE>/* A forward declaration to a_function */
+int a_function(float b, double c);
+
+/* The definition of a_function */
+int a_function(float b, double c) {
+  /* Function body */
+}
+</PRE>
+<P>
+C++
+  requires that function prototypes be provided for all functions
+before they are used and enforces consistent function use between program
+<A NAME=6682>&#160;</A>
+files.  Thus, it is possible to distinguish between functions that have
+<A NAME=6683>&#160;</A>
+the same name but different signatures.  C++
+  uses this capability to
+allow function names to be <em> overloaded</em>.  That is, more than one
+function can be defined with the same name; the compiler compares
+function call arguments with function signatures to determine which
+version to use.
+<P>
+In C programs, the library routines <tt> malloc</tt> and <tt> free</tt> are
+used for dynamic memory allocation.  C++
+  defines two additional
+operators, <tt> new</tt> and <tt> delete</tt>, as illustrated in the following
+code fragments.
+<P>
+<PRE>struct S { 
+   /* Structure body */
+};
+
+S *sPtr = new S;         /* Allocate instance of S */
+delete sPtr;             /* Delete instance of S */
+
+int *iPtr = new int[25]; /* Allocate array of integers */
+delete [] iPtr;          /* Delete array of integers */
+</PRE>
+<P>
+Notice that <tt> new</tt> is given a description of the type of the data
+object to be allocated; it returns a pointer to dynamically allocated
+data of that type.  The <tt> delete</tt> operator is used to release
+dynamically allocated storage.  The programmer must indicate when an
+array of objects is being deleted.
+<P>
+<H2><A NAME=SECTION03212000000000000000>5.1.2 Classes</A></H2>
+<P>
+<A NAME=6706>&#160;</A>
+The most significant feature that C++
+  adds to C is the concept of
+<A NAME=6707>&#160;</A>
+classes.  A class can be thought of as a generalization of a C
+<A NAME=6708>&#160;</A>
+structure.  In C, a structure groups together data elements of various
+<A NAME=6709>&#160;</A>
+types under a single name; in C++
+ , structures can also contain <em>
+member functions</em>.  Like data elements of a C structure, member
+functions of a class can be accessed only through a reference to an
+object of the appropriate type.  In C++
+ , a class defines a scope in
+which names referring to functions and data can be defined.  Classes
+can be introduced using the C keywords <tt> struct</tt> and <tt> union</tt>
+or the
+C++
+  keyword <tt> class</tt>.
+<P>
+<P><A NAME=progccex2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img831.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img831.gif"><P>
+<P>
+Program <A HREF="node52.html#progccex2" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html#progccex2">5.1</A> illustrates various features
+of the C++
+  class mechanism.  This program defines a class named <tt>
+Datum</tt> containing a data member <tt> x</tt>, a member function <tt>
+get_x</tt>, and two constructor functions.  (Notice the
+C++
+  single-line comments; anything after a double slash <tt> //</tt>
+is a comment.)  These terms are defined in the following discussion.
+<P>
+The syntax <tt> Datum::get_x()</tt> is used to name a member function
+<tt> get_x</tt> of <tt> Datum</tt>.  This name, called a <em> quantified
+name</em>, specifies that we are referring to a function defined in the
+scope of <tt> Datum</tt>.  If we do not quantify the name, we are defining
+the <em> global
+ </em> function <tt> get_x()</tt>, which is a different
+function.  Notice that within the definition of <tt> Datum::get_x()</tt>
+we can refer to the data member <tt> x</tt> directly, because <tt> x</tt> and
+<tt> get_x</tt> are defined in the same scope.  We also could incorporate
+the definition for function <tt> get_x</tt> directly in the class
+definition, as follows.
+<P>
+<PRE>public:
+   int get_x() { return x; }
+   ...
+</PRE>
+<P>
+<A NAME=6757>&#160;</A>
+The two member functions named <tt> Datum</tt> are <em> constructor
+<A NAME=6759>&#160;</A>
+functions
+ </em> for the <tt> Datum</tt> class.  A constructor has the same
+name as the class to which it applies and, if defined, is called
+whenever an object of the appropriate type is created.  Constructor
+functions are used to perform initialization and can be overloaded.
+<P>
+The function <tt> test</tt> in Program <A HREF="node52.html#progccex2" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html#progccex2">5.1</A> creates and uses
+three <tt> Datum</tt> objects, two of which are declared in the first two lines
+in the function body.
+Notice that the class name <tt> Datum</tt>
+can be used directly; in C we would have to write <tt> struct Datum</tt>.
+In the third line, the <tt> new</tt> operator is used to allocate the third
+<tt> Datum</tt> object.
+<P>
+Because constructors have been defined for <tt> Datum</tt>, they will be
+called whenever <tt> Datum</tt> objects are created.  The constructor with no
+arguments, called a <em> default constructor</em>, is called when <tt>
+<A NAME=6771>&#160;</A>
+a_datum</tt> is created, thereby initializing the field <tt> x</tt> of <tt>
+a_datum</tt> to zero.  The declaration of <tt> another_datum</tt> and the
+<tt> new</tt> operator both specify an integer argument and hence use the
+second constructor, thereby initializing the variable <tt> x</tt> to 23 in
+these two cases.
+<P>
+Recall that in C, the fields of a structure are accessed by using the
+dot operator (<tt> struct.fieldname</tt>), while the fields of a structure
+accessible via a pointer are accessed with the arrow operator (<tt>
+structptr-&gt;fieldname</tt>).  As illustrated in the function <tt> test</tt>,
+these same mechanisms can be used to refer to the member functions of
+a C++
+  class.
+<P>
+The C++
+  class mechanism also supports <em> protection</em>.  Members of
+a C++
+  class can be designated as being either <tt> public</tt> or <tt>
+private</tt>.  A <tt> public</tt> class member can be used without restriction
+<A NAME=6784>&#160;</A>
+by any program that has a reference to an instance of a class. Public
+<A NAME=6785>&#160;</A>
+data members can be read or written, and public member functions may be
+called.  In contrast, private members can be accessed only from within
+the class object.  Private data members can be accessed only by a
+class member function, and private member functions can be called only
+from within another member function of the class.  For example, the
+variable <tt> x</tt> in the <tt> Datum</tt> class is a private variable and
+hence can be accessed by the member function <tt> get_x</tt> but cannot
+be referenced directly as <tt> a_datum.x</tt>.
+<P>
+<H2><A NAME=SECTION03213000000000000000>5.1.3 Inheritance</A></H2>
+<P>
+<A NAME=secccii>&#160;</A>
+<P>
+The final C++
+  feature described here is inheritance.  As in C, a
+<A NAME=6792>&#160;</A>
+class or structure can be included as a member of another class, hence
+<A NAME=6793>&#160;</A>
+defining a <em> has-a</em> relationship between the two classes.  In C++
+ ,
+inheritance is used to create an alternative relationship between
+classes, an <em> is-a</em> relationship.  If a class D inherits from class
+B, then all public members of B are also members of D.  We say that D
+is derived from B, and that D is a derived class while B is a base
+class.  D includes all public members of B and may also include
+additional members, which are defined in the usual way.  We can view D
+as being a specialized version of a B, hence the <em> is-a</em>
+relationship.
+<P>
+Program <A HREF="node52.html#progcci" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html#progcci">5.2</A> illustrates the use of inheritance.  The
+syntax for inheritance is to specify a list of base classes after the
+derived class name.  The base class list is separated from the derived
+class name by a colon.  The keywords <tt> public</tt> and <tt> private</tt>
+<A NAME=6800>&#160;</A>
+are associated with the base class names to specify whether the
+inherited members are to be public or private members of the derived
+class.
+<P>
+Members of the base class can be redefined in the derived class.  For
+example, in Program <A HREF="node52.html#progcci" tppabs="http://www.mcs.anl.gov/dbpp/text/node52.html#progcci">5.2</A> class D redefines <tt> func2</tt>.
+When <tt> func2</tt> is called from an object of type B, we access the
+version of <tt> func2</tt> defined in B.  If <tt> func2</tt> is called from an
+object of type D, we get the version of <tt> func2</tt> defined in D.
+<P>
+<P><A NAME=progcci>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img832.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img832.gif"><P>
+<P>
+In some situations, we may want a base class to call functions that
+are defined in a derived class.  This facility is supported by a
+C++
+  mechanism called <em> virtual functions.</em>  A function declared
+<A NAME=6828>&#160;</A>
+virtual in a base class can be defined in a derived class.  This
+<A NAME=6829>&#160;</A>
+feature, which allows a programmer to specialize a generic base class
+for a specific application, is used in Section <A HREF="node59.html#secccvf" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#secccvf">5.8.2</A> to
+build a reusable parallel library.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2559 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2567 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2565 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2569 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2570 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2568 HREF="node53.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html">5.2 CC++
+  Introduction</A>
+<B>Up:</B> <A NAME=tex2html2566 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2560 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

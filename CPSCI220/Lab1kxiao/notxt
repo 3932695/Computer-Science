@@ -1,0 +1,15 @@
+#!/bin/bash 
+# Accepts directory name as sole parameter
+# Removes .txt on every text file in a directory; 
+# To execute, type "./notxt.sh TARGET_DIRECTORY"
+
+if [ -d $1 ]; then
+	FILES=$1*.txt
+	for file in $FILES
+	do
+		mv -- "$file" "${file%.txt}"
+	done
+	
+else
+	echo "Could not locate: " $1
+fi

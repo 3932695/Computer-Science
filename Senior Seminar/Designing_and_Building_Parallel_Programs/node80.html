@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2907 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2915 HREF="node81.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node81.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2913 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2917 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2918 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2916 HREF="node81.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node81.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2914 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2908 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html">6.12 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION033130000000000000000> Exercises</A></H1>
+<P>
+<OL><LI>
+<A NAME=exfm1>&#160;</A>
+Complete Programs <A HREF="node76.html#progfmfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdi">6.10</A> and <A HREF="node76.html#progfmfdx" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdx">6.11</A>.  Modify
+each program to allow for fixed instead of periodic boundary
+conditions.  Implement them on a parallel computer, and compare their
+performances with those predicted by the performance models developed
+in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<P>
+<LI>
+Extend the programs developed in Exercise <A HREF="node80.html#exfm1" tppabs="http://www.mcs.anl.gov/dbpp/text/node80.html#exfm1">1</A> to provide a
+2-D decomposition of the principal data structures.
+<P>
+<LI>
+Complete Programs <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A> and <A HREF="node71.html#progfmmw1" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw1">6.5</A> and conduct
+experiments to study their performance.
+<P>
+<LI>
+A disadvantage of Program <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A> is that a worker is idle
+while waiting for a task to arrive from the manager.  This problem can
+be avoided by having the worker generate a request for the next task
+before processing the task just received.  Write a variant of
+Program <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A> based on this idea.  Compare the performance
+of the two programs.
+<P>
+<LI>
+Design and implement a decentralized variant of the manager/worker
+structure described in Example <A HREF="node71.html#exmwx" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#exmwx">6.4</A>.  Design and carry out
+experiments to determine when this code is more efficient than the
+centralized code presented in the text.
+<P>
+<LI>
+Write programs that can be used to quantify process creation and
+communication costs on a uniprocessor and on a networked or parallel
+computer system.  Conduct experiments to measure these costs, and
+obtain estimates for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img936.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img936.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img937.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img937.gif">.
+<P>
+<LI>
+Write programs that implement two-way communication (a) by using a
+pair of channels and (b) with a single channel and dynamically-created
+reply channels.  Compare the performance of the two programs on a
+parallel computer.  Draw conclusions regarding the relative costs of
+the two mechanisms as implemented in your FM compiler.
+<P>
+<LI>
+Implement a variant of Programs <A HREF="node71.html#progfmmw2" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw2">6.4</A>
+and <A HREF="node71.html#progfmmw1" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw1">6.5</A> in which dynamically created reply channels,
+rather than a static network of reply channels, are used to return
+tasks to workers.
+<P>
+<LI>
+Extend Program <A HREF="node76.html#progfmfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdi">6.10</A> to use <tt> INTENT</tt> declarations to
+pass input and output arrays to and from <tt> subdomain</tt> processes.
+<P>
+<LI>
+Develop a program that receives data of different types from two
+sources, without busy waiting.  <em> Hint
+ </em>: Use additional
+channels to communicate type information.
+<P>
+<LI>
+Show how the functionality provided by the <tt> PROBE</tt> statement can
+be implemented by using a merger.  <em> Hint
+ </em>: A process sends a
+distinguished message to itself when it wants to check for pending
+input.
+<P>
+<LI>
+Extend Program <A HREF="node78.html#progfmfock2" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#progfmfock2">6.13</A> to implement read requests.
+<P>
+<LI>
+Complete Program <A HREF="node76.html#progfmmp" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmmp">6.12</A>, extend it to support message tags
+(Chapter <A HREF="node94.html#chapmpi" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html#chapmpi">8</A>), and use the resulting program to implement
+the symmetric pairwise interactions algorithm of
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.
+<P>
+<LI>
+Using the code in Programs <A HREF="node76.html#progfmfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdi">6.10</A> and <A HREF="node76.html#progfmfdx" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdx">6.11</A> as
+a basis, implement a hypercube communication template (see
+Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>).  Use this template to implement simple
+reduction, vector reduction, and broadcast algorithms.
+<P>
+<LI>
+Construct an FM implementation of the tuple space module described
+in Section <A HREF="node44.html#secmodts" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html#secmodts">4.5</A>.  Use this module to implement the
+database search problem described in that section.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2907 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2915 HREF="node81.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node81.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2913 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2917 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2918 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2916 HREF="node81.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node81.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2914 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2908 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html">6.12 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>4.1 Modular Design Review</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="4.1 Modular Design Review">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2338 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2346 HREF="node41.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2344 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2348 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2349 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2347 HREF="node41.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html">4.2 Modularity and Parallel Computing</A>
+<B>Up:</B> <A NAME=tex2html2345 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2339 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02510000000000000000>4.1 Modular Design Review</A></H1>
+<P>
+<A NAME=secmodcheck>&#160;</A>
+<P>
+The basic idea underlying modular design is to organize a complex
+system (such as a large program, an electronic circuit, or a
+mechanical device) as a set of distinct components that can be
+developed independently and then plugged together.  Although this may
+appear a simple idea, experience shows that the effectiveness of the
+technique depends critically on the manner in which systems are
+divided into components and the mechanisms used to plug components
+together.  The following design principles are particularly relevant
+to parallel programming.
+<A NAME=5460>&#160;</A>
+<P>
+<H4><A NAME=SECTION02510010000000000000> Provide simple interfaces.</A></H4>
+<P>
+Simple interfaces reduce the number of interactions that must be
+considered when verifying that a system performs its intended
+function.  Simple interfaces also make it easier to reuse components
+in different circumstances.  Reuse is a major cost saver. Not only
+does it reduce time spent in coding, design, and testing, but it also
+allows development costs to be amortized over many projects.  Numerous
+studies have shown that reusing software is by far the most effective
+technique for reducing software development costs.
+<P>
+As an example, a modular implementation of a climate modeling system
+(Figure <A HREF="node16.html#figenv" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#figenv">2.3</A>) may define distinct modules concerned with
+atmosphere modeling, ocean modeling, etc.  The interfaces to each
+module can comprise a small set of procedures that access boundary
+data, advance the simulation, and so on.  Hence, there is no need for
+the user to become familiar with the implementation of the various
+modules, which collectively may comprise hundreds of procedures and
+tens of thousands of lines of code.
+<P>
+<H4><A NAME=SECTION02510020000000000000> Ensure that modules hide information.</A></H4>
+<P>
+The benefits of modularity do not follow automatically from the act of
+subdividing a program.  The way in which a program is decomposed can
+make an enormous difference to how easily the program can be
+implemented and modified.  Experience shows that each module should
+encapsulate information that is not available to the rest of a
+<A NAME=5464>&#160;</A>
+program.  This <em> information hiding
+ </em> reduces the cost of
+subsequent design changes.  For example, a module may encapsulate
+<P>
+<UL><LI>
+related functions that can benefit from a common implementation or
+that are used in many parts of a system,
+<LI>
+functionality that is likely to change during later design or
+deployment,
+<LI>
+aspects of a problem that are particularly complex, and/or
+<LI>
+code that is expected to be reused in other programs.
+</UL>
+<P>
+Notice that we do not say that a module should contain functions that
+are logically related because, for example, they solve the same part
+of a problem.  This sort of decomposition does not normally facilitate
+maintenance or promote code reuse.
+<P>
+<H4><A NAME=SECTION02510030000000000000> Use appropriate tools.</A></H4>
+<P>
+While modular designs can in principle be implemented in any
+programming language, implementation is easier if the language
+supports information hiding by permitting the encapsulation of code
+and data structures.  Fundamental mechanisms in this regard include
+the procedure (or subroutine or function) with its locally scoped
+variables and argument list, used to encapsulate code; the
+user-defined datatype, used to encapsulate data; and dynamic memory
+allocation, which allows subprograms to acquire storage without the
+involvement of the calling program.  These features are supported by
+most modern languages (e.g., C++
+ , Fortran 90, and Ada) but are
+lacking or rudimentary in some older languages (e.g., Fortran 77).
+<P>
+<H4><A NAME=SECTION02510040000000000000> Design checklist.</A></H4>
+<P>
+The following design checklist
+<A NAME=5470>&#160;</A>
+can be used to evaluate the success of a modular design.  As usual,
+<A NAME=5471>&#160;</A>
+each question should be answered in the affirmative.
+<P>
+<OL><LI>
+Does the design identify clearly defined modules?
+<P>
+<LI>
+Does each module have a clearly defined purpose?  (Can you summarize
+it in one sentence?)
+<P>
+<LI>
+Is each module's interface sufficiently abstract that you do not need
+to think about its implementation in order to understand it?  Does it
+hide its implementation details from other modules?
+<P>
+<LI>
+Have you subdivided modules as far as usefully possible?
+<P>
+<LI>
+Have you verified that different modules do not replicate
+functionality?
+<P>
+<LI>
+Have you isolated those aspects of the design that are most hardware
+specific, complex, or otherwise likely to change?
+<P>
+</OL>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img728.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img728.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img727.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img727.gif">    Database search</b>:<A NAME=exoo>&#160;</A>
+<P>
+We use a simple example to illustrate how information hiding
+<A NAME=5476>&#160;</A>
+considerations can influence design.  To search a database for records
+matching a specified search pattern, we must read the database, search
+the database, and write any matching records found.  One possible
+decomposition of this problem defines input, search, and output
+modules with the following interfaces.
+<P>
+
+<PRE><TT> 
+		<tt> input(in_file, database)</tt>
+<P>
+		<tt> search(database, search_pattern, matches)</tt>
+<P>
+		<tt> output(out_file, database, matches)</tt>
+<P>
+</TT></PRE>
+
+<P>
+An examination of what must be done to read a database, perform a
+search, and so on could then lead us to define the procedures that
+comprise the input, search, and output modules.
+<P>
+This design provides simple interfaces.  However, all three modules
+depend on the internal representation used for the database, and hence
+must be modified if this representation is changed.  In addition, each
+module probably duplicates database access functions.
+<P>
+An alternative decomposition, driven by information hiding concerns,
+focuses on the internal representation of the database as something
+potentially complex, likely to change, and common to many components.
+Hence, this information is hidden in a single database module that
+provides operations such as the following.
+<P>
+
+<PRE><TT> 
+		<tt> read_record(file, id, record)</tt>
+<P>
+		<tt> add_record(id, record, database)</tt>
+<P>
+		<tt> get_record(id, record, database)</tt>
+<P>
+		<tt> write_record(file, id, record)</tt>
+<P>
+</TT></PRE>
+
+<P>
+The rest of the program can now be written without knowing anything
+about how the database is implemented.  To change the internal
+representation of the database, we need simply to substitute a
+different implementation of the database module, which furthermore is
+ideally suited for reuse in other applications.
+<P>
+<BR><HR>
+<P>
+<A NAME=5488>&#160;</A>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2338 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2346 HREF="node41.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2344 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2348 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2349 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2347 HREF="node41.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html">4.2 Modularity and Parallel Computing</A>
+<B>Up:</B> <A NAME=tex2html2345 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2339 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

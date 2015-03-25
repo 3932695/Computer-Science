@@ -1,0 +1,6 @@
+cat > cities.txt <<-EOF
+Los Angeles
+	Las Vegas
+	San Francisco
+Santa Monica
+EOF

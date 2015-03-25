@@ -1,0 +1,15 @@
+echo "Calling multi line awk script (with bash variable printed)"
+INPUT="/etc/passwd"
+myheader="Header from Bash Var"
+awk '
+BEGIN {
+ print "***Awk: '"$myheader"'***"
+ FS=":"
+}
+/root/ {
+ print "  Awk Body: " $1
+}
+END {
+ print "***Awk Footer***"
+}
+' $INPUT

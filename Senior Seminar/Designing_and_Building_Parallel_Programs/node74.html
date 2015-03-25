@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.7 Argument Passing</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.7 Argument Passing">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2835 HREF="node73.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node73.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2843 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2841 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2845 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2846 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2844 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html">6.8 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2842 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2836 HREF="node73.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node73.html">6.6 Determinism</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03370000000000000000>6.7 Argument Passing</A></H1>
+<P>
+<A NAME=secarg>&#160;</A>
+<P>
+FM extends the basic task/channel model by
+<A NAME=9351>&#160;</A>
+allowing ordinary variables, as well as ports, to be passed as actual
+arguments in a process call.  These values can be both read and
+modified inside the process, and updated values are available to the
+parent process when the process returns.
+<P>
+This capability is not essential: a value can always be passed to a
+process by defining a channel, sending the value on the outport, and
+passing the inport to the process as an argument.  A similar strategy
+<A NAME=9352>&#160;</A>
+can be used to return a value from a process.  However, normal
+argument passing often produces more concise and easy-to-understand
+programs.  See Program <A HREF="node74.html#progfmarg" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html#progfmarg">6.8</A> for a comparison of the two
+approaches.
+<P>
+<P><A NAME=progfmarg>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img894.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img894.gif"><P><H2><A NAME=SECTION03371000000000000000>6.7.1 Copying and Determinism</A></H2>
+<P>
+If unrestricted, argument passing could compromise determinism. The
+result computed by a program that passed the same variable to two
+<A NAME=9389>&#160;</A>
+processes could depend on the order in which those processes executed.
+For example, the following code fragments could be nondeterministic if
+a call to <tt> proc</tt> modifies the argument <tt> x</tt> and this variable
+is used in subsequent computation.
+<P>
+
+<PRE>  PROCESSDO i = 1,2             PROCESSES
+    PROCESSCALL proc(i,x)         PROCESSCALL proc(1,x)
+  ENDPROCESSDO                    PROCESSCALL proc(2,x)
+    ...                         ENDPROCESSES
+</PRE>
+
+<P>
+FM semantics ensure deterministic execution in these situations.
+Variables named as process arguments in a process block or do-loop are
+passed by value; that is, they are copied.  In the case of arrays, the
+number of values copied is determined by the dummy argument
+declaration in the called process.  Values are also copied back upon
+termination of the process block or do-loop, in textual and do-loop
+order.  These copy operations ensure deterministic execution even
+when concurrent processes update the same value.  Hence, these code
+fragments are deterministic even if <tt> proc</tt> does modify its
+argument.  In both cases, the value computed by the process <tt>
+proc(2,x)</tt> is used to update <tt> x</tt>.
+<P>
+<H2><A NAME=SECTION03372000000000000000>6.7.2 Avoiding Copying</A></H2>
+<P>
+<A NAME=secfmintent>&#160;</A>
+<P>
+Copying variables on process call and return can be expensive.
+Sometimes this copying is not necessary; for example, if a variable is
+only read by a process, not modified, then there is no need to copy it
+on return.  We can provide <tt> INTENT</tt> declarations for dummy
+arguments to specify when copying is not to be performed.  Three <tt>
+INTENT</tt> declarations are supported, as follows.
+<P>
+
+<PRE><TT>     &#175;<tt> INTENT(in)</tt>    <em> var-list</em>       &#175; : Copy on call only.
+<P>
+		 <tt> INTENT(out)</tt>   <em> var-list</em> 		 : 		 Copy on return only.
+<P>
+		 <tt> INTENT(inout)</tt> <em> var-list</em> 		 : 		 (Default) Copy on call and return.
+<P>
+</TT></PRE>
+
+<P>
+We note that FM and
+<A NAME=9408>&#160;</A>
+Fortran 90 intent declarations have slightly different semantics.  In
+a Fortran 90 subroutine, these declarations are assertions: <tt>
+intent(in)</tt> asserts that an argument is not written by the subroutine,
+and <tt> intent(out)</tt> asserts that the argument is not read.  These
+assertions have no semantic content: a program with incorrect
+declarations is invalid.  In contrast, <tt> INTENT</tt> declarations in an
+FM process have semantic content: they specify whether copying is to
+be performed, and they cannot be invalid.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img899.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img899.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img895.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img895.gif">    Ring Pipeline</b>:<A NAME=exrpx>&#160;</A>
+<P>
+We use a modified version of Program <A HREF="node70.html#progfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmring">6.2</A> to illustrate
+the use of <tt> INTENT</tt> declarations.  Program <A HREF="node74.html#progfmring3" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html#progfmring3">6.9</A>
+extends Program <A HREF="node70.html#progfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmring">6.2</A> by incorporating statements that
+read input data and write output data.
+<A NAME=9418>&#160;</A>
+The inport and outport declarations and the <tt> CHANNEL</tt> statements
+are as in Program <A HREF="node70.html#progfmring" tppabs="http://www.mcs.anl.gov/dbpp/text/node70.html#progfmring">6.2</A> and are not shown here.  The main
+program uses routines <tt> ring_read</tt> and <tt> ring_write</tt> to read
+and write two-dimensional arrays <tt> input</tt> and <tt> output</tt>,
+respectively.  These arrays contain initial particle positions and
+final particle positions, respectively.
+<P>
+<P><A NAME=10361>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img898.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img898.gif">
+<BR><STRONG>Figure 6.6:</STRONG> <em> Argument passing and <tt> INTENT</tt> declarations in the ring
+pipeline program.  The parent process reads the <tt> input</tt> array, which is of
+size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img897.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img897.gif">, from a file and passes one column to each of four 
+<tt> ringnode</tt> processes.  The ring processes communicate among
+themselves and compute a column of the <tt> output</tt> array; upon
+termination, this array is copied back to the parent, which writes it
+to a file.</em><A NAME=figfmintent>&#160;</A><BR>
+<P>
+<P>
+Argument passing is used to pass the appropriate components of these
+arrays to the subdomain processes, with <tt> INTENT</tt> declarations
+ensuring that <tt> input</tt> is copied only on call and <tt> output</tt>
+only on return (Figure <A HREF="node74.html#figfmintent" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html#figfmintent">6.6</A>).  This centralized I/O
+strategy has the advantage of simplicity.  A disadvantage on many
+computer systems is that it limits scalability, as the size of problem
+that can be solved is constrained by the need to fit the <tt> input</tt>
+and <tt> output</tt> arrays into a single processor's memory.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmring3>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img900.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img900.gif"><P>
+<P>
+<A NAME=9462>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2835 HREF="node73.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node73.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2843 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2841 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2845 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2846 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2844 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html">6.8 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2842 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2836 HREF="node73.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node73.html">6.6 Determinism</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

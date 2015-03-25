@@ -1,0 +1,7 @@
+void main() {
+	int[] array;
+	int x;
+	array = NewArray(10, int);
+	array[7] = 47;
+	print(array[7]);
+}

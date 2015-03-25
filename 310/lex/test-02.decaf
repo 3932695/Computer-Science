@@ -1,0 +1,58 @@
+/* Testing identifier too long error. */
+
+// Here are some keywords.
+
+void int double bool
+string class interface null
+this extends implements for
+while if else return
+break New NewArray Print
+ReadInteger ReadLine
+
+// Decaf is case sensitive, IF should be an identifier.
+
+IF
+
+// Incoming identifier too long error! Should be on line 20.
+
+Binky binky ifinthis ThisIsWhereTheLexer_AlmostFails
+
+ThisIsWhereTheLexer__ReallyFails
+
+// This should be four tokens.
+
+if(23this
+
+// Decaf has boolean constants "true" and "false".
+
+true false
+
+// Some integer constants.
+
+1234567890
+88 42 0xFFF 0X12a 0xaAf 0X999
+8
+012
+0x0
+0X12aE
+
+// This should be an integer + identifier.
+
+0x12aEgF12
+
+// Some double constants. 
+
+0.12 12. 12.2E+2 12.E-2 0.12E2
+
+// This should be a period + integer.
+
+.12 
+
+"This is a string."
+
+"This string is followed by an" identifier
+
+// There should be a tokentype for every one of these characters.
++ - * / % < <= > >= = == != && || ! ; , . [ ] ( ) { }
+
+

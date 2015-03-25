@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.7 Performance Issues</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.7 Performance Issues">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3024 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3032 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3030 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3034 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3035 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3033 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html">7.8 Case Study: Gaussian Elimination</A>
+<B>Up:</B> <A NAME=tex2html3031 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3025 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html">7.6 Other HPF Features</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03470000000000000000>7.7 Performance Issues</A></H1>
+<P>
+<A NAME=secdpperf>&#160;</A>
+<P>
+<A NAME=11386>&#160;</A>
+The performance of an HPF program depends not only on the skill of the
+programmer but also on the capabilities of the compiler, which in
+effect generates the actual parallel program from a high-level
+specification provided by the programmer.  The structure and hence the
+performance of this program may not be intuitively obvious to the
+programmer.  However, a good HPF compiler should provide feedback
+identifying hard-to-parallelize components, and of course intuition
+can be developed with experience.
+<P>
+Two major obstacles impact the efficient execution of an HPF
+program: sequential bottlenecks and excessive communication costs.  In
+the following sections, we first examine the compilation process and then
+discuss these two obstacles in turn.
+<P>
+<H2><A NAME=SECTION03471000000000000000>7.7.1 HPF Compilation</A></H2>
+<P>
+<A NAME=11388>&#160;</A>
+Compilers for HPF and related languages generally proceed roughly as
+<A NAME=11389>&#160;</A>
+follows.  Data decomposition statements are analyzed to determine the
+<A NAME=11390>&#160;</A>
+decomposition of each array in a program.  Computation is then
+partitioned across processors, typically (but not always) using the
+owner computes rule.
+
+This process allows nonlocal references, and hence
+communication requirements, to be identified.  Communication
+operations are then optimized.  In particular, an attempt is made to
+move messages out of loops so as to reduce communication costs.
+<P>
+<P><A NAME=fighpf2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img983.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img983.gif"><P>
+<P>
+As an illustration of how an HPF compiler operates,
+Program <A HREF="node89.html#fighpf2" tppabs="http://www.mcs.anl.gov/dbpp/text/node89.html#fighpf2">7.6</A> gives the code that might be generated for
+Program <A HREF="node85.html#proghpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpf1">7.2</A>.  Recall that Program <A HREF="node85.html#proghpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpf1">7.2</A>
+implements a parallel algorithm based on a one-dimensional
+decomposition of a two-dimensional finite-difference problem and
+executes on four processors.  The generated code is a mixture of F90
+statements and calls to library routines that perform communication
+operations.  In this example, two such routines are called: <tt>
+stencil_exchange_1d</tt> and <tt> reduce_real</tt>.  The first routine
+exchanges data with the processors handling neighboring parts of the
+finite difference grid, and the second performs the reduction
+operation required to compute a maximum difference.  These routines
+account for the communication requirements of the program.
+<P>
+In this example, communication costs are easy to determine.  The
+nearest-neighbor exchange will send two messages having a total size
+of 200 words; the reduction will generate <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img984.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img984.gif"> communications,
+each of size one word.  Hence, total costs are <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img985.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img985.gif"> 202.  As
+in addition, this program decomposes computation evenly across
+processors, it can be expected to execute with reasonable efficiency.
+<P>
+<H2><A NAME=SECTION03472000000000000000>7.7.2 Sequential Bottlenecks</A></H2>
+<P>
+A <em> sequential bottleneck
+ </em> occurs when a code fragment does not
+<A NAME=11416>&#160;</A>
+incorporate sufficient parallelism or when parallelism exists (in the
+<A NAME=11417>&#160;</A>
+sense that data dependencies do not prevent concurrent execution) but
+cannot be detected by the compiler.  In either case, the code fragment
+<A NAME=11418>&#160;</A>
+cannot be executed in parallel.  Sequential bottlenecks of this sort
+may not be serious if a program is intended to execute on only a small
+number of processors, but they inevitably reduce a program's
+scalability.  More precisely, if some fraction
+<em> 1/s</em>
+ of a program's total execution time executes sequentially, then
+<A NAME=11420>&#160;</A>
+Amdahl's law applies, and the maximum possible speedup that can be
+achieved on a parallel computer is <em> s</em>
+ (Section <A HREF="node28.html#secamdahl" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html#secamdahl">3.2.1</A>).
+<P>
+An HPF compiler should provide information about constructs that it
+was unable to parallelize.  The programmer may then be able to
+restructure the code in question to enable parallelization.
+<P>
+<H2><A NAME=SECTION03473000000000000000>7.7.3 Communication Costs</A></H2>
+<P>
+We next discuss a number of issues that affect the communication
+<A NAME=11424>&#160;</A>
+performance of HPF programs.
+<A NAME=11425>&#160;</A>
+<P>
+<A NAME=11427>&#160;</A>
+<em> Intrinsics.</em> Many F90 and HPF intrinsic functions combine data
+from entire arrays (Table <A HREF="node84.html#tabf90intrinsics" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#tabf90intrinsics">7.1</A>) and hence involve
+considerable communication if the arrays to which they are applied are
+distributed.  For example, operations such as <tt> MAXVAL</tt> and <tt>
+SUM</tt> perform array reductions which, as noted in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>,
+can be performed in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img986.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img986.gif"> steps on <em> P</em>
+ processors, for a total
+communication cost of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img987.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img987.gif">.  This cost is independent
+of the size of the arrays to be reduced.  In contrast, the cost of a
+<tt> TRANSPOSE</tt> or <tt> MATMUL</tt> operation depends on both the size and
+distribution of the operation's arguments.  Other operations such as
+<tt> DOT_PRODUCT</tt> involve communication only if their arguments are
+not aligned.
+<P>
+<em> Array operations.</em> Array assignments and <tt> FORALL</tt> statements
+<A NAME=11440>&#160;</A>
+can result in communication if, in  order to compute some array element <tt>
+<A NAME=11441>&#160;</A>
+A(i)</tt>, they require data values (e.g., <tt> B(j)</tt>) that are not on the
+same processor.  Program <A HREF="node89.html#fighpf2" tppabs="http://www.mcs.anl.gov/dbpp/text/node89.html#fighpf2">7.6</A> showed one example:
+the references <tt> X(i,j-1)</tt> and <tt> X(i,j+1)</tt> resulted in
+<A NAME=11446>&#160;</A>
+communication.  The <tt> CSHIFT</tt> operation is another common source of
+communication.
+<P>
+<A NAME=11448>&#160;</A>
+Cyclic distributions will often result in more communication than
+<A NAME=11449>&#160;</A>
+will block distributions.  However, by scattering the computational grid
+<A NAME=11450>&#160;</A>
+over available processors, they can produce better load balance in
+some applications.  (Recall that this strategy was discussed in
+Section <A HREF="node19.html#seclbalgs" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#seclbalgs">2.5.1</A>.)
+<P>
+<P><A NAME=12071>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img988.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img988.gif">
+<BR><STRONG>Figure 7.9:</STRONG> <em> Communication requirements of various <tt> FORALL</tt>
+statements.  The arrays <tt> A</tt> and <tt> B</tt> are aligned and distributed
+in a blocked fashion on three processors, while the array <tt> C</tt> is
+distributed in a cyclic fashion.</em><A NAME=fighpfx>&#160;</A><BR>
+<P>
+<P>
+To help you develop intuition regarding communication costs,
+we present in
+Figure <A HREF="node89.html#fighpfx" tppabs="http://www.mcs.anl.gov/dbpp/text/node89.html#fighpfx">7.9</A> the communication requirements
+associated with a number of different <tt> FORALL</tt> statements
+for three arrays <tt> A</tt>, <tt> B</tt>, and <tt> C</tt> distributed as
+follows.
+<PRE><TT> 
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS pr(3)</tt>
+<P>
+		             		 <tt> integer A(8), B(8), C(8)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> ALIGN B(:) WITH A(:)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE A(BLOCK) ONTO pr</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE C(CYCLIC) ONTO pr</tt>
+<P>
+</TT></PRE>
+<P>
+<em> Different mappings.</em> Even simple operations performed on
+nonaligned arrays can result in communication.  For example, the
+assignment <tt> A=B</tt> can require considerable communication if arrays
+<A NAME=11477>&#160;</A>
+<tt> A</tt> and <tt> B</tt> have different distributions.  The cost of this
+sort of communication must be weighed against the cost of converting
+to a common distribution before performing the operation.
+<P>
+<em> Procedure boundaries.</em> As discussed in Sections <A HREF="node41.html#secmoddd" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secmoddd">4.2.1</A>
+<A NAME=11483>&#160;</A>
+and <A HREF="node87.html#sechpfmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html#sechpfmod">7.5</A>, switching from one decomposition of an array to
+another at a procedure boundary can result in considerable
+communication.  Although the precise amount of communication required
+depends on the decomposition, the total cost summed over
+<em> P</em>
+ processors of moving between decompositions of an
+<em> M</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img989.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img989.gif"><em> N</em>
+ array will often be approximately <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img990.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img990.gif"><em> S M N</em>
+, where <em> S</em>
+ is the size of an array element in
+four-byte words.  This cost arises because, generally, each of the
+<em> P</em>
+ processors must communicate with every other processor,
+and each <em> M.N</em>
+ array element must be communicated.
+<P>
+<em> Compiler optimization.</em> A good HPF compiler does not compile a
+program statement by
+<A NAME=11494>&#160;</A>
+statement.  Instead, it seeks to reduce communication costs by
+combining communication operations and otherwise reorganizing program
+statements.  In addition, it may choose to use data distributions
+different from those recommended by the programmer.  Hence, it is
+always necessary to verify analytic results using instrumentation
+data.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3024 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3032 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3030 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3034 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3035 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3033 HREF="node90.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node90.html">7.8 Case Study: Gaussian Elimination</A>
+<B>Up:</B> <A NAME=tex2html3031 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3025 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html">7.6 Other HPF Features</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

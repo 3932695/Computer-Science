@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>11.1 The Hypercube Template</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="11.1 The Hypercube Template">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3482 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3490 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3488 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3492 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3493 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3491 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html">11.2 Vector Reduction</A>
+<B>Up:</B> <A NAME=tex2html3489 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3483 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04310000000000000000>11.1 The Hypercube Template</A></H1>
+<P>
+Recall from Section <A HREF="node33.html#secperfinter" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfinter">3.7.2</A> that a hypercube connects
+each of <em> P</em>
+ tasks (<em> P</em>
+ a power of 2) to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1118.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1118.gif"> other tasks
+(Figure <A HREF="node33.html#fighyper" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#fighyper">3.16</A>).  The template considered in this
+chapter uses this communication structure in an SPMD fashion, with
+each task executing Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>.  A local <tt> state</tt>
+variable is first set to be the supplied input data.  Computation then
+proceeds in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1119.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1119.gif"> steps.  In each step, each task first exchanges
+its local <tt> state</tt> with one of its neighbors in the hypercube and
+then combines the <tt> message</tt> received from the neighbor with <tt>
+state</tt> to generate a new <tt> state</tt>.  The output of the computation
+is the <tt> state</tt> generated in the final step.
+<P>
+<P><A NAME=algbutalg>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1120.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1120.gif"><P>
+<P>
+In Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>, the <tt> XOR</tt> function denotes an
+exclusive or operation and is used to identify neighbors.  (Exclusive
+or is defined as follows: <tt> 0 XOR 0=0</tt>, <tt> 0 XOR 1=1</tt>, <tt> 1 XOR
+0=1</tt>, <tt> 1 XOR 1=0</tt>.)  As noted in Section <A HREF="node33.html#secperfinter" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfinter">3.7.2</A>, the
+hypercube has the property that the binary labels of two nodes that
+are neighbors in the
+<em> d</em>
+th dimension differ only in the <em> d</em>
+th place; hence, the
+expression <tt> myid XOR <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1121.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1121.gif"></tt> yields the <em> i</em>
+th neighbor of node
+<tt> myid</tt>.
+<P>
+A particular parallel algorithm is defined by the operator <tt> OP</tt>
+used to combine <tt> state</tt> and <tt> message</tt> at each step in the
+template.  In the following, we shall show how this template can be
+<A NAME=14990>&#160;</A>
+used as a basis for parallel vector reduction, matrix transposition,
+and sorting algorithms.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3482 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3490 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3488 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3492 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3493 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3491 HREF="node125.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html">11.2 Vector Reduction</A>
+<B>Up:</B> <A NAME=tex2html3489 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3483 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

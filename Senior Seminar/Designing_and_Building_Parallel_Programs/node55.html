@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.4 Locality</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.4 Locality">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2595 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2603 HREF="node56.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2601 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2605 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2606 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2604 HREF="node56.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html">5.5 Communication</A>
+<B>Up:</B> <A NAME=tex2html2602 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2596 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html">5.3 Concurrency</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03240000000000000000>5.4 Locality</A></H1>
+<P>
+<A NAME=secccloc>&#160;</A>
+<P>
+In the task/channel programming model of Part I, the concepts of
+locality and concurrency are linked: a task is both a separate address
+<A NAME=6961>&#160;</A>
+space and a thread of control.  In CC++
+ , these two concepts are
+<A NAME=6962>&#160;</A>
+separated.  Processor objects represent address spaces,
+and threads represent threads of control.  Processor objects can exist
+independently of threads, and more than one thread can be mapped to a
+processor object.
+<P>
+<H2><A NAME=SECTION03241000000000000000>5.4.1 Processor Objects</A></H2>
+<P>
+<A NAME=secccpo>&#160;</A>
+<P>
+A processor object is defined by a C++
+  class declaration modified by
+the keyword <tt> global</tt>.  A processor object is identical to a normal
+<A NAME=6966>&#160;</A>
+C++
+  class definition in all but two respects:
+<P>
+<OL><LI>
+Names of C++
+  ``global'' variables and functions (that is, names with
+<A NAME=6968>&#160;</A>
+file scope) refer to unique objects within different instances of a
+processor object.  Hence, there is no sharing between processor object
+instances.
+<P>
+<LI>
+Private members of a processor object need not be explicitly declared
+to be private.  C++
+  ``global'' functions and variables are defined
+implicitly to be private members of the processor object in which they
+occur.
+</OL>
+<P>
+Processor object types can be inherited, and the usual
+C++
+  protection mechanisms apply, so private functions and data are
+accessible only from a processor object's member functions or from
+the member functions of derived objects.  Hence, it is the member
+functions and data declared <tt> public</tt> that represent the processor
+object's interface.
+<P>
+For example, the following code from Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A>
+creates a processor object class <tt> Construction</tt> with public member
+functions <tt> foundry</tt> and <tt> bridge</tt>.  The class <tt> ChannelUser</tt>
+is specified as a base class  and provides access to channel operations
+(Section <A HREF="node62.html#secccchan" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html#secccchan">5.11</A>).
+<P>
+<PRE>global class Construction : public ChannelUser {
+public:
+   void foundry(Channel, int);
+   void bridge(Channel);
+};
+</PRE><H2><A NAME=SECTION03242000000000000000>5.4.2 Global Pointers</A></H2>
+<P>
+A <em> processor object
+ </em> is a unit of locality, that is, an
+address space within which data accesses are regarded as local and
+hence cheap.  A thread
+<A NAME=6989>&#160;</A>
+executing in a processor object can access data structures defined or
+allocated within that processor object directly, by using ordinary
+C++
+  pointers.
+<P>
+Processor objects are linked together using <em> global pointers</em>.  A
+global pointer is like an ordinary C++
+  pointer except that it can
+refer to other processor objects or to data structures contained
+within other processor objects.  It represents data that are
+potentially nonlocal and hence more expensive to access than data
+referenced by ordinary C++
+  pointers.
+<P>
+A global pointer is distinguished by the keyword <tt> global</tt>.
+For example:
+<P>
+<PRE>float *global gpf;   // global pointer to a float
+char * *global gppc; // global pointer to pointer of type char
+C *global gpC;       // global pointer to an object of type C
+</PRE>
+<P>
+When the <tt> new</tt> statement is used to create an instance of a
+processor object, it returns a <tt> global</tt> pointer.  For example, the
+statement
+<P>
+<PRE>Construction *global foundry_pobj = new Construction;
+</PRE>
+<P>
+from Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A> creates a new processor object of
+type <tt> Construction</tt> and defines <tt> foundry_pobj</tt> to be a
+pointer to that object.
+<P>
+<H2><A NAME=SECTION03243000000000000000>5.4.3 Thread Placement</A></H2>
+<P>
+By default, a CC++
+  thread executes in the same processor object as
+its parent.  Computation is placed in another processor object via an
+RPC.  A thread needs only a global pointer to
+another processor object to be able to invoke any of its public member
+functions.  For example, in the following line from
+Program <A HREF="node53.html#progccbuild" tppabs="http://www.mcs.anl.gov/dbpp/text/node53.html#progccbuild">5.3</A>, <tt> bridge_pobj</tt> is a global pointer to
+the processor object on which the consumer is to execute, and <tt>
+bridge</tt> is a public member function of that object.
+<P>
+<PRE>bridge_pobj-&gt;bridge();
+</PRE>
+<P>
+Remote procedure calls are discussed in more detail in
+Section <A HREF="node56.html#seccccomm" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html#seccccomm">5.5</A> below.
+<P>
+A single thread executing in a processor object implements what in
+Part I we termed a <em> task</em>.  Many CC++
+  programs create exactly
+one thread per processor object, yielding computation structures like
+those described in Part I.  We discuss situations in which it is
+useful to create more than one thread per processor object in
+Section <A HREF="node58.html#secccdet" tppabs="http://www.mcs.anl.gov/dbpp/text/node58.html#secccdet">5.7</A>.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img837.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img837.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img836.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img836.gif">    Search (I)</b>:<A NAME=exsearchii>&#160;</A>
+<P>
+Program <A HREF="node55.html#progcctree" tppabs="http://www.mcs.anl.gov/dbpp/text/node55.html#progcctree">5.4</A> uses processor objects and the <tt> par</tt>
+construct to implement a prototypical tree-structured computation.
+The program explores a binary tree recursively in the manner of
+<A NAME=7038>&#160;</A>
+Algorithm <A HREF="node10.html#algsearch" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#algsearch">1.1</A>, creating a task (processor object +
+<A NAME=7040>&#160;</A>
+thread) for each tree node and returning the total number of leaf
+nodes that represent solutions.  Notice the use of a parallel block to
+create the threads that search the two subtrees rooted at a nonleaf
+node.  In this simple program, the tree is not represented by an
+explicit data structure; instead, a process's position in the tree is
+represented by an integer.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progcctree>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img838.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img838.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2595 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2603 HREF="node56.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2601 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2605 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2606 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2604 HREF="node56.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node56.html">5.5 Communication</A>
+<B>Up:</B> <A NAME=tex2html2602 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2596 HREF="node54.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node54.html">5.3 Concurrency</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

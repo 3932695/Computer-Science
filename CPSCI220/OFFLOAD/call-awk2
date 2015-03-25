@@ -1,0 +1,12 @@
+echo "Calling bash function inside awk"
+header() {
+ echo "***Bash Header***"
+}
+export -f header
+
+awk '
+BEGIN { 
+ print "**Awk Header**"
+ system("header")
+} 
+'

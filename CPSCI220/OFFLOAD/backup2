@@ -1,0 +1,6 @@
+#!/bin/bash 
+# Take a backup of a specific user home directory 
+USERNAME=ramesh 
+BACKUP_LOCATION=/backup #Location to store the backup 
+tar cvfz $BACKUP_LOCATION/$USERNAME.tar.gz /home/$USERNAME 
+echo "Backup of $USERNAME home directory completed."

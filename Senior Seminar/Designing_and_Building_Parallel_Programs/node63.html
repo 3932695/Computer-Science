@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.12 Case Study: Fock Matrix Construction</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.12 Case Study: Fock Matrix Construction">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2691 HREF="node62.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2699 HREF="node64.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node64.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2697 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2701 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2702 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2700 HREF="node64.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node64.html">5.13 Summary</A>
+<B>Up:</B> <A NAME=tex2html2698 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2692 HREF="node62.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html">5.11 Case Study: Channel Library</A>
+<BR><HR><P>
+<H1><A NAME=SECTION032120000000000000000>5.12 Case Study: Fock Matrix Construction</A></H1>
+<P>
+<A NAME=secccfock>&#160;</A>
+<P>
+<A NAME=7739>&#160;</A>
+Our second case study illustrates the use of RPCs to implement
+<A NAME=7740>&#160;</A>
+asynchronous access to a distributed data structure.
+<A NAME=7741>&#160;</A>
+Programs <A HREF="node63.html#progccda" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccda">5.16</A> and <A HREF="node63.html#progccfock2a" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccfock2a">5.17</A> sketch a
+<A NAME=7744>&#160;</A>
+CC++
+  implementation of the parallel Fock matrix construction algorithm of
+<A NAME=7745>&#160;</A>
+Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A>.  Recall that in this algorithm,
+<em> P</em>
+ computation tasks must be able to read and write distributed arrays.
+The programs presented here achieve this capability by distributing
+the arrays over a set of processor objects.  Computation threads,
+created one per processor object, operate on the distributed array by
+invoking RPCs implementing operations such as accumulate and read.
+<P>
+The distributed array itself is implemented by the class <tt> Fock</tt>
+and the processor object class <tt> FockNode</tt>, presented in
+Program <A HREF="node63.html#progccda" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccda">5.16</A>.  These are derived from the classes <tt>
+POArray</tt> and <tt> POArrayNode</tt> of Program <A HREF="node59.html#progccpo" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccpo">5.10</A>, much as in
+the climate model of Program <A HREF="node59.html#progccoa" tppabs="http://www.mcs.anl.gov/dbpp/text/node59.html#progccoa">5.11</A>, and provide definitions
+for the virtual functions <tt> create_pobj</tt> and <tt> init_pobj</tt>.
+The derived classes defined in Program <A HREF="node63.html#progccda" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccda">5.16</A> are used to
+create the array of processor objects within which computation will
+occur.  The data structures that implement the distributed array are
+allocated within these same processor objects, with each of the <tt>
+posize</tt> processor objects being assigned <tt> blocksize</tt> array
+elements.  Notice how the initialization function for <tt> FockNode</tt>
+allocates and initializes the elements of the distributed array.
+<P>
+<P><A NAME=progccda>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img866.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img866.gif"><P>
+<P>
+For brevity, Program <A HREF="node63.html#progccda" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccda">5.16</A> implements only an <tt>
+accumulate</tt> operation.  This function is defined in
+Program <A HREF="node63.html#progccfock2a" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html#progccfock2a">5.17</A>.  Notice how it issues an RPC to a remote
+processor object (number <tt> index/blocksize</tt>) requesting an
+operation on a specified sequence of values.  The function invoked by
+the RPC (<tt> accum_local</tt>) is an atomic function; this ensures that
+two concurrent accumulate operations do not produce meaningless
+results.
+<P>
+Having defined the classes <tt> Fock</tt> and <tt> FockNode</tt>, the
+implementation of the rest of the ccode is fairly straightforward.
+We first create and initialize <em> P</em>
+ processor objects of type <tt>
+FockNode</tt>, as follows.
+<P>
+<PRE>Fock darray(1024);     // 1024 is block size
+darray.init(P, nodes); // P and nodes as usual
+</PRE>
+<P>
+Then, we invoke on each processor object a task (<tt> fock_build</tt>)
+responsible for performing one component of the Fock matrix
+computation.  Each such task makes repeated calls to <tt> accumulate</tt>
+to place the results of its computation into the distributed array.
+<P>
+<P><A NAME=progccfock2a>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img867.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img867.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2691 HREF="node62.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2699 HREF="node64.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node64.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2697 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2701 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2702 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2700 HREF="node64.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node64.html">5.13 Summary</A>
+<B>Up:</B> <A NAME=tex2html2698 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2692 HREF="node62.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node62.html">5.11 Case Study: Channel Library</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,10 @@
+#!/bin/bash
+max = $1
+let curr = 0
+
+while ((num!=0)); do
+      cat ${curr}fexplosive.txt > explosive.txt
+      cat ${curr}fnumExplosions.txt > numExplosions.txt
+      cat ${curr}fvolatility.txt > volatility.txt
+      let curr++
+done

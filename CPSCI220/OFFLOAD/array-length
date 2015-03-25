@@ -1,0 +1,5 @@
+array=("one" "two" "three" "four")
+echo "\${array[@]} = ${array[@]}"
+echo "Total number of elements in the array = ${#array[@]}"
+echo "Total number of elements in the array = ${#array[*]}"
+echo "Length of the 1st element = ${#array[0]}"

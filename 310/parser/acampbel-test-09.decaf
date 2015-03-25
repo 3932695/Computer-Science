@@ -1,0 +1,7 @@
+
+int X;
+
+void main() {
+	X = 2;
+}
+

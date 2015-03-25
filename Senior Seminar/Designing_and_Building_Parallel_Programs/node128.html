@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>11.5 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="11.5 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3530 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3538 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3536 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3540 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3541 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3539 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3537 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3531 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html">11.4 Mergesort</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04350000000000000000>11.5 Summary</A></H1>
+<P>
+The hypercube communication template (Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>)
+allows information to be propagated among <em> P</em>
+ tasks in just <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1174.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1174.gif"> steps.  Each algorithm considered in this case study has exploited
+this property to perform some form of all-to-all communication.  For
+example, in matrix transposition each task requires values from every
+other task; in sorting, the position of each value in the final
+sequence depends on all other values.  Many other parallel algorithms
+can be naturally formulated in terms of the same template, once the
+need for all-to-all communication is recognized.
+<P>
+The hypercube template described in this chapter is one of the most
+useful communication structures in parallel computing.  Another useful
+structure that we have encountered is nearest-neighbor exchange on a
+two-dimensional torus: this template can be used to implement finite
+difference computations, matrix multiplication
+(Section <A HREF="node45.html#seclamm" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#seclamm">4.6</A>), and graph algorithms.  The manager/worker
+load balancing structure (Section <A HREF="node19.html#secmwmw" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#secmwmw">2.5.2</A>) is a third example
+of a template.
+<P>
+Learning to recognize and apply templates such as the hypercube,
+torus, and manager/worker can greatly simplify the task of designing
+and implementing parallel programs.  When designing a parallel
+algorithm, we can first seek to formulate communication requirements
+in terms of known communication structures; if we are successful, the
+design problem then reduces to that of specifying the
+application-specific part of the algorithm.  A similar strategy can be
+applied when implementing designs that have been formulated in terms
+of templates.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3530 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3538 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3536 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3540 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3541 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3539 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3537 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3531 HREF="node127.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html">11.4 Mergesort</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

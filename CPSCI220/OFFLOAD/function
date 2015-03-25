@@ -1,0 +1,13 @@
+function display1 () {
+ echo "display1: Hello World!"
+}
+function display2 {
+ echo "display2: Hello World!"
+}
+display3 () {
+ echo "display3: Hello World!"
+}
+
+display1
+display2
+display3

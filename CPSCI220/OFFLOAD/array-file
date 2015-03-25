@@ -1,0 +1,5 @@
+array=( `cat states.txt` )
+for i in "${array[@]}"
+do
+ echo $i
+done

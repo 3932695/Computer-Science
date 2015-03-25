@@ -1,0 +1,236 @@
+#+1412216501
+mpic++ -o test mpihello.cc
+#+1412874809
+emacs pascal.cc &
+#+1412874835
+kill 10015
+#+1412874961
+qsub -I mpi_.job.run
+#+1412874997
+mpiexec -np 4 ~/testing_grounds/a.out
+#+1412875005
+mpiexec -np 4 ~/testing_grounds/*a.out
+#+1412875031
+mpiexec -np 4 a.out*
+#+1412875192
+mpiexec -np 4
+#+1412875343
+qsub -I mpi_job.rujn
+#+1412875431
+mpiexec
+#+1412875463
+printenv
+#+1412875477
+printenv PATH
+#+1412875495
+whereis mpiexec
+#+1412875499
+source ~/.login
+#+1412875677
+cd..
+#+1412876401
+c
+#+1412876488
+cd /usr/lib64/mvapich2/bin/
+#+1412876561
+cd ~kxiao
+#+1412876620
+cd /user/lib64/mvapich2/bin/
+#+1412876647
+cd usr
+#+1412876651
+cd lib64
+#+1412876673
+cd mvapich2
+#+1412876686
+cd mvapich
+#+1412876849
+cd SeniorSem
+#+1412876855
+cd public_jtml
+#+1412876859
+cd public_html
+#+1412876861
+cd .
+#+1412876880
+cd mpi_job
+#+1412876903
+cd testing_groudns
+#+1412877760
+mpiexec -np 4 ~/testing_grounds/test
+#+1412878268
+~
+#+1412878416
+cd kixao
+#+1412878428
+which mpiexec
+#+1412878440
+qsub -I mpi_job
+#+1412878638
+mpiexec -np 4 bin/test2
+#+1412878772
+emacs test.cc
+#+1412878815
+emacs nompi.cc
+#+1412878823
+cd mpihello.cc
+#+1412878829
+emacs mpihello.cc
+#+1412878840
+cd test2.cc
+#+1412878842
+emacs test2.cc
+#+1412878879
+cp test.cc ~kxiao/testing_grounds
+#+1412878882
+cd ~
+#+1412878937
+cp test2.cc ~kxiao/testing_grounds
+#+1412878944
+cd ~kxiao/testing_grounds
+#+1412878963
+mpic++ -o test test2.cc
+#+1412878983
+mpiexec -np 4 test
+#+1412879002
+mpic++ -o test2 test2.cc
+#+1412879505
+mpiexec -np 4 test2
+#+1412879520
+mpiexec -np 4 test2*
+#+1412879574
+mpiexec -np 4 ~kxiao/testing_grounds/test2
+#+1412895703
+mpic++ -o test pascal.cc
+#+1412895726
+mpiexec -np 4 ~kxiao/testing_grounds/test
+#+1412896942
+emacs pascal.cc
+#+1412900013
+mpic++ pascal.cc
+#+1412900234
+ssh -x grid.hpc.hamilton.edu
+#+1412900238
+kxiao2014
+#+1413982062
+g++ driver.cpp
+#+1413982126
+kill 12370
+#+1413982170
+ssh -X grid.hpc.hamilton.edu
+#+1413982182
+emacs asdf &
+#+1413982192
+kill 12639
+#+1413988126
+mpiexec a.out
+#+1413988242
+mpiexec -np 4 ~/risk/a.out
+#+1413990898
+cd
+#+1414020360
+emacs explosive.txt
+#+1414020434
+emacs driver.cpp
+#+1414020565
+mpiexec -np 4 ~kxiao/risk/a.out
+#+1414020628
+./~kxiao/risk/a.out
+#+1414020642
+./risk/a.out
+#+1414020674
+mpiexec -np 1 ~kxiao/testing_grounds/a.out
+#+1414020744
+cd kxiao
+#+1414020839
+/usr/lib64/mvapich2/bin/mpiexec -np 1 ~kxiao/testing_grounds/a.out
+#+1414020861
+/usr/lib64/mvapich2/bin/mpiexec -np 2 ~kxiao/testing_grounds/a.out
+#+1414021512
+g++ originaldriver.cpp &
+#+1414021551
+jobs
+#+1414023863
+mpic++ originaldriver.cpp
+#+1414023874
+g++ originaldriver.cpp
+#+1414075749
+mpiexec -np 4 ~kxiao/testing_grounds/a.out
+#+1414075771
+mpiexec -np 2 ~kxiao/testing_grounds/a.out
+#+1414075794
+cd testing_grounds
+#+1414075909
+cd pewing
+#+1414075911
+cd bin
+#+1414085438
+mpiexec -np 1 ~kxiao/risk/a.out
+#+1414086297
+/usr/lib64/mvapich2/bin/mpiexec -np 1 ~kxiao/risk/a.out
+#+1414086773
+cd testing_grounds/
+#+1414086799
+cd ../risk/
+#+1414086800
+ls -l
+#+1414086803
+file a.out
+#+1414086808
+ldd a.out
+#+1414086896
+/usr/lib64/mvapich2/bin/mpiexec -np 4 ~kxiao/testing_grounds/a.out
+#+1414086903
+/usr/lib64/mvapich2/bin/mpiexec -np 4 ~kxiao/risk/a.out
+#+1414087001
+qstat -a
+#+1414087012
+qstat -an
+#+1414087071
+strace -p 21115
+#+1414087277
+exit
+#+1414087346
+top
+#+1414087559
+emacs driver.cpp &
+#+1414090491
+./a.out
+#+1414090693
+rm numExplosions.txt
+#+1414090696
+rm explosive.txt
+#+1414090701
+rm volatility.txt
+#+1414090737
+emacs numExplosions.txt &
+#+1414091028
+l
+#+1414091029
+sls
+#+1414091036
+cp input1.txt ~
+#+1414091086
+/usr/lib64/mvapich2/bin/mpiexec -np 2 ~/risk/a.out
+#+1414093322
+/usr/lib64/mvapich2/bin/mpiexec -np 1 ~/risk/a.out
+#+1414093449
+cd ..
+#+1414093457
+emacs explosive.txt &
+#+1414093549
+cd risk
+#+1414093565
+/usr/lib64/mvapich2/bin/mpiexec -np 4 ~/risk/a.out
+#+1414093637
+ls
+#+1414093696
+emacs mpi_job.run
+#+1414093711
+/usr/lib64/mvapich2/bin/mpiexec -np 8 ~/risk/a.out
+#+1414098094
+mpic++ driver.cpp
+#+1414098099
+qsub -I mpi_job.run
+#+1414098108
+/usr/lib64/mvapich2/bin/mpiexec -np 81 ~/risk/a.out

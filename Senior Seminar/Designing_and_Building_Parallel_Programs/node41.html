@@ -1,0 +1,451 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>4.2 Modularity and Parallel Computing</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="4.2 Modularity and Parallel Computing">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2350 HREF="node40.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node40.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2358 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2356 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2360 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2361 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2359 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html">4.3 Performance Analysis</A>
+<B>Up:</B> <A NAME=tex2html2357 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2351 HREF="node40.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node40.html">4.1 Modular Design Review</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02520000000000000000>4.2 Modularity and Parallel Computing</A></H1>
+<P>
+<A NAME=secmodpar>&#160;</A>
+<P>
+<A NAME=5491>&#160;</A>
+The design principles reviewed in the preceding section apply directly
+to parallel programming.  However, parallelism also introduces
+additional concerns.  A sequential module encapsulates the code that
+implements the functions provided by the module's interface and the
+data structures accessed by those functions.  In parallel programming,
+we need to consider not only code and data but also the tasks created
+by a module, the way in which data structures are partitioned and
+mapped to processors, and internal communication structures.  Probably
+the most fundamental issue is that of data distribution.
+<P>
+<P><A NAME=6199>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img729.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img729.gif">
+<BR><STRONG>Figure 4.1:</STRONG> <em> Three forms of parallel program composition.  In each
+case, the program is shown executing on four processors, with each arrow
+representing a separate thread of control and shading denoting two
+different program components.  In sequential composition, different
+program components execute in sequence on all processors.  In parallel
+composition, different program components execute concurrently on
+different processors.  In concurrent composition, different program
+components execute concurrently on the same
+processors.</em><A NAME=figmodcomp>&#160;</A><BR>
+<P>
+<P>
+Another difference between sequential and parallel programming is that
+in the former, modules can be put together (composed) in just one way:
+sequentially.  Execution of a program leads to a sequence of calls to
+<A NAME=5496>&#160;</A>
+functions defined in different modules.  This is called <em>
+sequential composition
+ </em> and can also be used in parallel
+<A NAME=5498>&#160;</A>
+programming, and indeed is fundamental to the SPMD programming model
+<A NAME=5499>&#160;</A>
+used in many parallel programs.  However, we often need to compose
+program components in other ways (Figure <A HREF="node41.html#figmodcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#figmodcomp">4.1</A>).  In
+<A NAME=5501>&#160;</A>
+<em> parallel composition</em>, different modules execute concurrently on
+disjoint sets of processors.  This strategy can enhance modularity and
+improve scalability and locality.  In 
+<A NAME=5503>&#160;</A>
+<em> concurrent composition</em>, different modules execute concurrently
+<A NAME=5505>&#160;</A>
+on the same processors, with execution of a particular module enabled
+by the availability of data.  Concurrent composition can both reduce
+design complexity and allow overlapping of computation and
+communication.
+<P>
+We distinguish between sequential, parallel, and concurrent
+composition both because they are different ways of thinking about
+programs and because not all parallel programming tools support all
+three compositional forms.  Data-parallel languages (such as HPF) tend
+to support only sequential composition.  Message-passing libraries
+(such as MPI) typically support both sequential and parallel
+composition but not concurrent composition.  Other languages and
+libraries (such as CC++
+  and Fortran M) support all three forms of
+composition.
+<P>
+
+<H2><A NAME=SECTION02521000000000000000>4.2.1 Data Distribution</A></H2>
+<P>
+<A NAME=secmoddd>&#160;</A>
+<P>
+In Chapters <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> and <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>, we showed that the
+distribution of a program's data structures among tasks and processors
+(that is, the way in which data structures are partitioned and mapped)
+is an important aspect of parallel algorithm design.  We also showed how
+to design data distributions that maximize performance and/or minimize
+software engineering costs.
+<P>
+<A NAME=5510>&#160;</A>
+Data distribution can become a more complex issue in programs
+constructed from several components.  Simply choosing the optimal
+distribution for each component may result in different modules using
+different data distributions.  For example, one module may output an
+array data structure distributed by columns, while another expects its
+input to be distributed by rows.  If these two modules are to be
+composed, then either the modules themselves must be modified to use
+different distributions, or data must be explicitly redistributed as
+they are passed from one component to the other.  These different
+solutions can have different performance characteristics and
+development costs.
+<P>
+Both performance tuning and program reuse are made easier if modules
+<A NAME=5511>&#160;</A>
+are designed to be <em> data distribution neutral
+ </em>, that is, if
+they can deal with a variety of different data distributions.  This
+neutrality can be achieved by specifying the distribution of a
+particular data structure as a runtime parameter or in the data
+structure itself.  For example, the two modules referred to in the
+preceding paragraph could be defined to deal with arbitrary
+two-dimensional decompositions.  The combined program could then
+utilize a decomposition by rows, a decomposition by columns, or (as a
+compromise) a two-dimensional decomposition.
+<P>
+Designing a module to be data distribution neutral is not necessarily
+easy.  In some cases, different data distributions may call for quite
+different algorithms.  This issue is explored in more detail in
+Section <A HREF="node45.html#seclamm" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#seclamm">4.6</A>.
+<P>
+
+<H2><A NAME=SECTION02522000000000000000>4.2.2 Sequential Composition</A></H2>
+<P>
+<A NAME=secseqcomp>&#160;</A>
+<A NAME=5516>&#160;</A>
+<P>
+In a parallel program constructed using only sequential composition,
+<A NAME=5517>&#160;</A>
+each processor inevitably executes the same program, which in turn
+performs a series of calls to different program components.  These
+program components may themselves communicate and synchronize, but
+they cannot create new tasks.  Hence, the entire computation moves
+sequentially from one parallel operation to the next.
+<P>
+<A NAME=5518>&#160;</A>
+As an example, consider the following program, which could be executed
+by each task in an SPMD finite difference program.
+<P>
+
+<PRE><TT> 
+		<tt> while (not done) do</tt>
+<P>
+				<tt> finite_difference(localgrid, localmax)</tt>
+<P>
+				<tt> global_maximum(localmax, globmax)</tt>
+<P>
+				<tt> if(globmax <b>&lt;</b> threshold) done = true</tt>
+<P>
+		<tt> enddo</tt>
+<P>
+</TT></PRE>
+
+<P>
+This program is structured as a sequential composition of two
+procedure calls and a conditional statement.  At each step, each task
+first calls the procedure <tt> finite_difference</tt> to advance the
+simulation on its part of the finite difference grid.  This updates
+<tt> localgrid</tt> and returns a local error estimate, <tt> localmax</tt>.
+Next, each task calls <tt> global_maximum</tt> to obtain a global maximum
+error, which is used to determine whether the simulation has
+converged.  On a parallel computer, both the <tt> finite_difference</tt>
+and <tt> global_maximum</tt> routines must perform communication (to
+exchange the data required by the finite difference stencil and to
+compute the global maximum, respectively), but this activity is hidden
+from the rest of the program.
+<P>
+This example illustrates an important advantage of sequential
+<A NAME=5532>&#160;</A>
+composition and the SPMD model: the program executed by each process
+<A NAME=5533>&#160;</A>
+has a fairly straightforward sequential reading, and many sequential
+programming techniques can be used unchanged.  For example, the
+procedures <tt> finite_difference</tt> and <tt> global_maximum</tt> can be
+defined in separate grid and reduction modules, both of which can
+encapsulate internal data structures (and communication structures).
+<P>
+A second advantage of sequential composition is that if different
+<A NAME=5536>&#160;</A>
+modules use the same data distribution, no data movement (and hence no
+communication) is required at module interfaces.  For example, the top-level structure of an SPMD climate modeling system could be as
+follows.  Procedures from ocean and atmosphere modules are called
+repeatedly in an interleaved fashion, with data generated by the ocean
+module being passed to the atmosphere module and vice versa.
+Communication is required only within the two components.
+<P>
+
+<PRE><TT> 
+		<tt> initialize_ocn(ocn_grid)</tt>
+<P>
+		<tt> initialize_atm(atm_grid)</tt>
+<P>
+		<tt> while (not done) do</tt>
+<P>
+				<tt> ocean(atm_grid, ocn_grid)</tt>
+<P>
+				<tt> atmosphere(ocn_grid, atm_grid, done)</tt>
+<P>
+		<tt> enddo</tt>
+<P>
+</TT></PRE>
+
+<P>
+As these examples show, a library intended for use in an SPMD
+programming environment can utilize an interface almost identical to
+that used in a comparable sequential library.  The principal concerns
+are that library routines be able to deal with a variety of data
+distributions (that is, be data distribution neutral) and that
+<A NAME=5545>&#160;</A>
+parallel implementation details such as data structures and
+communication operations be hidden behind interfaces.
+<P>
+<P><A NAME=6216>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img736.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img736.gif">
+<BR><STRONG>Figure 4.2:</STRONG> <em> A block cyclic distribution of a two-dimensional array
+of size 12<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img733.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img733.gif">18 onto a processor array of size 3<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img734.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img734.gif">3
+(<em> P=Q=3</em>
+) with a block size of 2<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img735.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img735.gif">3 (<em> r=2</em>
+, <em> c=3</em>
+).
+Array elements mapped to processor <em> (0,0)</em>
+ are
+shaded.</em><A NAME=figscalapack>&#160;</A><BR>
+<P>
+<P>
+The simplicity of sequential composition and SPMD programming has
+stimulated some major parallel library development projects.  One
+<A NAME=5552>&#160;</A>
+example, which we describe here to illustrate how data distribution
+neutral libraries are defined, is ScaLAPACK, a version of the popular
+<A NAME=5553>&#160;</A>
+LAPACK linear algebra library designed to execute on scalable parallel
+computers.  ScaLAPACK supports a wide range of operations on dense and
+banded matrices, such as multiplication, transpose, and factorization.
+Its routines operate on data objects representing two-dimensional
+matrices decomposed by using a block cyclic distribution.  The
+distribution of an array is specified by four parameters, <em> P</em>
+,
+<em> Q</em>
+, <em> r</em>
+, and
+<em> c</em>
+, where <em> P</em>
+ and <em> Q</em>
+ denote the number of processors and
+<em> r</em>
+ and <em> c</em>
+ the block size in each
+dimension (Figure <A HREF="node41.html#figscalapack" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#figscalapack">4.2</A>).  In principle, every routine
+can be called with any parameter values, so the programmer can
+experiment with alternative data distributions simply by changing
+parameters in a top-level program.  This approach provides a high
+degree of mapping independence, in a manner evocative of the data
+distribution directives employed in the data-parallel language High
+Performance Fortran (HPF) (Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A>).  In practice,
+certain limitations are placed on allowable parameter values so as to
+simplify the software.  For example, the LU factorization routine
+requires that blocks be square.  Internally, ScaLAPACK routines may
+incorporate multiple parallel algorithms and select between these
+algorithms based on distribution, problem size, and machine size.
+However, these details are hidden from the user.
+Program <A HREF="node41.html#progmod1" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#progmod1">4.1</A> illustrates the use of ScaLAPACK routines.
+<P>
+<P><A NAME=progmod1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img737.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img737.gif"><P>
+<P>
+<A NAME=5587>&#160;</A>
+<P>
+Not surprisingly, sequential composition also has limitations as a
+program structuring technique for parallel programs.  We examine some
+of these limitations in the subsections that follow.
+<A NAME=5588>&#160;</A>
+<P>
+
+<H2><A NAME=SECTION02523000000000000000>4.2.3 Parallel Composition</A></H2>
+<P>
+<A NAME=5590>&#160;</A>
+<P>
+Parallel composition can be viewed as a generalization of the SPMD
+<A NAME=5591>&#160;</A>
+programming model in which different parts of a computer execute
+<A NAME=5592>&#160;</A>
+different programs.  (It can also be thought of as a special case of
+concurrent composition in which concurrently executing tasks are
+required to execute on disjoint sets of processors.)  A parallel
+composition specifies which program components are to execute in which
+parts of the computer and how these components are to exchange data.
+<P>
+In principle, any program expressed as a parallel composition can be
+converted to a sequential composition that interleaves the execution
+of the various program components appropriately.  However, the use of
+parallel composition can enhance scalability and locality.  For
+example, if two program components (such as the atmosphere and ocean
+model considered in the preceding section) can execute concurrently,
+then mapping them to disjoint sets of processors increases scalability
+by providing additional opportunities for parallel execution.  If
+locality increases with granularity, then this parallel composition
+can also make more efficient use of cache, memory, and communication
+bandwidth than can a sequential composition of the same components.
+Parallel composition can also decrease total memory requirements by
+reducing the amount of code and data replicated on every processor.
+<P>
+<A NAME=5593>&#160;</A>
+<P>
+
+<H2><A NAME=SECTION02524000000000000000>4.2.4 Concurrent Composition</A></H2>
+<P>
+<A NAME=secmodconc>&#160;</A>
+<P>
+<A NAME=5596>&#160;</A>
+Concurrent composition is the most general form of composition that we
+<A NAME=5597>&#160;</A>
+consider.  A concurrent composition specifies the program components
+that are to execute concurrently, producer/consumer relationships
+between components, and the mapping of components to processors.
+Components then execute in a data-driven manner, meaning that they can
+be executed if the data that they require from other components are
+available.  These ideas should be familiar from the discussion of the
+task/channel programming model in Chapter <A HREF="node6.html#chap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html#chap1">1</A>.  In the terms
+of that model, a concurrent composition specifies a set of tasks, a
+set of channels connecting these tasks, and a mapping of tasks to
+processors.
+<P>
+<A NAME=5599>&#160;</A>
+Concurrent composition has both advantages and disadvantages relative
+to sequential and parallel composition.  One important advantage is
+that it can facilitate information hiding and hence the development of
+modular programs.  This is because the interfaces in a concurrent
+composition consist entirely of the channels connecting the various
+components.  Internal implementation details concerning code, data
+structures, concurrency, and communication are hidden.  Hence, program
+components can be designed and developed in isolation even when they
+need to execute on the same processors.
+<P>
+<A NAME=5600>&#160;</A>
+Concurrent composition can also simplify design by allowing decisions
+concerned with mapping and scheduling to be delayed or even avoided
+altogether.  Because the semantics of a program specified by using
+concurrent composition are independent of how program components are
+mapped to processors, mapping decisions can be delayed until late in
+the design process, as recommended in Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>.  Because
+the execution schedule is determined by the availability of data,
+execution order need not be specified explicitly by the programmer.
+<P>
+<A NAME=5602>&#160;</A>
+A disadvantage of concurrent composition in some environments is the
+cost of a data-driven execution model.  While compilers and runtime
+systems can do much to reduce costs incurred when switching between
+tasks, these costs can be significant if task switches occur
+frequently.
+<P>
+<P><A NAME=6271>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img738.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img738.gif">
+<BR><STRONG>Figure 4.3:</STRONG> <em> A finite difference program can be structured as a
+concurrent composition of <tt> reduce</tt> and <tt> grid</tt> components.  The
+first of these components is designed to perform reductions, while the
+second performs finite difference computation.  An array of channels
+defines the interface between the two components, which encapsulate
+internal task and channel structures.  The two components may execute
+on the same or different processors.</em><A NAME=figmodfd>&#160;</A><BR>
+<P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img740.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img740.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img739.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img739.gif">    Finite Difference Problem</b>:<A NAME=expp>&#160;</A>
+<P>
+Figure <A HREF="node41.html#figmodfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#figmodfd">4.3</A> shows how the finite difference program can be
+constructed as a concurrent composition of <tt> grid</tt> and <tt> reduce</tt>
+<A NAME=5613>&#160;</A>
+components.  The <tt> grid</tt> module might create a set of tasks
+specified as follows.  The arguments <tt> to_reduce</tt> and <tt>
+from_reduce</tt> are ports referencing channels that can be used to send
+data to and receive data from the <tt> reduce</tt> module, respectively.
+<P>
+
+<PRE><TT> 
+		<tt> procedure grid(to_reduce, from_reduce)</tt>
+<P>
+		<tt> begin</tt>
+<P>
+				<tt> while(not done) do</tt>            				 ! Repeat for each step
+<P>
+						<tt> exchange_with_neighbors(grid)</tt>
+<P>
+						<tt> compute(grid, localmax)</tt>       		 ! Local computation
+<P>
+						<tt> send(to_reduce, localmax)</tt>    		 ! Dispatch request for reduction
+<P>
+						<tt> other_computation(grid)</tt>      		 ! More local computation
+<P>
+						<tt> receive(from_reduce, globmax)</tt>		 ! Receive reduced value
+<P>
+						<tt> if(globmax <b>&lt;</b> threshold) done = true</tt>
+<P>
+				<tt> enddo</tt>
+<P>
+		<tt> end</tt>
+<P>
+</TT></PRE>
+
+<P>
+At each step, this code performs some computation before sending a
+message requesting a reduction operation, and then performs other
+computation before receiving the result.  The other computation can be
+overlapped with the communication required for the reduction.
+<P>
+<BR><HR>
+<P>
+<A NAME=5631>&#160;</A>
+<P>
+
+<H2><A NAME=SECTION02525000000000000000>4.2.5 Design Rules</A></H2>
+<P>
+We conclude this section with a set of design rules that can be used
+to determine how to compose modules and which sorts of interfaces to
+design.
+<P>
+<OL><LI>
+Design modules to handle multiple data distributions.  This feature
+can increase their reusability.
+<P>
+<LI>
+Incorporate data distribution information in data structures rather
+than in module interfaces.  This approach simplifies interfaces and
+maximizes opportunities for code reuse.
+<P>
+<LI>
+Use sequential composition when designing for an SPMD programming
+system such as HPF or MPI.
+<P>
+<LI>
+Consider sequential composition when program components cannot execute
+concurrently or need to share a lot of data.
+<P>
+<LI>
+Consider concurrent composition if program components can execute
+concurrently, communication costs are high, and
+communication/computation overlap is possible.
+<P>
+<LI>
+Consider parallel composition if memory is at a premium or if
+intracomponent communication costs are greater than intercomponent
+communication costs.
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2350 HREF="node40.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node40.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2358 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2356 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2360 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2361 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2359 HREF="node42.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node42.html">4.3 Performance Analysis</A>
+<B>Up:</B> <A NAME=tex2html2357 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2351 HREF="node40.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node40.html">4.1 Modular Design Review</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

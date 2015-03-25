@@ -1,0 +1,20 @@
+# 1. This is a simple single line comment
+echo "Hello World!"
+
+echo "Hello World!" # 2. This is partial line comment
+
+: <<COMMENT
+-------------------------------------------
+3. Multi line comment inside shell script
+can be elegantly documented without giving #
+in front of every line
+-------------------------------------------
+COMMENT
+
+# 4. Comment large blocks of code temporarily
+: <<TEMP
+for i in "${array[@]}"
+do
+ echo $i
+done
+TEMP

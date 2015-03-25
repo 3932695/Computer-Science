@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.11 Case Study: Fock Matrix Construction</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.11 Case Study: Fock Matrix Construction">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2883 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2891 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2889 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2893 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2894 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2892 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html">6.12 Summary</A>
+<B>Up:</B> <A NAME=tex2html2890 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2884 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html">6.10 Performance Issues</A>
+<BR><HR><P>
+<H1><A NAME=SECTION033110000000000000000>6.11 Case Study: Fock Matrix Construction</A></H1>
+<P>
+<A NAME=9775>&#160;</A>
+Programs <A HREF="node78.html#progfmfock2" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#progfmfock2">6.13</A> and <A HREF="node78.html#progfmfock2a" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#progfmfock2a">6.14</A> sketch an FM
+<A NAME=9778>&#160;</A>
+implementation of the parallel Fock matrix construction algorithm of
+Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A>.  Recall that in this algorithm,
+<em> P</em>
+ computation tasks must be able to read and write two large distributed
+data structures.  This capability is achieved by encapsulating these
+data structures in separate data tasks.  Each computation task
+repeatedly generates requests for data values and then performs
+computation.  The FM program implements computation and data tasks as
+<tt> compute</tt> and <tt> data</tt> processes, respectively, and connects
+these processes using a many-to-many communication structure, as
+illustrated in Figure <A HREF="node78.html#figfmfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#figfmfock">6.10</A>.  This structure uses <tt> P</tt>
+mergers to link <tt> P<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img931.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img931.gif">P</tt> outports (<tt> To</tt>) with <tt> P</tt>
+inports (<tt> Ti</tt>).  Each process is given an array of <tt> P</tt>
+outports, one connected to each merger.  In
+Programs <A HREF="node78.html#progfmfock2" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#progfmfock2">6.13</A> and <A HREF="node78.html#progfmfock2a" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html#progfmfock2a">6.14</A>, <tt> P</tt>=128,
+and 1024 data values are allocated to <tt> P</tt> <tt> data</tt> tasks in a
+blocked fashion.
+<P>
+<P><A NAME=10541>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img932.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img932.gif">
+<BR><STRONG>Figure 6.10:</STRONG> <em> FM implementation of the Fock matrix problem, with <tt> P</tt>=3.
+Each of the <tt> P</tt> compute processes has an array of <tt> P</tt>
+outports connected via mergers with <tt> P</tt> data
+processes.</em><A NAME=figfmfock>&#160;</A><BR>
+<P>
+<P>
+<A NAME=9802>&#160;</A>
+<P>
+For brevity, the FM programs presented here implement only an
+accumulate operation.  A <tt> compute</tt> process wanting to accumulate a
+value to address <tt> addr</tt> sends a message containing an offset (the
+integer <tt> mod(addr,ND)</tt>) and the value to be accumulated (a real)
+on outport number <tt> addr/ND</tt>.  Notice that the <tt> compute</tt> and
+<tt> data</tt> processes are similar in structure to the <tt> manager</tt> and
+<tt> worker</tt> of Program <A HREF="node71.html#progfmmw1" tppabs="http://www.mcs.anl.gov/dbpp/text/node71.html#progfmmw1">6.5</A>.
+<P>
+<P><A NAME=progfmfock2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img933.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img933.gif"><P>
+<P>
+<P><A NAME=progfmfock2a>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img934.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img934.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2883 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2891 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2889 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2893 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2894 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2892 HREF="node79.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node79.html">6.12 Summary</A>
+<B>Up:</B> <A NAME=tex2html2890 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2884 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html">6.10 Performance Issues</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

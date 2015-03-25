@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>11.2 Vector Reduction</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="11.2 Vector Reduction">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3494 HREF="node124.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3502 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3500 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3504 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3505 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3503 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html">11.3 Matrix Transposition</A>
+<B>Up:</B> <A NAME=tex2html3501 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3495 HREF="node124.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html">11.1 The Hypercube Template</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04320000000000000000>11.2 Vector Reduction</A></H1>
+<P>
+<A NAME=secvecred>&#160;</A>
+<P>
+<A NAME=14993>&#160;</A>
+Recall that in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A> we developed a parallel
+algorithm to sum <em> P</em>
+ values distributed among <em> P</em>
+ tasks.  This
+algorithm is essentially Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A> with an addition
+operator used as <tt> OP</tt>.  That is, the algorithm maintains a partial
+sum as the local <tt> state</tt> in each node, and in each step
+accumulates a partial sum received from another node into this partial
+sum.  After <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1122.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1122.gif"> steps, the sum of the <em> P</em>
+ input values is
+available in every node.
+<P>
+This same algorithm can be used to perform a reduction using <em>
+any
+ </em> commutative associative operator, such as multiplication or
+maximum; the commutative associative operator is used as <tt> OP</tt> in
+Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>.  The algorithm can also be used to
+implement a barrier operation, which synchronizes the tasks that
+<A NAME=15004>&#160;</A>
+execute it.  In this case, the values communicated are simply null
+tokens, and the operation performed on each pair of incoming messages
+is a synchronization operation that waits for the two tokens to be
+available.
+<P>
+<P><A NAME=15375>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1125.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1125.gif">
+<BR><STRONG>Figure 11.1:</STRONG> <em> Using the hypercube algorithm to reduce four vectors
+of length <b>N=4</b> distributed among four tasks.  The computation is
+performed in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1124.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1124.gif"> steps, with each task in each step exchanging
+<b>N</b> data values with a neighbor and performing <b>N</b> combine operations.
+The labels in the boxes denote the origin of the values that they
+contain; hence, <tt> 0.1</tt> and <tt> 2.3</tt> represent intermediate results
+obtained when contributions from task 0 and 1, or 2 and 3, are
+combined.  R represents the final reduced
+values.</em><A NAME=figmodbut1>&#160;</A><BR>
+<P>
+<P>
+<A NAME=15010>&#160;</A>
+In the related <em> vector reduction
+ </em> problem, each of
+<A NAME=15012>&#160;</A>
+<em> P</em>
+ tasks supplies a vector of <em> N</em>
+ values and <em> N</em>
+ separate
+reductions are performed to produce a vector of <em> N</em>
+ results.  As
+illustrated in Figure <A HREF="node125.html#figmodbut1" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#figmodbut1">11.1</A>, these <em> N</em>
+ reductions can
+be achieved in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1126.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1126.gif"> steps by using Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>.
+The operator <tt> OP</tt> is defined as follows: take two vectors of
+<em> N</em>
+ values as input and apply the commutative associative operator
+<em> N</em>
+ times to produce a vector of <em> N</em>
+ results.  The
+per-processor cost of this <em> simple exchange
+ </em> algorithm is
+<P><A NAME=eqxxxx>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1127.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1127.gif"><P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1128.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1128.gif"> is the cost of applying the reduction operator.  This
+algorithm is efficient for small <em> N</em>
+, when message startup costs
+dominate.  However, for larger <em> N</em>
+ it is inefficient, since it
+performs many redundant operations.
+<P>
+<A NAME=15033>&#160;</A>
+An alternative <em> recursive halving
+ </em> algorithm utilizes the
+same hypercube communication structure but applies a
+divide-and-conquer technique to reduce message volume
+(Figure <A HREF="node125.html#figmodbut2" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#figmodbut2">11.2</A>).  In effect, Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>
+is applied twice.  In the reduction phase, each processor communicates
+(and combines) <em> N/2</em>
+ data in the first stage, half as much
+(<em> N/4</em>
+) in the second, and so on, so that each processor
+communicates a total of <em> N(P-1)/P</em>
+ data in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1129.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1129.gif"> steps.  The
+global sum is then complete, and the vector of <em> N</em>
+ reduced values
+is evenly distributed over the <em> P</em>
+ processors.  This process is
+reversed (without the reductions) to broadcast the result.
+Communication cost is
+<P>
+<P><A NAME=15408>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1132.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1132.gif">
+<BR><STRONG>Figure 11.2:</STRONG> <em> Using the recursive halving algorithm to reduce four vectors
+of length <b>N=4</b> distributed over four tasks.  In the first <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1131.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1131.gif">
+stages, values are combined to compute the <b>N</b> reduced values,
+represented as <tt> R</tt>; these values are distributed over the four
+tasks.  In the third and fourth stages, the process is reversed in
+order to broadcast the values.</em><A NAME=figmodbut2>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=hsum>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1133.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1133.gif"><P>
+<P>
+The recursive halving algorithm sends twice as many messages as the
+<A NAME=15053>&#160;</A>
+simpler algorithm does, but less data. It also performs less
+computation.  Hence it will be more efficient for certain values of
+<em> N</em>
+ and <em> P</em>
+ and on certain machines.  A robust hybrid algorithm
+can be designed that starts with the recursive halving approach and
+switches to an exchange algorithm after a certain number of stages so
+as to avoid some of the broadcast communication.
+<P>
+We can use similar techniques to define an efficient <em> vector
+<A NAME=15056>&#160;</A>
+broadcast
+ </em> algorithm.  Here, the problem is to replicate
+<A NAME=15057>&#160;</A>
+<em> N</em>
+ values located in a single task (the ``root'') in each of
+<em> P-1</em>
+ other tasks.  A simple algorithm uses the binary tree communication
+structure illustrated in Figure <A HREF="node17.html#figsum1" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#figsum1">2.8</A>.  The root task first
+sends the data to two other tasks; each of these tasks forwards the
+data to two other tasks, and so on, until the data are completely
+distributed.  Total cost is approximately
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1134.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1134.gif"><P>
+This algorithm is efficient for small <em> N</em>
+ and <em> P</em>
+.  For larger
+problems and processor configurations, it has the disadvantage that most
+processors are idle most of the time and the total time is dominated
+by the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1135.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1135.gif"> term.  In these situations, it can be more
+efficient to break the message into pieces and then to route these
+pieces separately by using the hypercube communication structure.
+Communication costs are then approximately as follows (the chapter
+notes provide pointers to descriptions of this algorithm):
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1136.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1136.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3494 HREF="node124.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3502 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3500 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3504 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3505 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3503 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html">11.3 Matrix Transposition</A>
+<B>Up:</B> <A NAME=tex2html3501 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3495 HREF="node124.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html">11.1 The Hypercube Template</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

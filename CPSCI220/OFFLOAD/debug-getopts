@@ -1,0 +1,23 @@
+debug () {
+[ -n "$DEBUG" ] && [ $DEBUG == "ON" ] && echo "===>DEBUG: $1"
+}
+while getopts "cvf:z" Option
+do
+  debug "[$LINENO] Processing $Option"
+  case $Option in
+    c ) echo -n "Option c is used. " 
+        echo "OPTIND=$OPTIND"
+        ;; 
+    v ) echo -n "Option v is used. " 
+        echo "OPTIND=$OPTIND"
+        ;; 
+    f ) echo -n "Option f is used. " 
+        echo "OPTIND=$OPTIND OPTARG=$OPTARG"
+        ;; 
+    z ) echo -n "Option z is used. " 
+        echo "OPTIND=$OPTIND"
+        ;; 
+  esac
+done
+shift $(($OPTIND - 1))
+debug "[$LINENO] End of the script"

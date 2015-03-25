@@ -1,0 +1,3 @@
+set -x # expand the commands 
+da=`date +%F` 
+cp $da.log{.bak,} 

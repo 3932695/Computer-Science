@@ -1,0 +1,46 @@
+void main() {
+	MyStack stack;
+	int i;
+	stack = new(MyStack);
+	stack.init();
+	print("Empty? ",stack.empty());
+	for (i = 0; i < 8; i = i + 1) {
+		stack.push(i);
+		//print(stack.top());
+	}
+	print("Empty? ",stack.empty());
+	for (i = 0; i < 8; i = i + 1) {
+		//print(stack.top());	
+		stack.pop();	
+	}
+	print("Empty? ",stack.empty());
+	
+}
+
+class MyStack {
+	int Size;
+	int[] Contents;
+
+	void init() {
+		Size = 0;
+		Contents = NewArray(10, int);
+	}
+
+	void push(int x) {
+		Contents[Size] = x;
+		Size = Size + 1;
+	}
+	
+	void pop() {
+		if (empty()) return;
+		Size = Size - 1;
+	}
+
+	int top() {
+		return Contents[Size - 1];
+	}
+	
+	bool empty() {
+		return (Size == 0);
+	}
+}

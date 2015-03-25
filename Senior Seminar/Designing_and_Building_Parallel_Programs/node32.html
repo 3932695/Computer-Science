@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.6 Evaluating Implementations</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.6 Evaluating Implementations">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2237 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2245 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2243 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2247 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2248 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2246 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html">3.7 A Refined Communication Cost Model</A>
+<B>Up:</B> <A NAME=tex2html2244 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2238 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html">3.5 Experimental Studies</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02460000000000000000>3.6 Evaluating Implementations</A></H1>
+<P>
+<A NAME=secperfpt>&#160;</A>
+<P>
+Performance models also play an important role after a design
+<A NAME=3605>&#160;</A>
+is complete, when we start to write programs.  Comparisons of observed
+and predicted execution times can provide valuable information about
+both an algorithm and its implementation.
+<P>
+Even if considerable care is taken when designing and carrying out
+experiments, the idealized nature of our models means that observed
+and predicted execution times will seldom completely agree.  Major
+discrepancies signify either that the model is incorrect or that the
+implementation is inadequate.  In the first case, we can use the
+empirical results to determine where the model is deficient; this
+information in turn enables us to reassess the quantitative tradeoffs
+that we have used to justify design decisions.  In the second case, we
+can use the model to identify areas in which the implementation can be
+improved.
+<P>
+When faced with a substantial difference between modeled and observed
+execution times, our first step should be to check both the
+performance model and our experimental design to verify not only that
+the model and experiments are correct but that they are measuring the
+same thing.
+<P>
+Our
+<A NAME=3606>&#160;</A>
+next step should be to obtain an execution profile of the parallel
+code.  (In contrast to the execution profiles discussed in
+Section <A HREF="node30.html#sec3prof" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#sec3prof">3.4.3</A>, this profile will be based on measured
+values.)  The goal here is to obtain a more detailed view of program
+behavior, by measuring, for example, time spent in initialization,
+time spent in different phases of a computation, total idle time, and
+the total number and volume of messages communicated.  Ideally, data
+will be obtained for a range of problem sizes and processor counts.
+Tables <A HREF="node32.html#tabperfx" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#tabperfx">3.4</A> and <A HREF="node32.html#tabperfy" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#tabperfy">3.5</A> show typical examples of
+execution profile data, in this case from a parallel computational
+chemistry code that incorporates the Fock matrix construction
+algorithm of Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A> as a kernel.  These data were
+obtained by using instrumentation inserted manually into the program.
+<P>
+<P><A NAME=4473>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img510.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img510.gif">
+<BR><STRONG>Table 3.4:</STRONG>  A simple execution profile for a single step of
+a parallel computational chemistry code, here applied to a relatively
+small problem on an IBM SP computer.  This code combines the Fock
+matrix construction algorithm of Chapter 2 (``fock'') with additional
+components.  The profile shows both the time spent in different parts of
+the program for varying processor counts and the total execution time.
+Scalability is reasonably good, although it is evident that the
+routine <tt> diag</tt> has not been parallelized.  The <tt> init</tt> routine
+does not scale well, but this cost is less important because the code is
+normally run for many steps.
+<A NAME=tabperfx>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=4474>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img513.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img513.gif">
+<BR><STRONG>Table 3.5:</STRONG>  A more detailed execution profile for the parallel
+code of Table 3.4.  This gives call frequencies and execution times
+for various communication routines on each processor.  For brevity,
+only the first 6 of 16 processors are shown.  Instrumentation overhead
+increases total time from the 230 seconds of Table 3.4 to around 241
+seconds.  The <tt> get</tt>, <tt> accum</tt>, and <tt> put</tt> routines read and
+write data in distributed global arrays.  A <tt> get</tt> operation, which
+blocks waiting for a response to a remote request, takes around 1.7
+milliseconds on average.  Since each data transfer is relatively
+small, and the IBM SP's <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img512.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img512.gif"> is low, this time must include
+substantial idle time that could perhaps be overlapped with local
+computation.  The second major source of communication cost is the
+<tt> barrier</tt> operation, which is used to ensure that all updates to a
+global array have completed before reading begins.  We may wish to
+examine the program to determine whether we really need 85 such
+operations per step.
+<A NAME=tabperfy>&#160;</A><BR>
+<P>
+<P>
+Once we have obtained an execution profile, we can compare it with the
+performance model to identify deficiencies in either the model or the
+implementation.  In the following sections, we list several potential problems
+that may be revealed in an execution profile.
+<P>
+<H2><A NAME=SECTION02461000000000000000>3.6.1 Unaccounted-for Overhead</A></H2>
+<P>
+<A NAME=3649>&#160;</A>
+We first consider issues that may lead to observed execution times
+greater than predicted by a model.  Most often, such a situation
+occurs because the performance model is incomplete: some aspect of an
+algorithm or its implementation was neglected as insignificant but
+proves in practice to contribute significantly to execution time.
+<P>
+<UL><LI>
+<em> Load imbalances.</em> An algorithm may suffer from computation or
+communication imbalances that were not considered in the performance
+model.  These problems may be revealed by a study of how costs vary
+across processors.
+<P>
+<LI>
+<em> Replicated computation.</em> Disparities between observed and
+predicted times can also signal deficiencies in the implementation.
+For example, we may have failed to parallelize some component,
+assuming that the cost of replicating its computation on every
+processor would be insignificant.  On large numbers of processors,
+this assumption may not be valid.  These sorts of problem can be
+detected by studying costs in different parts of a program and for
+varying numbers of processors.
+<P>
+<LI>
+<em> Tool/algorithm mismatch.</em> The tools used to implement the
+algorithms may introduce inefficiencies.  For example, we may have
+designed an algorithm that creates multiple tasks per processor so as
+to overlap computation and communication.  Yet the programming
+language or library used to implement the algorithm may not implement
+tasks efficiently.
+<P>
+<LI>
+<em> Competition for bandwidth.</em> Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> may not be an
+adequate characterization of the communication network on which the
+program is executing.  In particular, concurrent communications may
+compete for bandwidth, thereby increasing total communication costs.
+This issue is discussed in Section <A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>.
+<P>
+</UL><H2><A NAME=SECTION02462000000000000000>3.6.2 Speedup Anomalies</A></H2>
+<P>
+<A NAME=3659>&#160;</A>
+An implementation may execute faster than
+predicted by a performance model.  If this effect becomes more marked
+as the number of processors increases, this phenomenon is termed a
+<em> speedup anomaly</em>---the observed speedup is greater than
+predicted.  Sometimes, we may see a speedup that is greater
+than linear, or <em> superlinear</em>.  Situations in which this can occur
+<A NAME=3662>&#160;</A>
+include the following:
+<A NAME=3663>&#160;</A>
+<P>
+<UL><LI>
+<em> Cache effects.</em> On most parallel computers, each processor has
+<A NAME=3666>&#160;</A>
+a small amount of fast memory (cache) and a larger amount of
+slower memory.  When a problem is executed on a greater number of
+processors, more of its data can be placed in fast memory.  As a
+result, total computation time (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img514.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img514.gif">) will tend to decrease.
+<A NAME=3668>&#160;</A>
+If the reduction in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img515.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img515.gif"> from this <em> cache effect
+ </em>
+offsets increases in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img516.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img516.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img517.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img517.gif"> resulting from
+the use of additional processors, then efficiency will be greater than
+1 and speedup will be superlinear. Similarly, the increased physical
+memory available in a multiprocessor may reduce the cost of memory
+accesses by avoiding the need for virtual memory paging.
+<P>
+<LI>
+<em> Search anomalies.</em> This phenomenon is encountered in some
+parallel search algorithms, such as the branch-and-bound search of
+Section <A HREF="node21.html#secfloor" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#secfloor">2.7</A>.  If a search tree contains solutions at
+varying depths, then multiple depth-first searches will, on average,
+explore fewer tree nodes before finding a solution than will a sequential
+depth-first search.  Notice that in this case, the parallel algorithm
+executed is not the same as the sequential algorithm. In fact, the
+best uniprocessor algorithm may be one that pursues several searches
+concurrently.
+<P>
+</UL>
+<P>
+<A NAME=3677>&#160;</A>
+<P><A NAME=4861>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img522.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img522.gif">
+<BR><STRONG>Figure 3.10:</STRONG> <em> Speedup of an implementation of the 1-D finite difference
+algorithm with <em> N=512</em>
+ and <em> Z=10</em>
+ as measured on the Intel
+DELTA and as predicted by both a simple performance model that does
+not account for load imbalances and a more sophisticated model that
+does; both models assume <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img520.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img520.gif">sec and
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img521.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img521.gif">sec.</em><A NAME=figfddeltaspeedup2>&#160;</A><BR>
+<P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img535.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img535.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img523.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img523.gif">    Evaluating a Finite Difference Program</b>:<A NAME=exfdi>&#160;</A>
+<P>
+We consider the behavior of an implementation of the 1-D finite
+difference algorithm.  Figure <A HREF="node32.html#figfddeltaspeedup2" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#figfddeltaspeedup2">3.10</A> shows
+observed performance, performance predicted by Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A>,
+and performance predicted by a refined model that we shall develop in
+the following.  We present speedups rather than raw execution times in
+order to make results clearer for larger <em> P</em>
+.  The predicted
+performance curves use machine parameter values obtained by a fitting
+process so as to take into account additional overheads not accounted
+for by the ``best possible'' parameter values of Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A>.
+A comparison of the two sets of parameter values (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img524.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img524.gif">sec
+versus 77 <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img525.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img525.gif">sec, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img526.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img526.gif">sec versus 0.54 <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img527.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img527.gif">sec) indicates
+that the finite difference implementation incurs significant overhead.
+This suggests that there may be opportunities for optimization.
+<P>
+Figure <A HREF="node32.html#figfddeltaspeedup2" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#figfddeltaspeedup2">3.10</A> shows that Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A> is
+inaccurate for <em> N=512</em>
+ and larger values of <em> P</em>
+. The observed
+speedup does not increase continuously, as predicted, but in a
+stepwise fashion.  This observation suggests that the model is
+incorrect in assuming that some aspect of program performance varies
+continuously with <em> P</em>
+.  Examining Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A>, we see
+that only computation cost depends on <em> P</em>
+; both the number of
+messages and message size per processor are constant and hence
+independent of <em> P</em>
+.  The problem then becomes clear.
+Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A> assumes that each processor has
+<em> N/P</em>
+ columns of the grid.  In reality, <em> P</em>
+ does not always divide
+<em> N</em>
+.  More specifically, some tasks will be allocated <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img528.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img528.gif"> grid points and others <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img529.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img529.gif"> points.
+For example, if <em> N=8</em>
+, <em> Z=1</em>
+, and <em> P=3</em>
+, some will have
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img530.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img530.gif"> and others <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img531.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img531.gif"> grid points.  Hence, while total
+computation costs are as given by Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A>, the maximum
+computation costs on any processor are as follows:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img532.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img532.gif"><P>
+<P>
+This uneven distribution of computation leads to idle time, since at each
+step processors with less computation will terminate before those with more.
+Total idle time is the difference between the maximum computation time
+and the mean computation times, multipled by the number of processors:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img533.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img533.gif"><P>
+<P>
+Incorporating this idle time into Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A>, we obtain the
+following more general performance model:
+<P>
+<P><A NAME=eqfdti>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img534.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img534.gif"><P>
+<P>
+The second predicted performance curve in
+Figure <A HREF="node32.html#figfddeltaspeedup2" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#figfddeltaspeedup2">3.10</A> is obtained using this refined
+model.  Notice that the two models are equivalent when <em> N</em>
+ is an
+integer multiple of <em> P</em>
+.
+<P>
+<BR><HR>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2237 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2245 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2243 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2247 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2248 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2246 HREF="node33.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html">3.7 A Refined Communication Cost Model</A>
+<B>Up:</B> <A NAME=tex2html2244 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2238 HREF="node31.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node31.html">3.5 Experimental Studies</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

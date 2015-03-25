@@ -1,0 +1,8 @@
+#!/bin/bash 
+# Copies contents of LAB_NAMEkxiao to ~shirshfi/public_html/CPSCI220/LAB_NAME 
+# To execute, type: "./submit220.sh LAB_NAME"
+STR=~shirshfi/public_html/CPSCI220/$1/
+
+
+cp -r ~kxiao/CPSCI220/"$1kxiao"/ $STR
+ls ~shirshfi/public_html/CPSCI220/$1/"$1kxiao"/

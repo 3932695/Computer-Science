@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Chapter Notes</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Chapter Notes">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3554 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3560 HREF="node131.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node131.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3558 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3562 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3563 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3561 HREF="node131.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node131.html">12 Further Reading</A>
+<B>Up:</B> <A NAME=tex2html3559 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3555 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"> Exercises</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04370000000000000000> Chapter Notes</A></H1>
+<P>
+<A NAME=15270>&#160;</A>
+Leighton [<A HREF="node132.html#Leighton" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Leighton">187</A>] discusses basic properties of hypercubes and
+describes many parallel algorithms that use a hypercube communication
+structure.  The recursive halving vector reduction algorithm
+considered in Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A> is described by Fox et
+al. [<A HREF="node132.html#Fox88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox88">111</A>] and the hybrid algorithm by van de
+<A NAME=15274>&#160;</A>
+Geijn [<A HREF="node132.html#Geijn91" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Geijn91">289</A>].  Vector broadcast algorithms are described by
+Bertsekas and Tsitsiklis [<A HREF="node132.html#BT89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#BT89">35</A>] and
+Johnsson and Ho [<A HREF="node132.html#JH89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#JH89">160</A>].  The parallel mergesort algorithm, often
+<A NAME=15278>&#160;</A>
+called bitonic mergesort, is due to Batcher [<A HREF="node132.html#Batcher" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Batcher">30</A>];
+Akl [<A HREF="node132.html#Akl89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Akl89">8</A>] provides a good description.  Fox et al. [<A HREF="node132.html#Fox88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox88">111</A>]
+describe a multicomputer implementation of this algorithm and of the
+variant discussed in Exercise <A HREF="node129.html#exbsort" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html#exbsort">4</A>.  Other algorithms that
+are conveniently formulated in terms of a hypercube communication
+<A NAME=15283>&#160;</A>
+structure include the fast Fourier
+transform [<A HREF="node132.html#AGCM90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#AGCM90">20</A>,<A HREF="node132.html#Bai90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Bai90">21</A>,<A HREF="node132.html#FW" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#FW">110</A>,<A HREF="node132.html#Loa92" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Loa92">192</A>,<A HREF="node132.html#Swarz" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Swarz">277</A>], parallel
+<A NAME=15285>&#160;</A>
+prefix [<A HREF="node132.html#RS90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#RS90">238</A>], and various computer vision [<A HREF="node132.html#RS90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#RS90">238</A>] and linear
+algebra computations [<A HREF="node132.html#Johnsson" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Johnsson">159</A>].  See also the book by Kumar et
+al. [<A HREF="node132.html#Kumar93" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar93">179</A>] and papers by Bertsekas et al. [<A HREF="node132.html#BOS91" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#BOS91">36</A>],
+McBryan and van der Velde [<A HREF="node132.html#MdV87" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#MdV87">197</A>], and Saad and
+Schultz [<A HREF="node132.html#SS88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#SS88">248</A>,<A HREF="node132.html#SS89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#SS89">249</A>].
+<P>
+<A NAME=15293>&#160;</A>
+The book by Kumar et al. [<A HREF="node132.html#Kumar93" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar93">179</A>] describes parallel versions of
+<A NAME=15295>&#160;</A>
+several sorting algorithms, including quicksort [<A HREF="node132.html#Quicksort" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Quicksort">153</A>], one
+of the most commonly used sorting algorithms on sequential computers.
+Their parallel quicksort algorithm partitions processors according to
+the number of elements lesser than or greater than the pivot at each
+step.  Fox et al. [<A HREF="node132.html#Fox88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox88">111</A>] describe an alternative parallel
+quicksort algorithm that uses regular processor partitions.  They
+address load imbalance by performing some preliminary processing to
+identify pivots that approximately bisect the input sequence.
+Knuth [<A HREF="node132.html#Knuth3" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Knuth3">174</A>] and Aho et al. [<A HREF="node132.html#AHU" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#AHU">7</A>] are good references for
+sequential sorting algorithms.  In addition to standard algorithms
+such as mergesort and quicksort, Knuth describes various specialized
+algorithms designed to exploit certain properties of the data to be
+sorted.  Kumar et al. [<A HREF="node132.html#Kumar93" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar93">179</A>] explain how many of these can be
+adapted for parallel computers.  For example, if data are highly
+redundant (that is, they have many identical items), we can count items on
+each node, then do a global sum to obtain total counts.  If the input
+<A NAME=15301>&#160;</A>
+data distribution is known, a parallel bucketsort can be used.  Each
+processor knows the location of each bucket and sends its data to the
+appropriate location.
+<P>
+
+
+<P>
+
+Here is a
+<A HREF="../../../tppmsgs/msgs0.htm#39" tppabs="http://www.mcs.anl.gov/dbpp/web-tours/cube.html">Web Tour</A>
+
+providing access to additional information on modular programming,
+parallel program design, and templates.
+<P>
+<A NAME=15309>&#160;</A>
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3554 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3560 HREF="node131.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node131.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3558 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3562 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3563 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3561 HREF="node131.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node131.html">12 Further Reading</A>
+<B>Up:</B> <A NAME=tex2html3559 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3555 HREF="node129.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node129.html"> Exercises</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,4 @@
+declare -a state=(CA NV NY UT TX)
+echo "state array before: ${state[@]}"
+unset state
+echo "state array after: ${state[@]}"

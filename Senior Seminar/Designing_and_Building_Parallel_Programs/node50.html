@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Part II: Tools</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Part II: Tools">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2520 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2528 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2526 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2530 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2531 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2529 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B>Up:</B> <A NAME=tex2html2527 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html">Part II: Tools</A>
+<B> Previous:</B> <A NAME=tex2html2521 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html">Part II: Tools</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03100000000000000000> Part II: Tools</A></H1>
+<P>
+The second part of this book comprises five chapters that deal with
+the implementation of parallel programs.  In parallel as in sequential
+programming, there are many different languages and programming tools,
+each suitable for different classes of problem.  Because it would be
+<A NAME=6640>&#160;</A>
+neither feasible nor useful to describe them all, we restrict our
+<A NAME=6641>&#160;</A>
+attention to four systems---Compositional C++
+  (CC++
+ ), Fortran M
+<A NAME=6642>&#160;</A>
+(FM), High Performance Fortran (HPF), and the Message Passing
+<A NAME=6643>&#160;</A>
+Interface (MPI)---and explain how each can be used to implement
+designs developed using the techniques of Part I.  We also describe,
+in Chapter <A HREF="node106.html#chaptools" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html#chaptools">9</A>, tools that aid in the collection and
+analysis of performance data.
+<P>
+Except where material is explicitly cross-referenced, each chapter in
+Part II is self-contained.  Hence, it is quite feasible to base a
+practical study of parallel programming on just one of the four tools
+described here.  However, while each of these tools is of broad
+utility, each also is most appropriate for different purposes, and we
+recommend that you become familiar with several systems.
+<P>
+CC++
+ , described in Chapter <A HREF="node51.html#chapccpp" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html#chapccpp">5</A>, is a small set of
+extensions to C++
+ .  These extensions provide the programmer with
+explicit control over locality, concurrency, communication, and
+mapping and can be used to build libraries that implement tasks,
+channels, and other basic parallel programming abstractions.  Designs
+developed using the techniques of Part I are easily expressed as
+CC++
+  programs.
+<P>
+FM, described in Chapter <A HREF="node67.html#chapfm" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html#chapfm">6</A>, is a small set of extensions
+to Fortran.  These extensions provide explicit support for tasks and
+channels and hence can implement designs developed using the
+techniques of Part I directly.  A distinguishing feature of FM is that
+programs can be guaranteed to be deterministic, meaning that two
+executions with the same input will produce the same output.
+<P>
+HPF, described in Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A>, is an example of a
+data-parallel language and has emerged as a de facto standard for
+scientific and engineering computation.  Parallelism is expressed in
+terms of array operations---statements that apply to many elements of
+an array at once.  Communication operations are inferred by the
+compiler, and need not be specified by the programmer.
+<P>
+MPI, described in Chapter <A HREF="node94.html#chapmpi" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html#chapmpi">8</A>, is a library of standard
+subroutines for sending and receiving messages and performing
+collective operations.  Like HPF, MPI has emerged as a standard and
+<A NAME=6649>&#160;</A>
+hence supersedes earlier message-passing libraries such as PARMACS,
+<A NAME=6650>&#160;</A>
+p4, PVM,
+<A NAME=6651>&#160;</A>
+and Express.
+<A NAME=6652>&#160;</A>
+<P>
+When building parallel programs, our choice of tool will depend on the
+nature of the problem to be solved.  HPF is particularly appropriate
+for numeric algorithms based on regular domain decompositions (for
+example, finite difference computations).  CC++
+  and FM are better
+suited for applications involving dynamic task creation, irregular
+communication patterns, heterogeneous and irregular computation
+structures, and concurrent composition. They can also be used to build
+data-parallel libraries for regular problems.  MPI is a lower-level
+approach to parallel programming than CC++
+ , FM, or HPF and is
+particularly appropriate for algorithms with a regular SPMD structure.
+<P>
+CC++
+ , FM, HPF, and MPI represent very different approaches to
+parallel programming.  Nevertheless, we shall see that good design is
+independent of our choice of implementation language.  The design
+techniques introduced in Part I apply regardless of language.  Issues
+of concurrency, scalability, locality, and modularity must be
+addressed in any parallel program.
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2520 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2528 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2526 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2530 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2531 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2529 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B>Up:</B> <A NAME=tex2html2527 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html">Part II: Tools</A>
+<B> Previous:</B> <A NAME=tex2html2521 HREF="node49.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node49.html">Part II: Tools</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

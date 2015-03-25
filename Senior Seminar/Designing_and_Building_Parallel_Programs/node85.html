@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.3 Data Distribution</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.3 Data Distribution">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2976 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2984 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2982 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2986 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2987 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2985 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html">7.4 Concurrency</A>
+<B>Up:</B> <A NAME=tex2html2983 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2977 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html">7.2 Fortran 90</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03430000000000000000>7.3 Data Distribution</A></H1>
+<P>
+<A NAME=10860>&#160;</A>
+Array expressions specify concurrency but not
+<A NAME=10861>&#160;</A>
+locality.  That is, they specify opportunities for parallel execution
+<A NAME=10862>&#160;</A>
+but not how these opportunities should be exploited so as to minimize
+communication costs on a parallel computer.  HPF introduces <em> data
+distribution directives
+ </em> to provide the programmer with control
+over locality.  These directives work as follows.  The
+<A NAME=10864>&#160;</A>
+<tt> PROCESSORS</tt> directive is used to specify the shape and size of an
+array of abstract processors.  The <tt> ALIGN</tt> directive is used
+<A NAME=10867>&#160;</A>
+to align elements of different arrays with each other,
+indicating that they should be distributed in the same manner.  The
+<A NAME=10868>&#160;</A>
+<tt> DISTRIBUTE</tt> directive is used to distribute an object (and any
+other objects that may be aligned with it) onto an abstract processor
+array.  The mapping of abstract processors to physical processors is
+implementation dependent and is not specified in the language.  The
+three directives are summarized in Figure <A HREF="node85.html#fighpfdist" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#fighpfdist">7.4</A>.
+<P>
+Figure <A HREF="node85.html#fighpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#fighpf">7.5</A> illustrates the use of <tt> ALIGN</tt> and <tt>
+DISTRIBUTE</tt>.  The two-phase mapping strategy reduces the number of
+changes needed to move from one machine to another.  A different
+machine may necessitate a different partitioning strategy but is less
+likely to require changes to array alignments.
+<P>
+<P><A NAME=11751>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img951.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img951.gif">
+<BR><STRONG>Figure 7.4:</STRONG>  HPF data distribution directives.
+<A NAME=fighpfdist>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=11879>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img952.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img952.gif">
+<BR><STRONG>Figure 7.5:</STRONG> <em> HPF data allocation model.  The mapping of data to abstract
+processors is performed in two phases: <tt> ALIGN</tt> is used to create a
+relationship between objects and <tt> DISTRIBUTE</tt> is used to partition
+onto processors both a specified object and any objects that are
+aligned with it.</em><A NAME=fighpf>&#160;</A><BR>
+<P>
+<P>
+Data distribution directives can have a major impact on a program's
+<A NAME=10901>&#160;</A>
+performance but <em> do not affect the result computed.</em> In this sense,
+they are similar to FM mapping annotations. However, they have
+a more profound effect on program structure: they affect partitioning,
+agglomeration, and communication as well as mapping.  As in FM,
+this orthogonality makes it possible to experiment with alternative
+parallel algorithms simply by changing directives.
+<P>
+Data distribution directives are <em> recommendations
+ </em> to an HPF
+compiler, not instructions.  The compiler does not have to obey them
+if, for example, it determines that performance can be improved by
+ignoring them.
+<P>
+<H2><A NAME=SECTION03431000000000000000>7.3.1 Processors</A></H2>
+<P>
+<A NAME=secprocessors>&#160;</A>
+<P>
+<A NAME=10906>&#160;</A>
+A <tt> PROCESSORS</tt> directive declares a named arrangement of abstract
+<A NAME=10908>&#160;</A>
+processors.  For example, both of the following statements declare 32
+<A NAME=10909>&#160;</A>
+abstract processors.
+<P>
+<PRE><TT> 
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS P(32)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS Q(4,8)</tt>
+<P>
+</TT></PRE>
+<P>
+Normally, one abstract processor is created for each physical
+processor, although an implementation could in principle use a smaller
+number of physical processors to implement the abstract processors.
+The mapping of abstract processors to physical processors is not
+specified in HPF and can vary according to the implementation.
+<P>
+<H2><A NAME=SECTION03432000000000000000>7.3.2 Alignment</A></H2>
+<P>
+<A NAME=secalign>&#160;</A>
+<P>
+<A NAME=10918>&#160;</A>
+The <tt> ALIGN</tt> directive is used to specify array elements that
+<A NAME=10920>&#160;</A>
+should, if possible, be <em> collocated
+ </em>---mapped to the same
+<A NAME=10922>&#160;</A>
+processor.  Operations between aligned data objects are likely to be
+more efficient than operations between objects that are not known to
+be aligned.  An alignment directive has the general form
+<P>
+<PRE>        !HPF$   ALIGN  array  WITH  target
+</PRE>
+which indicates that the specified <tt> array</tt> should be aligned with
+<tt> target</tt>.  A list of subscripts associated with the array and
+target control the alignment, For example, the following code
+specifies a simple alignment of arrays <tt> B</tt> and <tt> C</tt> in which
+each <tt> B(i)</tt> is aligned with the corresponding <tt> C(i)</tt>.
+<P>
+<PRE><TT> 
+				                <tt> real B(50), C(50)</tt>
+<P>
+		  <tt> !HPF$</tt> 		 <tt> ALIGN C(:) WITH B(:)</tt>
+<P>
+</TT></PRE>
+<P>
+<P><A NAME=11895>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img953.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img953.gif">
+<BR><STRONG>Figure 7.6:</STRONG> <em> Six examples of the HPF <tt> ALIGN</tt> statement, with arrows
+and shading used to associate representative aligned components in the
+two arrays being aligned. (a) A simple alignment of two
+one-dimensional arrays. (b) Alignment with an offset. (c) An alignment
+of a smaller array onto a larger.  (d) Alignment with indices inverted
+(transpose). (e) Collapsing a dimension: aligning a two-dimensional
+array with a one-dimensional array. (f) Replicating data: aligning a
+one-dimensional array with a two-dimensional
+array.</em><A NAME=fighpfalign>&#160;</A><BR>
+<P>
+<P>
+<A NAME=10938>&#160;</A>
+Dummy arguments can be used in <tt> ALIGN</tt> directives to name
+dimensions, integer expressions can be used to specify offsets, and
+<tt> *</tt> can be used to collapse dimensions.  See
+Figure <A HREF="node85.html#fighpfalign" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#fighpfalign">7.6</A> for examples of the alignments that can be
+specified using these mechanisms.  Notice that an <tt> ALIGN</tt>
+statement can be used to specify that elements of an array should be
+replicated over processors.  This can improve efficiency if the array
+is read more often than it is written.  For example, assume that the
+two-dimensional array <tt> Y(N,N)</tt> is to be distributed by columns so
+that each processor performs computation on one or more columns.  If
+the computation performed at a single processor requires data from a
+one-dimensional array <tt> X(N)</tt> that is not updated during a
+computation, replicating <tt> X</tt> may be useful.  This is accomplished
+by the following alignment directive
+<P>
+<PRE>        !HPF$   ALIGN X(*) WITH Y(*,j)
+</PRE>
+<P>
+Care must be taken not to replicate arrays that are frequently
+updated, as considerable communication and/or redundant computation
+can result.
+<P>
+<H2><A NAME=SECTION03433000000000000000>7.3.3 Distribution</A></H2>
+<P>
+<A NAME=secdistribute>&#160;</A>
+<P>
+<A NAME=10948>&#160;</A>
+A <tt> DISTRIBUTE</tt>
+<A NAME=10950>&#160;</A>
+directive is used to indicate how data are to be
+<A NAME=10951>&#160;</A>
+partitioned among computer memories.  It specifies, for each dimension
+<A NAME=10952>&#160;</A>
+of an array, a mapping of array indices to abstract processors in a
+<A NAME=10953>&#160;</A>
+processor arrangement.  Each dimension of an array may be distributed
+<A NAME=10954>&#160;</A>
+in one of three ways.
+<P>
+
+<PRE><TT> 
+		<tt> *</tt>        		: No distribution
+<P>
+		<tt> BLOCK(n)</tt> 		: Block distribution (default: <tt> n=<em> N/P</em>
+</tt>)
+<P>
+		<tt> CYCLIC(n)</tt>		: Cyclic distribution (default: <tt> n=1</tt>)
+<P>
+</TT></PRE>
+
+<P>
+<P><A NAME=11913>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img958.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img958.gif">
+<BR><STRONG>Figure 7.7:</STRONG> <em> The HPF <tt> DISTRIBUTE</tt> statement, as used to specify
+different distributions of a two-dimensional array of size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img956.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img956.gif"> onto four processors organized either as a one-dimensional array
+(in the three examples with a ``<tt> *</tt>'') or as a <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img957.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img957.gif"> array
+(in the other three examples).  The data mapped to processor 1 is
+shaded in each example.</em><A NAME=fighpfdistr>&#160;</A><BR>
+<P>
+<P>
+Let <em> N</em>
+ be the number of elements in an array dimension, and let
+<em> P</em>
+ be the number of processors assigned to that dimension.  Then, as illustrated in
+Figure <A HREF="node85.html#fighpfdistr" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#fighpfdistr">7.7</A>, a <tt> BLOCK</tt> distribution divides the
+indices in a dimension into contiguous, equal-sized blocks of size
+<em> N/P</em>
+, while a <tt> CYCLIC</tt> distribution maps every <em> P</em>
+th index to the
+same processor.  The optional integer argument to <tt> BLOCK</tt> and <tt>
+CYCLIC</tt> specifies the number of elements in a block.
+<P>
+<A NAME=10976>&#160;</A>
+The <tt> ONTO</tt> specifier can be used to perform a distribution across
+a particular processor array.  If no processor array is specified, one
+is chosen by the compiler.  Hence, both <tt> DISTRIBUTE</tt> statements in
+the following code fragment are valid.
+<P>
+
+<PRE><TT> 
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS p(32)</tt>
+<P>
+				              <tt> real D(1024), E(1024)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE D(BLOCK)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE E(BLOCK) ONTO p</tt>
+<P>
+</TT></PRE>
+
+<P>
+<A NAME=10988>&#160;</A>
+A <tt> DISTRIBUTE</tt> directive applies not only to the named array but
+also to any arrays that are aligned with it.  Thus, a <tt>
+DISTRIBUTE</tt> directive cannot be applied to an array that is aligned
+with another.  For example, in the following code fragment the <tt>
+DISTRIBUTE</tt> directive specifies a mapping for all three arrays.
+<P>
+
+<PRE><TT> 
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS p(20)</tt>
+<P>
+				              <tt> real A(100,100), B(100,100), C(100,100)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> ALIGN B(:,:) WITH A(:,:)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> ALIGN C(i,j) WITH A(j,i)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE A(BLOCK,*) ONTO p</tt>
+<P>
+</TT></PRE>
+
+<P>
+<P><A NAME=proghpf1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img959.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img959.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img962.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img962.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img960.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img960.gif">    HPF Finite Difference</b>:<A NAME=exfdii>&#160;</A>
+<P>
+<A NAME=11022>&#160;</A>
+Program <A HREF="node85.html#proghpf1" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpf1">7.2</A> is an HPF version of Program <A HREF="node84.html#progf90" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html#progf90">7.1</A>.
+<A NAME=11025>&#160;</A>
+Notice that only three directives have been added: <tt> PROCESSORS</tt>,
+<tt> DISTRIBUTE</tt>, and <tt> ALIGN</tt>.  These directives partition each of
+the two arrays by row, hence allocating 25 rows to each of four
+processors.
+<P>
+The following is an alternative set of directives that partitions the
+two arrays in two dimensions so that each processor has a block of
+size 50<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img961.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img961.gif">50.  Notice that only the directives need to
+be changed to specify this alternative algorithm.
+<P>
+
+<PRE><TT> 
+		<tt> !HPF$</tt> 		 <tt> PROCESSORS pr(2,2)</tt>
+<P>
+				              <tt> real X(100,100), New(100,100)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> ALIGN New(:,:) WITH X(:,:)</tt>
+<P>
+		<tt> !HPF$</tt> 		 <tt> DISTRIBUTE X(BLOCK,BLOCK) ONTO pr</tt>
+<P>
+</TT></PRE>
+
+<P>
+As discussed in Example <A HREF="node30.html#experfgrid" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#experfgrid">3.4</A>, the two-dimensional
+decomposition is typically more efficient than the one-dimensional
+decomposition.
+<P>
+<BR><HR>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img972.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img972.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img963.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img963.gif">    Pairwise Interactions</b>:<A NAME=expix>&#160;</A>
+<P>
+Consider the following version of the pairwise interactions problem of
+<A NAME=11041>&#160;</A>
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  We must compute the total
+<A NAME=11043>&#160;</A>
+force <tt> force<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img964.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img964.gif"></tt> acting on each of <em> N</em>
+ objects <tt> x<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img965.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img965.gif"></tt>.
+This is defined as follows, where <tt> force<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img966.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img966.gif"></tt> and <tt> x<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img967.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img967.gif"></tt> are
+both 3-vectors and the function <tt> f</tt> computes the force between two
+objects:
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img968.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img968.gif">  <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img969.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img969.gif">
+<P>
+<P><A NAME=proghpfpair>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img970.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img970.gif"><P>
+<P>
+An HPF formulation of this problem is presented in
+Program <A HREF="node85.html#proghpfpair" tppabs="http://www.mcs.anl.gov/dbpp/text/node85.html#proghpfpair">7.3</A>.  This program is defined for an array of
+ten processors.  The arrays <tt> Force</tt>, <tt> Tmp</tt>, and <tt> X</tt> are
+aligned and distributed blockwise.  The <em> N(N-1)</em>
+ interactions are
+computed in <em> N-1</em>
+ steps, with the <em> i</em>
+th step computing
+interactions between each element <tt> X<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img971.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img971.gif"></tt> and the element offset
+by <em> i</em>
+ in <tt> X</tt>.  The <tt> CSHIFT</tt> operation is used to update a
+temporary array containing the offset values.  This temporary array is
+shifted one element at each step.  Each call to the function <tt> f</tt>
+computes <em> N</em>
+ interactions.
+<P>
+<A NAME=11070>&#160;</A>
+Naively, we might expect each of the <tt> CSHIFT</tt> operations to result
+in a communication operation.  On many machines, it will be more
+efficient to block these communications so that data circulates among
+the ten processors in just nine communication steps, as described in
+<A NAME=11072>&#160;</A>
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  An HPF compiler would normally be
+expected to perform this optimization.
+<P>
+<BR><HR>
+<P>
+<A NAME=11074>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2976 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2984 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2982 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2986 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2987 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2985 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html">7.4 Concurrency</A>
+<B>Up:</B> <A NAME=tex2html2983 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2977 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html">7.2 Fortran 90</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

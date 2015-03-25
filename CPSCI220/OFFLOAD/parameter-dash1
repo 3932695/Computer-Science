@@ -1,0 +1,6 @@
+name=${fname:-Jason}
+echo $name
+
+lname=
+name=${lname:-Smith}
+echo $name

@@ -1,0 +1,16 @@
+
+hw8		start 	feb
+first	lds 	first 
+		add 	#3 
+		tio
+		+add	#   over
+		j 		over 
+		+   ldb 	@rsltptr 
+		comp 	values, x 
+over	addr	s, t 
+		rsub  asdfads
+.EOF	BYTE 	X'F1A'
+rsltptr	word	0 
+values 	resw 	2 
+		lds 	first 
+		end 	4075

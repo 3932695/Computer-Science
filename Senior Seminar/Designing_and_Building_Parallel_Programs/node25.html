@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Chapter Notes</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Chapter Notes">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2143 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2149 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2147 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2151 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2152 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2150 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B>Up:</B> <A NAME=tex2html2148 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2144 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"> Exercises</A>
+<BR><HR><P>
+<H1><A NAME=SECTION023110000000000000000> Chapter Notes</A></H1>
+<P>
+In this chapter, we have focused on the software engineering question
+of developing a parallel algorithm design from a given problem
+specification.  We have assumed some familiarity with program
+design---from, for example, previous study in sequential programming.
+A classic article by Parnas and Clements [<A HREF="node132.html#Parnas4" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Parnas4">222</A>] describes the
+benefits (and difficulties) of a rational design process.  The chapter
+notes in Chapters <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> and <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A> provide
+additional references to material on the related topics of performance
+analysis and modularity.
+<P>
+Relatively few authors have addressed the particular problems that
+arise when designing algorithms for realistic scalable parallel
+computers.  Numerous books discuss parallel algorithm design in the
+<A NAME=2229>&#160;</A>
+context of the idealized PRAM model; see, for example,
+Akl [<A HREF="node132.html#Akl89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Akl89">8</A>], Gibbons and Reitter [<A HREF="node132.html#GR90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#GR90">119</A>], and
+J&#225;J&#225; [<A HREF="node132.html#JaJa92" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#JaJa92">157</A>].  However, these techniques are for the
+most part not directly applicable to multicomputers.  The books by Fox
+et al. [<A HREF="node132.html#Fox88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox88">111</A>,<A HREF="node132.html#Fox94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox94">113</A>] and Kumar et al. [<A HREF="node132.html#Kumar" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar">181</A>] provide
+relevant material.  Carriero and
+<A NAME=2237>&#160;</A>
+Gelernter [<A HREF="node132.html#Linda" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Linda">48</A>] give an introduction to parallel program
+design in the Linda language.  They distinguish between agenda,
+result, and specialist parallelism, which can be thought of as domain
+decomposition and two different forms of functional parallelism,
+respectively.  See also the references in Chapter <A HREF="node131.html#chapbiblio" tppabs="http://www.mcs.anl.gov/dbpp/text/node131.html#chapbiblio">12</A>.
+<P>
+<A NAME=2240>&#160;</A>
+The mapping problem has received considerable attention in the
+computer science and scientific computing literature.  Bokhari shows
+that it is <em> NP
+ </em>-complete [<A HREF="node132.html#Bokhari" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Bokhari">39</A>].  The recursive
+<A NAME=2243>&#160;</A>
+coordinate bisection algorithm is due to Berger and
+Bokhari [<A HREF="node132.html#Bokhari2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Bokhari2">33</A>], and the unbalanced recursive bisection
+algorithm is due to Jones and Plassmann [<A HREF="node132.html#JP94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#JP94">161</A>].  A related
+algorithm is the recursive spectral bisection algorithm of Pothen,
+<A NAME=2246>&#160;</A>
+Simon, and Liou [<A HREF="node132.html#Pothen" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Pothen">230</A>], which uses connectivity information to
+identify partitions of unstructured meshes with low communication
+requirements, at the cost of an eigenvalue computation.  This
+algorithm has proven very effective, although more expensive than the
+other recursive algorithms.  Simon [<A HREF="node132.html#Simon" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Simon">258</A>] and
+Williams [<A HREF="node132.html#Williams" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Williams">293</A>] compare different algorithms for partitioning
+unstructured meshes, including coordinate bisection, graph bisection,
+and spectral bisection.  Barnard and Simon [<A HREF="node132.html#BS94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#BS94">28</A>] describe a less
+expensive multilevel version of spectral bisection.  The mesh in
+Figure <A HREF="node17.html#figfem" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#figfem">2.9</A> is generated using the finite octree technique of
+Shephard and Georges [<A HREF="node132.html#Shep" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Shep">256</A>].  Fox et al. [<A HREF="node132.html#Fox88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Fox88">111</A>] and Nicol
+and Saltz [<A HREF="node132.html#nicolsaltz90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#nicolsaltz90">213</A>] describe the use of cyclic
+decompositions.  Lin and Keller [<A HREF="node132.html#linkeller87" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#linkeller87">190</A>] describe a local
+algorithm.  The local algorithm described in the text is termed a <em>
+<A NAME=2256>&#160;</A>
+receiver-initiated
+ </em> strategy.  In an alternative <em>
+sender-initiated
+ </em> strategy, workers with excess work send it to
+<A NAME=2258>&#160;</A>
+other workers.  Tantawi and Towsley [<A HREF="node132.html#TT85" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#TT85">279</A>] compare
+sender-initiated and receiver-initiated strategies and show that the
+former gives better performance if workers are often idle and that
+the latter performs better when load is heavy.  Other relevant papers
+include those by Berman and Snyder [<A HREF="node132.html#BS87" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#BS87">34</A>];
+Chowdhury [<A HREF="node132.html#chowdhury90" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#chowdhury90">61</A>]; Cybenko [<A HREF="node132.html#Cyb89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Cyb89">68</A>]; Hac [<A HREF="node132.html#Hac89" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Hac89">131</A>];
+Heath, Rosenberg, and Smith [<A HREF="node132.html#HRS88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#HRS88">141</A>]; Kumar, Grama, and
+Rao [<A HREF="node132.html#KGR94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#KGR94">180</A>]; Lo [<A HREF="node132.html#Lo88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Lo88">191</A>]; and Sadayappan and
+Ercal [<A HREF="node132.html#SE87" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#SE87">250</A>].  Dijkstra, Feijen, and Gasteren [<A HREF="node132.html#DSG83" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#DSG83">81</A>],
+Rokusawa et al. [<A HREF="node132.html#RICN88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#RICN88">246</A>], and Kumar et al. [<A HREF="node132.html#Kumar93" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar93">179</A>] describe
+distributed termination-detection algorithms.
+<A NAME=2271>&#160;</A>
+<P>
+Real atmosphere models are of course more complex than the system
+considered in Section <A HREF="node20.html#secclim" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#secclim">2.6</A>.  Washington and
+Parkinson [<A HREF="node132.html#Wash" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Wash">292</A>] provide a good introduction to the numerical
+methods and algorithms used in climate modeling on sequential
+<A NAME=2274>&#160;</A>
+computers.  A workshop held at the European Center for Medium-range
+Weather Forecasting surveyed issues involved in executing weather and
+climate models on parallel computers [<A HREF="node132.html#ECMWF2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#ECMWF2">155</A>].  The parallel
+version of the Community Climate Model is described by Drake et
+al. [<A HREF="node132.html#Drake" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Drake">86</A>].  Michalakes [<A HREF="node132.html#Mich" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Mich">206</A>] analyzes load imbalances in
+climate models and Foster and Toonen [<A HREF="node132.html#FosterToonen" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#FosterToonen">109</A>] describe
+load-balancing algorithms.
+<P>
+Banerjee [<A HREF="node132.html#Banerjee" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Banerjee">26</A>] describes parallel algorithms for VLSI
+<A NAME=2280>&#160;</A>
+design.  Wimer et al. [<A HREF="node132.html#Wimer2" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Wimer2">294</A>] and Arvindam et
+al. [<A HREF="node132.html#Arvindam" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Arvindam">17</A>] describe branch-and-bound search algorithms and
+<A NAME=2283>&#160;</A>
+domain-specific optimizations that can improve performance on
+floorplanning problems.  Reinefeld and Schnecke [<A HREF="node132.html#RS94" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#RS94">243</A>] describe
+the algorithm variant in which workers redundantly expand several tree
+levels before selecting nodes for local expansion.  Kumar et
+al. [<A HREF="node132.html#Kumar93" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar93">179</A>,<A HREF="node132.html#Kumar" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Kumar">181</A>,<A HREF="node132.html#Rao" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Rao">239</A>] provide a wealth of material on the
+design, implementation, and analysis of parallel search algorithms.
+<A NAME=2286>&#160;</A>
+Quinn [<A HREF="node132.html#Quinn" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Quinn">234</A>] also examines branch-and-bound search and describes
+<A NAME=2288>&#160;</A>
+and analyzes the performance of four different load balancing
+strategies.  For a general introduction to search algorithms, see
+Nilsson [<A HREF="node132.html#Nil80" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Nil80">214</A>], Pearl [<A HREF="node132.html#Pea84" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Pea84">225</A>], and Kumar and
+Kanal [<A HREF="node132.html#KK88" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#KK88">164</A>].
+<P>
+Hehre et al. [<A HREF="node132.html#Hehre" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Hehre">142</A>] provide an introduction to <em> ab
+<A NAME=2293>&#160;</A>
+initio
+ </em> quantum 
+<A NAME=2294>&#160;</A>
+chemistry.  Feyereisen and Kendall [<A HREF="node132.html#FK91" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#FK91">96</A>] describe a replicated
+data algorithm for the Fock matrix construction problem.  Colvin et
+al. [<A HREF="node132.html#Colvin" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Colvin">62</A>] describe an algorithm based on domain decomposition
+techniques.  An algorithm that uses distributed data structures and a
+centralized task scheduler is described by Harrison et
+al. [<A HREF="node132.html#Tilson" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Tilson">108</A>,<A HREF="node132.html#Harrison" tppabs="http://www.mcs.anl.gov/dbpp/text/node132.html#Harrison">135</A>].
+<P>
+
+
+<P>
+
+Here is a
+<A HREF="../../../tppmsgs/msgs0.htm#13" tppabs="http://www.mcs.anl.gov/dbpp/web-tours/chap2.html">Web Tour</A>
+
+providing access to additional information on parallel program design
+and software engineering.
+<P>
+<A NAME=4421>&#160;</A>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2143 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2149 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2147 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2151 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2152 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2150 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B>Up:</B> <A NAME=tex2html2148 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2144 HREF="node24.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html"> Exercises</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

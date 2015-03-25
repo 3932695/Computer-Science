@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.2 Approaches to Performance Modeling</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.2 Approaches to Performance Modeling">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2189 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2197 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2195 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2199 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2200 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2198 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html">3.3 Developing Models</A>
+<B>Up:</B> <A NAME=tex2html2196 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2190 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html">3.1 Defining Performance</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02420000000000000000>3.2 Approaches to Performance Modeling</A></H1>
+<P>
+We introduce the topic of performance modeling by describing three
+techniques sometimes used to characterize the performance of parallel
+algorithms.  We explain why each is inadequate for our purposes.
+<P>
+<H2><A NAME=SECTION02421000000000000000>3.2.1 Amdahl's Law</A></H2>
+<P>
+<A NAME=secamdahl>&#160;</A>
+<P>
+<A NAME=3097>&#160;</A>
+A common observation regarding parallel processing is that every
+<A NAME=3098>&#160;</A>
+algorithm has a sequential component that will eventually limit the
+speedup that can be achieved on a parallel computer.  (Speedup, as we
+shall soon define more formally, is the ratio between execution time
+on a single processor and execution time on multiple processors.)
+This observation is often codified as <i> Amdahl's law
+ </i>, which
+can be stated as follows: if the sequential component of an algorithm
+accounts for <em> 1/s</em>
+ of the program's execution time, then the
+maximum possible speedup that can be achieved on a parallel computer
+is <em> s</em>
+.  For example, if the sequential component is 5 percent,
+then the maximum speedup that can be achieved is 20.
+<P>
+In the early days of parallel computing, it was widely believed that
+this effect would limit the utility of parallel computing to a small
+number of specialized applications.  However, practical experience
+shows that this inherently sequential way of thinking is of little
+relevance to real problems.  To understand why, let us consider a
+noncomputing problem.  Assume that 999 of 1000 workers on an
+expressway construction project are idle while a single worker
+completes a ``sequential component'' of the project.  We would not
+view this as an inherent attribute of the problem to be solved, but as
+a failure in management.  For example, if the time required for a
+truck to pour concrete at a single point is a bottleneck, we could
+argue that the road should be under construction at several points
+simultaneously.  Doing this would undoubtedly introduce some
+inefficiency---for example, some trucks would have to travel further
+to get to their point of work---but would allow the entire task to be
+finished more quickly.  Similarly, it appears that almost all
+computational problems admit parallel solutions.  The scalability of
+some solutions may be limited, but this is due to communication costs,
+idle time, or replicated computation rather than the existence of
+``sequential components.''
+<P>
+<A NAME=3102>&#160;</A>
+Amdahl's law can be relevant when sequential programs are parallelized
+incrementally.  In this approach to parallel software
+<A NAME=3103>&#160;</A>
+development, a sequential program is first profiled to identify
+computationally demanding components.  These
+components are then adapted for parallel execution, one by one, until
+acceptable performance is achieved.  Amdahl's law clearly applies in
+this situation, because the computational costs of the components that are
+not parallelized provide a lower bound on the execution time of the
+parallel program.  Therefore, this ``partial,'' or
+``incremental,'' parallelization strategy is generally effective only
+on small parallel computers.  Amdahl's law can also be useful when
+analyzing the performance of data-parallel programs, in which some
+components may not be amenable to a data-parallel formulation (see
+Chapter <A HREF="node82.html#chaphpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html#chaphpf">7</A>).
+<P>
+<H2><A NAME=SECTION02422000000000000000>3.2.2 Extrapolation from Observations</A></H2>
+<P>
+<A NAME=3106>&#160;</A>
+Descriptions of parallel algorithms often characterize performance by
+stating something like the following:
+<blockquote> We implemented the algorithm on parallel computer <em> X</em>
+ and
+achieved a speedup of 10.8 on 12 processors with problem size
+<em> N=100</em>
+.
+</blockquote>
+Presumably, this single data point on a small number of processors is
+intended as a measure of algorithm quality.  A speedup of 10.8 on 12
+processors may or may not be regarded as ``good.''  However, a single
+performance measurement (or even several measurements) serves only to
+determine performance in one narrow region of what is a large
+multidimensional space, and is often a poor indicator of performance
+in other situations.  What happens on 1000 processors?  What if
+<em> N=10</em>
+ or
+<em> N=1000</em>
+?  What if communication costs are ten times higher?  
+Answering these questions requires a deeper understanding of the
+parallel algorithm.
+<P>
+The following three equations emphasize the limitations of
+observations as a tool for understanding parallel performance.  Each
+is a simple performance model that specifies execution time <em> T</em>
+ as
+a function of processor count <em> P</em>
+ and problem size <em> N</em>
+.  In
+each case, we assume that the total computation performed by an
+optimal sequential algorithm scales as <em> N+N</em>
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img361.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img361.gif">.
+<P>
+<OL><LI>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img362.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img362.gif">.  This algorithm partitions the computationally
+demanding <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img363.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img363.gif"> component of the algorithm but replicates the
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img364.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img364.gif"> component on every processor.  There are no other sources of
+overhead.
+<P>
+<LI>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img365.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img365.gif">.  This algorithm partitions all the
+computation but introduces an additional cost of 100.
+<P>
+<LI>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img366.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img366.gif">.  This algorithm also partitions all the
+computation but introduces an additional cost of <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img367.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img367.gif">.
+</OL>
+<P>
+These algorithms all achieve a speedup of about 10.8 when
+<em> P=12</em>
+ and <em> N=100</em>
+.  However, they behave differently in other
+situations, as illustrated in Figure <A HREF="node28.html#figperf3" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html#figperf3">3.1</A>.  With
+<em> N=100</em>
+, all three algorithms perform poorly for larger <em> P</em>
+,
+although Algorithm (3) does noticeably worse than the other two.  When
+<em> N=1000</em>
+, Algorithm (2) is significantly better than Algorithm (1)
+for larger <em> P</em>
+.
+<P>
+<P><A NAME=4514>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img368.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img368.gif">
+<BR><STRONG>Figure 3.1:</STRONG> <em> Efficiency as a function of <em> P</em>
+ for three different
+algorithms (described in the text).  The upper figure is for
+<em> N=100</em>
+, and the lower figure is for <em> N=1000</em>
+.  Notice the use
+of logarithmic scales.  When <em> N=100</em>
+, Algorithms (1) and (2) are
+indistinguishable.</em><A NAME=figperf3>&#160;</A><BR>
+<P><H2><A NAME=SECTION02423000000000000000>3.2.3 Asymptotic Analysis</A></H2>
+<P>
+<A NAME=3135>&#160;</A>
+Textbooks frequently characterize the performance of parallel
+algorithms by stating something like the following:
+<blockquote> <A NAME=3137>&#160;</A>
+Asymptotic analysis reveals that the algorithm requires <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img369.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img369.gif"> time on <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img370.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img370.gif"> processors.
+</blockquote>
+That is, there exists a constant <em> c</em>
+ and minimum problem size
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img371.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img371.gif"> such that for all <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img372.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img372.gif">, cost<em> (N)</em>
+ <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img373.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img373.gif"> on
+<em> N</em>
+ processors. This relationship tells how cost varies with <em> N</em>
+ when
+<em> N</em>
+ and <em> P</em>
+ are large.
+<P>
+<A NAME=3145>&#160;</A>
+While this information is interesting, it is often not directly
+relevant to the task of developing an efficient parallel program.
+Because it deals with large <em> N</em>
+ and <em> P</em>
+, it ignores
+lower-order terms that may be significant for problem sizes and
+processor counts of practical interest.  For example, the actual cost
+of an algorithm with asymptotic complexity of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img374.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img374.gif"> might be
+<em> 10 N + N</em>
+ <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img375.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img375.gif">.  The <em> 10 N</em>
+ component is larger
+for <em> N&lt;1024</em>
+ and must be incorporated in a performance model if
+problems of interest are in this regime.  A second deficiency of
+asymptotic analysis is that it says nothing about absolute cost.
+Asymptotic analysis would suggest that an algorithm with cost
+<em> 1000 N</em>
+ <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img376.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img376.gif"> is superior to an algorithm with cost <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img377.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img377.gif">.
+However, the latter is faster for <em> N&lt;996</em>
+, which again may be the
+regime of practical interest.  A third deficiency is that such
+analyses frequently assume idealized machine models that are very
+different from the physical computers for which we develop programs.
+<A NAME=3153>&#160;</A>
+For example, they may assume the PRAM model, in which communication
+costs are assumed to be nil.
+<P>
+Asymptotic analysis has a role to play in parallel program design.
+However, when evaluating asymptotic results, we must be careful to
+identify the machine model for which the results are obtained, the
+coefficients that are likely to apply, and the <em> N</em>
+ and
+<em> P</em>
+ regime in which the analyses hold.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2189 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2197 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2195 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2199 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2200 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2198 HREF="node29.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html">3.3 Developing Models</A>
+<B>Up:</B> <A NAME=tex2html2196 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2190 HREF="node27.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node27.html">3.1 Defining Performance</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,6 @@
+declare -a city=("Los Angeles" "San Francisco" "New York" "Beverly Hills")
+city[4]="Miami"
+echo "city[@] = ${city[@]}"
+
+city=("${city[@]}" "Boston" "Las Vegas")
+echo "city[@] = ${city[@]}"

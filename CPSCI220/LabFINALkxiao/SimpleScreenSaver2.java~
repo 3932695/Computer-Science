@@ -1,0 +1,36 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class SimpleScreenSaver2 extends JFrame {
+  public SimpleScreenSaver2() {
+    // Create two MovingMessagePanel for displaying two moving messages
+    this.setLayout(new GridLayout(2, 1));
+    add(new MovingMessagePanel("Hello POPL Students!"));
+    add(new MovingMessagePanel("It is almost over ;-)"));
+  }
+
+  /** Main method */
+  public static void main(String[] args) {
+    SimpleScreenSaver2 frame = new SimpleScreenSaver2();
+    frame.setTitle("SimpleScreenSaver2");
+    frame.setLocationRelativeTo(null); // Center the frame
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(280, 100);
+    frame.setVisible(true);
+  }
+
+  // Inner class: Displaying a moving message
+  static class MovingMessagePanel extends JPanel {
+      private JButton text;
+      public MovingMessagePanel (String string) {
+
+	  text = new JButton(string);
+	  add(text);
+      }
+	  
+
+// FILL THIS IN
+
+  }
+}

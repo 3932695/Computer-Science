@@ -1,0 +1,5 @@
+declare -a city=("Los Angeles" "San Francisco" "New York" "Beverly Hills")
+echo ${city[2]}
+
+state=(CA NY NV)
+echo ${state[2]}

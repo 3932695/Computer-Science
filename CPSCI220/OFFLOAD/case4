@@ -1,0 +1,15 @@
+stateabbr=${1}
+case $stateabbr in
+ NY )
+  echo "NY is New York"
+  ;&
+ CA )
+  echo "CA is California"
+  ;&
+ NV )
+  echo "NV is Nevada"
+  ;;
+ *  )
+  echo "Unknown State Name"
+  ;;
+esac

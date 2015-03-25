@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.5 Modularity</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.5 Modularity">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3153 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3161 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3159 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3163 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3164 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3162 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html">8.6 Other MPI Features</A>
+<B>Up:</B> <A NAME=tex2html3160 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3154 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html">8.4 Asynchronous Communication</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03550000000000000000>8.5 Modularity</A></H1>
+<P>
+<A NAME=secmpmod>&#160;</A>
+<P>
+In Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, we distinguished three general
+forms of composition that can be used for the modular construction of
+<A NAME=12981>&#160;</A>
+parallel programs: sequential, parallel, and concurrent.  Recall that
+<A NAME=12982>&#160;</A>
+in sequential composition, two program components execute in sequence
+on the same set of processors.  In parallel composition, two program
+components execute concurrently on disjoint sets of processors.  In
+concurrent composition, two program components execute on potentially
+nondisjoint sets of processors.
+<P>
+<A NAME=12983>&#160;</A>
+MPI supports modular programming via its communicator
+mechanism, which provides the information hiding needed when
+building modular programs, by allowing the specification of program
+components that encapsulate internal communication operations and
+provide a local name space for processes.  In this section, we show
+how communicators can be used to implement various forms of sequential
+and parallel composition.  MPI's MPMD programming model means that the
+full generality of concurrent composition is not generally available.
+<P>
+An MPI communication operation always specifies a communicator.  This
+identifies the process group that is engaged in the communication
+operation and the context in which the communication occurs.  As we
+shall see, process groups allow a subset of processes to communicate
+among themselves using local process identifiers and to perform
+collective communication operations without involving other processes.
+The context forms part of the envelope associated with a message. A
+receive operation can receive a message only if the message was sent
+in the same context.  Hence, if two routines use different contexts
+for their internal communication, there can be no danger of their
+communications being confused.
+<P>
+In preceding sections, all communication operations have used the
+default communicator <tt> MPI_COMM_WORLD</tt>, which incorporates all
+processes involved in an MPI computation and defines a default
+<A NAME=12985>&#160;</A>
+context.  We now describe four functions that allow communicators to
+be used in more flexible ways.  These functions, and their roles in
+modular design, are as follows.
+<P>
+<OL><LI>
+<tt> MPI_COMM_DUP</tt>.  A program may create a new communicator
+<A NAME=12988>&#160;</A>
+comprising the same process group but a new context to ensure that
+communications performed for different purposes are not confused.
+<A NAME=12989>&#160;</A>
+This mechanism supports sequential composition.
+<A NAME=12990>&#160;</A>
+<P>
+<LI>
+<tt> MPI_COMM_SPLIT</tt>.  A program may create a new communicator
+<A NAME=12992>&#160;</A>
+comprising just a subset of a given group of processes.  These
+processes can then communicate among themselves without fear of
+conflict with other concurrent computations.  This mechanism supports
+<A NAME=12993>&#160;</A>
+parallel composition.
+<A NAME=12994>&#160;</A>
+<P>
+<LI>
+<tt> MPI_INTERCOMM_CREATE</tt>.  A program may construct an <em>
+<A NAME=12996>&#160;</A>
+intercommunicator
+ </em>, which links processes in two groups.  This
+mechanism supports parallel composition.
+<P>
+<LI>
+<tt> MPI_COMM_FREE</tt>.  This function can be used to release a
+communicator created using the preceding three functions.
+<A NAME=12998>&#160;</A>
+<P>
+</OL>
+<P>
+The four functions are summarized in Figure <A HREF="node99.html#figmpicommun" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#figmpicommun">8.7</A>;
+their arguments and the ways they are called are described
+next.
+<P>
+<P><A NAME=13824>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1027.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1027.gif">
+<BR><STRONG>Figure 8.7:</STRONG>  MPI communicator functions.
+<A NAME=figmpicommun>&#160;</A><BR>
+<P>
+<A NAME=13042>&#160;</A>
+<P>
+<H2><A NAME=SECTION03551000000000000000>8.5.1 Creating Communicators</A></H2>
+<P>
+<A NAME=secmpco1>&#160;</A>
+<P>
+<P><A NAME=14071>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1028.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1028.gif">
+<BR><STRONG>Figure 8.8:</STRONG> <em> Errors can occur in a sequential composition of two
+parallel program components (e.g., an application program and a
+parallel library) if the two components use the same message tags.
+The figure on the left shows how this can occur.  Each of the four
+vertical lines represents a single thread of control (process) in an
+SPMD program.  All call an SPMD library, which are represented by the
+boxes.  One process finishes sooner than the others, and a message
+that this process generates during subsequent computation (the dashed
+arrow) is intercepted by the library.  The figure on the right shows
+how this problem is avoided
+by using contexts: the library communicates using a distinct tag space,
+which cannot be penetrated by other
+messages.</em><A NAME=figmpconflict>&#160;</A><BR>
+<P>
+<P>
+As discussed in Section <A HREF="node96.html#sectags" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#sectags">8.2.2</A>, message tags provide a
+mechanism for distinguishing between messages used for different
+purposes.  However, they do not provide a sufficient basis for modular
+design.  For example, consider an application that calls a library
+routine implementing (for example) an array transpose operation.  It
+is important to ensure that the message tags used in the library are
+distinct from those used in the rest of the application
+(Figure <A HREF="node99.html#figmpconflict" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#figmpconflict">8.8</A>).  Yet the user of a library routine may
+not know the tags the library uses; indeed, tag values may be
+computed on the fly.
+<P>
+<A NAME=13051>&#160;</A>
+Communicators provide a solution to this problem.  A call of the form 
+<A NAME=13052>&#160;</A>
+<tt> MPI_COMM_DUP(comm, newcomm)</tt>
+<P>
+<A NAME=13056>&#160;</A>
+creates a new communicator <tt> newcomm</tt> comprising the same processes
+as <tt> comm</tt> but with a new context.  This new communicator can be
+passed as an argument to the library routine, as in the following
+code, which calls <tt> transpose</tt> to transpose an array <tt> A</tt>.
+<P>
+
+<PRE><TT> 
+		<tt> integer comm, newcomm, ierr</tt>              		 ! Handles are integers
+<P>
+		<tt> ...</tt>
+<P>
+		<tt> call MPI_COMM_DUP(comm, newcomm, ierr)</tt> 		 ! Create new context
+<P>
+		<tt> call transpose(newcomm, A)</tt>               		 ! Pass to library
+<P>
+		<tt> call MPI_COMM_FREE(newcomm, ierr)</tt>      		 ! Free new context
+<P>
+</TT></PRE>
+
+<P>
+The transpose routine itself will be defined to use the communicator
+<tt> newcomm</tt> in all communication operations, thereby ensuring that
+communications performed within this routine cannot be confused with
+communications performed outside.
+<P>
+<H2><A NAME=SECTION03552000000000000000>8.5.2 Partitioning Processes</A></H2>
+<P>
+<A NAME=secmpco2>&#160;</A>
+<P>
+<P><A NAME=14086>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1029.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1029.gif">
+<BR><STRONG>Figure 8.9:</STRONG> <em> Different views of parallel composition.  On the left
+is the task-parallel view, in which new tasks are created
+dynamically to execute two different program components.  Four tasks
+are created: two perform one computation (dark shading) and two
+another (light shading).  On the right is the MPMD view.  Here,
+a fixed set of processes (represented by vertical arrows) change
+character, for example, by calling different
+subroutines.</em><A NAME=figmpview>&#160;</A><BR>
+<P>
+<P>
+Recall that we use the term <em> parallel composition
+ </em> to denote
+<A NAME=13076>&#160;</A>
+the parallel execution of two or more program components on disjoint
+<A NAME=13077>&#160;</A>
+sets of processors (Section <A HREF="node41.html#secmodpar" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secmodpar">4.2</A>).  One approach to the
+implementation of parallel composition is to create tasks dynamically
+and to place newly created tasks on different processors.  This <em>
+task-parallel
+ </em> approach is taken in CC++
+  and Fortran M, for
+example.  In MPMD programs, parallel composition is implemented
+differently.  As illustrated in Figure <A HREF="node99.html#figmpview" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#figmpview">8.9</A>, available
+processes are partitioned into disjoint sets, with each set executing
+the appropriate program.  This partitioning is achieved by using the
+function <tt> MPI_COMM_SPLIT</tt>.  A call of the form
+<P>
+<tt> MPI_COMM_SPLIT(comm, color, key, newcomm)</tt>
+<P>
+creates one or more new communicators.  This function is a collective
+communication operation, meaning that it must be executed by each
+process in the process group associated with <tt> comm</tt>.  A new
+communicator is created for each unique value of <tt> color</tt> other
+than the defined constant <tt> MPI_UNDEFINED</tt>.  Each new communicator
+comprises those processes that specified its value of <tt> color</tt> in
+the <tt> MPI_COMM_SPLIT</tt> call.  These processes are assigned
+identifiers within the new communicator starting from zero, with order
+determined by the value of <tt> key</tt> or, in the event of ties, by the identifier in the old
+communicator.  Thus, a call of the form
+<tt> MPI_COMM_SPLIT(comm, 0, 0, newcomm)</tt>
+<P>
+in which all processes specify the same color and key, is equivalent
+to a call
+<tt> MPI_COMM_DUP(comm, newcomm)</tt>
+<P>
+That is, both calls create a new communicator containing all the
+processes in the old communicator <tt> comm</tt>.  In contrast, the
+following code creates three new communicators if <tt> comm</tt> contains
+at least three processes.
+<P>
+
+<PRE><TT> 
+		<tt> MPI_Comm comm, newcomm;</tt>
+<P>
+		<tt> int myid, color;</tt>
+<P>
+		<tt> MPI_Comm_rank(comm, &amp;myid);</tt>
+<P>
+		<tt> color = myid%3;</tt>
+<P>
+		<tt> MPI_Comm_split(comm, color, myid, &amp;newcomm);</tt>
+<P>
+</TT></PRE>
+
+<P>
+For example, if <tt> comm</tt> contains eight processes, then processes 0,
+3, and 6 form a new communicator of size three, as do processes 1, 4,
+and 7, while processes 2 and 5 form a new communicator of size two
+(Figure <A HREF="node99.html#figmpcomm" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#figmpcomm">8.10</A>).
+<P>
+<P><A NAME=14105>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1030.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1030.gif">
+<BR><STRONG>Figure:</STRONG> <em> Using <tt> MPI_COMM_SPLIT</tt> to form new communicators.
+The first communicator is a group of eight processes. Setting color to
+<tt> myid%3</tt> and calling <tt> MPI_COMM_SPLIT(comm, color, myid,
+newcomm)</tt> split this into three disjoint process
+groups.</em><A NAME=figmpcomm>&#160;</A><BR>
+<P>
+<P>
+As a final example, the following code fragment creates a new
+communicator (<tt> newcomm</tt>) containing at most eight processes.
+Processes with identifiers greater than eight in communicator <tt>
+comm</tt> call <tt> MPI_COMM_SPLIT</tt> with <tt> newid=MPI_UNDEFINED</tt> and
+hence are not part of the new communicator.
+<P>
+
+<PRE><TT> 
+		<tt> MPI_Comm comm, newcomm;</tt>
+<P>
+		<tt> int myid, color;</tt>
+<P>
+		<tt> MPI_Comm_rank(comm, &amp;myid);</tt>
+<P>
+		<tt> if (myid &lt; 8)</tt>         				 /* Select first 8 processes */
+<P>
+				<tt> color = 1;</tt>
+<P>
+		<tt> else</tt>                  				 /* Others are not in group */
+<P>
+				<tt> color = MPI_UNDEFINED;</tt>
+<P>
+		<tt> MPI_Comm_split(comm, color, myid, &amp;newcomm);</tt>
+<P>
+</TT></PRE>
+
+<P>
+<H2><A NAME=SECTION03553000000000000000>8.5.3 Communicating between Groups</A></H2>
+<P>
+<A NAME=secmpco3>&#160;</A>
+<P>
+A communicator returned by <tt> MPI_COMM_SPLIT</tt> can be used to
+communicate within a group of processes.  Hence, it is called an <em>
+intracommunicator</em>.  (The default communicator, <tt>
+MPI_COMM_WORLD</tt>, is an intracommunicator.)  It is also possible to
+<A NAME=13133>&#160;</A>
+create an <em> intercommunicator
+ </em> that can be used to communicate
+<A NAME=13135>&#160;</A>
+between process groups.  An intercommunicator that connects two groups
+<em> A</em>
+ and <em> B</em>
+ containing <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1031.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1031.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1032.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1032.gif"> processes,
+respectively, allows processes in group <em> A</em>
+ to communicate with
+processes 0..<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1033.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1033.gif"> in group <em> B</em>
+ by using MPI send and receive calls
+(collective operations are not supported). Similarly, processes in
+group <em> B</em>
+ can communicate with processes 0..<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1034.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1034.gif"> in group
+<em> A</em>
+.
+<P>
+An intercommunicator is created by a collective call executed in the
+two groups that are to be connected.  In making this call, the
+processes in the two groups must each supply a local intracommunicator
+that identifies the processes involved in their group.  They must also
+agree on the identifier of a ``leader'' process in each group and a
+parent communicator that contains all the processes in both groups, via
+which the connection can be established.  The default communicator
+<tt> MPI_COMM_WORLD</tt> can always be used for this purpose.  The
+collective call has the general form
+<PRE>     MPI_INTERCOMM_CREATE(comm, local_leader, peercomm,
+                          remote_leader, tag, intercomm)
+</PRE>
+where <tt> comm</tt> is an intracommunicator in the local group and <tt>
+local_leader</tt> is the identifier of the nominated leader process
+within this group.  (It does not matter which process is chosen as the
+leader; however, all participants in the collective operation must
+nominate the same process.)  The parent communicator is specified by
+<tt> peercomm</tt>, while <tt> remote_leader</tt> is the identifier of the
+other group's leader process <em> within the parent communicator</em>.
+The two other arguments are (1) a ``safe'' tag that the two groups'
+leader processes can use to communicate within the parent
+communicator's context without confusion with other communications and
+(2) the new intercommunicator <tt> intercomm</tt>.
+<P>
+Program <A HREF="node99.html#progmpic" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#progmpic">8.7</A> illustrates these ideas.  It first
+uses <tt> MPI_COMM_SPLIT</tt> to split available processes into two
+disjoint groups.  Even-numbered processes are in one group;
+odd-numbered processes are in a second.  Calls to <tt>
+MPI_COMM_RANK</tt> are used to determine the values of the variables
+<tt> myid</tt> and <tt>
+<A NAME=13153>&#160;</A>
+newid</tt>, which represent each process's identifier in the original
+communicator and the appropriate new communicator, respectively.  In
+this example, <tt> newid=myid/2</tt>.  Then, the <tt>
+MPI_INTERCOMM_CREATE</tt> call defines an intercommunicator that links
+the two groups (Figure <A HREF="node99.html#figmpcomm3" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html#figmpcomm3">8.11</A>).  Process 0 within each
+group are selected as the two leaders; these processes correspond to
+processes 0 and 1 within the original group, respectively.  Once the
+intercommunicator is created, each process in the first group sends a
+message to the corresponding process in the second group.  Finally,
+the new communicators created by the program are deleted.
+<P>
+<P><A NAME=14129>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1035.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1035.gif">
+<BR><STRONG>Figure:</STRONG> <em> Establishing an intercommunicator between two process
+groups.  At the top is an original group of eight processes; this is
+<tt> MPI_COMM_WORLD</tt>.  An <tt> MPI_COMM_SPLIT</tt> call creates two
+process groups, each containing four processes. Then, an <tt>
+MPI_INTERCOMM_CREATE</tt> call creates an intercommunicator between the
+two groups.</em><A NAME=figmpcomm3>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=progmpic>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1036.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1036.gif"><P>
+<P>
+<A NAME=13199>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3153 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3161 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3159 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3163 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3164 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3162 HREF="node100.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node100.html">8.6 Other MPI Features</A>
+<B>Up:</B> <A NAME=tex2html3160 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3154 HREF="node98.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html">8.4 Asynchronous Communication</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

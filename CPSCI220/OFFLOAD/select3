@@ -1,0 +1,6 @@
+PS3="Enter your choice: "
+select state
+do
+ echo "Your selection is: $state"
+ break
+done

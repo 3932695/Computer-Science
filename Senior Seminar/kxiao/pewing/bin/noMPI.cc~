@@ -1,0 +1,24 @@
+#include <iostream>
+#include <mpi.h>
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+  int myrank;
+  //char hostname[256];
+
+
+  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+
+
+  if (myrank == 0) {
+    cout << "NoMPI Works" << endl;
+  }
+  cout << "Rank: " << myrank << endl;
+  MPI_Finalize();
+
+  return 0;
+}
+

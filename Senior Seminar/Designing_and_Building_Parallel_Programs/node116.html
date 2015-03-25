@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>10 Random Numbers</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="10 Random Numbers">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3375 HREF="node115.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node115.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3383 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3381 HREF="node114.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node114.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3385 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3386 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3384 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html">10.1 Sequential Random Numbers</A>
+<B>Up:</B> <A NAME=tex2html3382 HREF="node114.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node114.html">Part III: Resources</A>
+<B> Previous:</B> <A NAME=tex2html3376 HREF="node115.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node115.html"> Part III: Resources</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04200000000000000000>10 Random Numbers</A></H1>
+<P>
+<A NAME=chaprandom>&#160;</A>
+<P>
+<A NAME=14597>&#160;</A>
+Random numbers are used in computing to simulate apparently random
+<A NAME=14805>&#160;</A>
+processes in the external world or to sample large parameter spaces.
+Well-known sequential
+<A NAME=14599>&#160;</A>
+techniques exist for generating, in a deterministic fashion, number
+sequences largely indistinguishable from true random sequences.  The
+deterministic nature of these techniques is important because it
+provides for reproducibility in computations.
+<P>
+<A NAME=14600>&#160;</A>
+On parallel computers, random number generation becomes more
+complicated because many concurrently executing tasks may require
+access to random numbers.  Generally, efficiency concerns will require
+that we generate these numbers in a distributed fashion; nevertheless,
+we wish to preserve randomness and reproducibility.  In this chapter,
+we introduce these issues by showing how one commonly used sequential
+technique can be adapted to meet these potentially conflicting
+requirements.
+<P>
+
+<HR>
+<UL> 
+<LI> <A NAME=tex2html3387 HREF="node117.html#SECTION04210000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html#SECTION04210000000000000000">10.1 Sequential Random Numbers</A>
+<LI> <A NAME=tex2html3388 HREF="node118.html#SECTION04220000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node118.html#SECTION04220000000000000000">10.2 Parallel Random Numbers</A>
+<LI> <A NAME=tex2html3389 HREF="node119.html#SECTION04230000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node119.html#SECTION04230000000000000000">10.3 Distributed Random Generators</A>
+<LI> <A NAME=tex2html3390 HREF="node120.html#SECTION04240000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node120.html#SECTION04240000000000000000">10.4 Summary</A>
+<LI> <A NAME=tex2html3391 HREF="node121.html#SECTION04250000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node121.html#SECTION04250000000000000000"> Exercises</A>
+<LI> <A NAME=tex2html3392 HREF="node122.html#SECTION04260000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node122.html#SECTION04260000000000000000"> Chapter Notes</A>
+</UL>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3375 HREF="node115.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node115.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3383 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3381 HREF="node114.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node114.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3385 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3386 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3384 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html">10.1 Sequential Random Numbers</A>
+<B>Up:</B> <A NAME=tex2html3382 HREF="node114.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node114.html">Part III: Resources</A>
+<B> Previous:</B> <A NAME=tex2html3376 HREF="node115.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node115.html"> Part III: Resources</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

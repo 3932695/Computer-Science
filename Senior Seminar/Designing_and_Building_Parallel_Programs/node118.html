@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>10.2 Parallel Random Numbers</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="10.2 Parallel Random Numbers">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3405 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3413 HREF="node119.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node119.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3411 HREF="node116.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node116.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3415 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3416 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3414 HREF="node119.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node119.html">10.3 Distributed Random Generators</A>
+<B>Up:</B> <A NAME=tex2html3412 HREF="node116.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node116.html">10 Random Numbers</A>
+<B> Previous:</B> <A NAME=tex2html3406 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html">10.1 Sequential Random Numbers</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04220000000000000000>10.2 Parallel Random Numbers</A></H1>
+<P>
+<A NAME=14657>&#160;</A>
+We can distinguish three general approaches to the generation of
+<A NAME=14658>&#160;</A>
+random numbers on parallel computers: centralized, replicated, and
+distributed.  In the <em> centralized
+ </em> approach, a sequential
+generator is encapsulated in a task from which other tasks request
+random numbers.  This avoids the problem of generating multiple
+independent random sequences, but is unlikely to provide good
+performance.  Furthermore, it makes reproducibility hard to achieve:
+the response to a request depends on when it arrives at the generator,
+and hence the result computed by a program can vary from one run to
+the next.
+<P>
+In the <em> replicated
+ </em> approach, multiple instances of the same
+<A NAME=14661>&#160;</A>
+generator are created (for example, one per task). Each generator uses
+either the same seed or a unique seed, derived, for example, from a
+task identifier.  Clearly, sequences generated in this fashion are not
+guaranteed to be independent and, indeed, can suffer from serious
+correlation problems.  However, the approach has the advantages of
+efficiency and ease of implementation and should be used when
+appropriate.
+<P>
+In the <em> distributed
+ </em> approach, responsibility for generating
+a single sequence is partitioned among many generators, which can then
+<A NAME=14663>&#160;</A>
+be parceled out to different tasks.  The generators are all derived
+from a single generator; hence, the analysis of the statistical properties of
+the distributed generator is simplified.  As only distributed
+generators are at all difficult to implement on parallel computers, we
+focus on this topic in the rest of this chapter.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3405 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3413 HREF="node119.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node119.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3411 HREF="node116.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node116.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3415 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3416 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3414 HREF="node119.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node119.html">10.3 Distributed Random Generators</A>
+<B>Up:</B> <A NAME=tex2html3412 HREF="node116.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node116.html">10 Random Numbers</A>
+<B> Previous:</B> <A NAME=tex2html3406 HREF="node117.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node117.html">10.1 Sequential Random Numbers</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

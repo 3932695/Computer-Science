@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>4.6 Case Study: Matrix Multiplication</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="4.6 Case Study: Matrix Multiplication">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2398 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2406 HREF="node46.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node46.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2404 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2408 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2409 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2407 HREF="node46.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node46.html">4.7 Summary</A>
+<B>Up:</B> <A NAME=tex2html2405 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2399 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html">4.5 Case Study: Tuple Space</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02560000000000000000>4.6 Case Study: Matrix Multiplication</A></H1>
+<P>
+<A NAME=seclamm>&#160;</A>
+<P>
+<A NAME=5868>&#160;</A>
+In our third case study,
+<A NAME=5869>&#160;</A>
+we use the example of matrix-matrix
+<A NAME=5870>&#160;</A>
+multiplication to illustrate issues that arise when developing data
+<A NAME=5871>&#160;</A>
+distribution neutral libraries.  In particular, we consider the
+<A NAME=5872>&#160;</A>
+problem of developing a library to compute <em> C = A.B</em>
+, where
+<em> A</em>
+, <em> B</em>
+, and <em> C</em>
+ are dense matrices of size
+<em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img780.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img780.gif"><em> N</em>
+.  (A <i> dense matrix</i> is a matrix in which most of the
+entries are nonzero.)  This matrix-matrix multiplication involves <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img781.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img781.gif">
+operations, since for each element <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img782.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img782.gif"> of <em> C</em>
+, we must
+compute
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img783.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img783.gif"><P>
+<P>
+We wish a library that will allow each of the arrays <em> A</em>
+, <em> B</em>
+,
+and <em> C</em>
+ to be distributed over <em> P</em>
+ tasks in one of three ways:
+blocked by row, blocked by column, or blocked by row and column.  This
+library may be defined with a subroutine interface suitable for
+sequential composition in an SPMD program or with a channel interface
+suitable for parallel or concurrent composition.  The basic
+algorithmic issue remains the same: Does the library need to
+incorporate different algorithms for different distributions of
+<em> A</em>
+, <em> B</em>
+, and <em> C</em>
+, or should incoming data structures be
+converted to a standard distribution before calling a single
+algorithm?
+<P>
+<P><A NAME=6466>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img784.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img784.gif">
+<BR><STRONG>Figure 4.10:</STRONG> <em> Matrix-matrix multiplication <em> A.B=C</em>
+ with matrices <em> A</em>
+,
+<em> B</em>
+, and <em> C</em>
+ decomposed in one dimension.  The components of
+<em> A</em>
+, <em> B</em>
+, and <em> C</em>
+ allocated to a single task are shaded
+black.  During execution, this task requires all of matrix
+<em> A</em>
+ (shown stippled).</em><A NAME=figlamat1>&#160;</A><BR>
+<P><H2><A NAME=SECTION02561000000000000000>4.6.1 Parallel Matrix-Matrix Multiplication</A></H2>
+<P>
+<A NAME=secmodmm2>&#160;</A>
+<P>
+We start by examining algorithms for various distributions of <em> A</em>
+,
+<A NAME=5910>&#160;</A>
+<em> B</em>
+, and <em> C</em>
+.  We first consider a one-dimensional, columnwise
+decomposition in which each task encapsulates corresponding columns
+from <em> A</em>
+, <em> B</em>
+, and <em> C</em>
+.  One parallel algorithm makes each
+task responsible for all computation associated with its <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img785.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img785.gif">.  As
+shown in Figure <A HREF="node45.html#figlamat1" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#figlamat1">4.10</A>, each task requires all of matrix
+<em> A</em>
+ in order to compute its <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img786.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img786.gif">.  <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img787.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img787.gif"> data are required
+from each of <em> P-1</em>
+ other tasks, giving the following per-processor
+communication cost:
+<P>
+<P><A NAME=eqmm1d>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img788.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img788.gif"><P>
+<P>
+Note that as each task performs <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img789.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img789.gif"> computation, if
+<em> N</em>
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img790.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img790.gif"><em> P</em>
+, then the algorithm will have to transfer roughly
+one word of data for each multiplication and addition performed.
+Hence, the algorithm can be expected to be efficient only when
+<em> N</em>
+ is much larger than <em> P</em>
+ or the cost of computation is much larger
+than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img791.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img791.gif">.
+<P>
+<P><A NAME=6514>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img792.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img792.gif">
+<BR><STRONG>Figure 4.11:</STRONG> <em> Matrix-matrix multiplication <em> A.B=C</em>
+ with matrices <em> A</em>
+,
+<A NAME=6502>&#160;</A>
+<em> B</em>
+, and <em> C</em>
+ decomposed in two dimensions.  The components of
+<em> A</em>
+, <em> B</em>
+, and <em> C</em>
+ allocated to a single task are shaded
+black.  During execution, this task requires corresponding rows and
+columns of matrix <em> A</em>
+ and <em> B</em>
+, respectively
+(shown stippled).</em><A NAME=figlamat2>&#160;</A><BR>
+<P>
+<P>
+Next, we consider a two-dimensional decomposition of <em> A</em>
+, <em> B</em>
+,
+and <em> C</em>
+.  As in the one-dimensional algorithm, we assume that a task
+encapsulates corresponding elements of <em> A</em>
+, <em> B</em>
+, and
+<em> C</em>
+ and that each task is responsible for all computation associated with
+its <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img793.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img793.gif">.  The computation of a single element <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img794.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img794.gif"> requires
+an entire row <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img795.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img795.gif"> and column <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img796.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img796.gif"> of <em> A</em>
+ and <em> B</em>
+,
+respectively.  Hence, as shown in Figure <A HREF="node45.html#figlamat2" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#figlamat2">4.11</A>, the
+computation performed within a single task requires the <em> A</em>
+ and
+<em> B</em>
+ submatrices allocated to tasks in the same row and column,
+respectively.  This is a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img797.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img797.gif"> data,
+considerably less than in the one-dimensional algorithm.
+<P>
+<P><A NAME=6551>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img798.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img798.gif">
+<BR><STRONG>Figure 4.12:</STRONG> <em> Matrix-matrix multiplication algorithm based on two-dimensional
+decompositions.  Each step involves three stages:  (a) an
+<em> A</em>
+ submatrix is broadcast to other tasks in the same row;  (b) local
+computation is performed; and (c) the <em> B</em>
+ submatrix is rotated
+upwards within each column.</em><A NAME=figlamatmul>&#160;</A><BR>
+<P>
+<P>
+To complete the second parallel algorithm, we need to design a
+strategy
+<A NAME=5964>&#160;</A>
+for communicating the submatrices between tasks.  One approach is for
+each task to execute the following logic (Figure <A HREF="node45.html#figlamatmul" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#figlamatmul">4.12</A>):
+<P>
+<tt>
+<PRE><TT> 
+		 set <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img799.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img799.gif">
+<P>
+		 for <em> j</em>
+=0 to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img800.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img800.gif">
+<P>
+				 in each row <em> i</em>
+, the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img801.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img801.gif">th task broadcasts
+<P>
+						<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img802.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img802.gif"> to the other tasks in the row
+<P>
+				 accumulate <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img803.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img803.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img804.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img804.gif">
+<P>
+				 send <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img805.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img805.gif"> to upward neighbor
+<P>
+		 endfor
+<P>
+</TT></PRE>
+</tt>
+<P>
+Each of the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img806.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img806.gif"> steps in this algorithm involves a broadcast
+to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img807.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img807.gif"> tasks (for <em> A'</em>
+) and a nearest-neighbor
+communication (for <em> B'</em>
+).  Both communications involve <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img808.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img808.gif">
+data.  Because the broadcast can be accomplished in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img809.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img809.gif"> steps
+using a tree structure, the per-processor communication cost is
+<P>
+<P><A NAME=eqlamatmulc>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img810.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img810.gif"><P>
+Notice that because every task in each row must serve as the root of a
+broadcast tree, the total communication structure required for this
+algorithm combines a hypercube (butterfly) structure within each row
+of the two-dimensional task mesh and a ring within each column.
+<P>
+<P><A NAME=6575>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img811.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img811.gif">
+<BR><STRONG>Figure 4.13:</STRONG> <em> Reorganizing from a one-dimensional to a one-dimensional
+decomposition of a square matrix when <b>P=16</b>.  Shading indicates one
+set of four tasks that must exchange data during the
+reorganization.</em><A NAME=figmodmm>&#160;</A><BR>
+<P><H2><A NAME=SECTION02562000000000000000>4.6.2 Redistribution Costs</A></H2>
+<P>
+Comparing Equations <A HREF="node45.html#eqmm1d" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#eqmm1d">4.3</A> with <A HREF="node45.html#eqlamatmulc" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#eqlamatmulc">4.4</A>,
+<A NAME=5993>&#160;</A>
+we see that the two-dimensional decomposition yields the more efficient
+parallel algorithm.  Does this mean that our parallel library should
+convert input arrays decomposed in one dimension to a two-dimensional
+decomposition before performing the matrix multiplication?  To answer
+this question, we need to know the cost of the reorganization.  The
+communication costs associated with the reorganization of a single
+array are as follows; each task exchanges data with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img812.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img812.gif"> other
+tasks, with each message having size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img813.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img813.gif">
+(Figure <A HREF="node45.html#figmodmm" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#figmodmm">4.13</A>):
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img814.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img814.gif"><P>
+<P>
+If <em> A</em>
+, <em> B</em>
+, and <em> C</em>
+ are all decomposed in one dimension,
+we must perform three such conversions.  This gives a worst-case total
+communication cost for reorganization and multiplication using the
+two-dimensional algorithm of
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img815.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img815.gif"><P>
+Comparing this expression with Equation <A HREF="node45.html#eqmm1d" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#eqmm1d">4.3</A>, we see that
+the algorithm that reorganizes data structures to a 2-D decomposition
+before performing the multiplication will be more efficient than an
+algorithm that does not, when
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img816.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img816.gif"><P>
+<P>
+This condition holds for all except small <em> P</em>
+.  Hence, we conclude
+that our parallel matrix multiply library should convert to a
+two-dimensional decomposition before performing computation, as
+follows.
+<P>
+
+<PRE><TT> 
+		<tt> procedure matrix_multiply(A, B, C)</tt>
+<P>
+		<tt> begin</tt>
+<P>
+				<tt> if 1d_distributed(A) then reorg_to_2d(A)</tt>
+<P>
+				<tt> if 1d_distributed(B) then reorg_to_2d(B)</tt>
+<P>
+				<tt> 2d_matrix_multiply(A, B, C)</tt>
+<P>
+				<tt> if 1d_distributed(C) then reorg_to_1d(C)</tt>
+<P>
+		<tt> end</tt>
+<P>
+</TT></PRE>
+
+<P>
+<P><A NAME=6600>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img819.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img819.gif">
+<BR><STRONG>Figure 4.14:</STRONG> <em> Layout of the <em> A</em>
+ and <em> B</em>
+ matrices in the systolic
+matrix-matrix multiplication algorithm for a <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img818.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img818.gif"> task mesh.
+The arrows show the direction of data movement during execution of the
+systolic algorithm.</em><A NAME=figlasystolic>&#160;</A><BR>
+<P><H2><A NAME=SECTION02563000000000000000>4.6.3 A Systolic Algorithm</A></H2>
+<P>
+We still have not said the last word about the ideal data distribution
+for matrix-matrix multiplication!  An alternative algorithm
+<A NAME=6039>&#160;</A>
+allows the broadcast operations used in the preceding algorithm to be
+<A NAME=6040>&#160;</A>
+replaced with regular, nearest-neighbor (``systolic'') communications.
+However, data must be distributed among tasks in a different fashion.
+As before, we assume that <em> A</em>
+, <em> B</em>
+, and
+<em> C</em>
+ are decomposed into <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img820.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img820.gif"> submatrices.  Each task
+<em> (i,j)</em>
+ contains submatrices <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img821.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img821.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img822.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img822.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img823.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img823.gif">, where
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img824.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img824.gif">.  This data layout is
+illustrated in Figure <A HREF="node45.html#figlasystolic" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#figlasystolic">4.14</A>.
+<P>
+Computation proceeds in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img825.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img825.gif"> steps.  In each step, contributions
+to <em> C</em>
+ are accumulated in each task, after which values of
+<em> A</em>
+ move down and values of <em> B</em>
+ move right.  The entire computation
+requires a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img826.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img826.gif"> messages per task, each of size
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img827.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img827.gif">, for a cost of
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img828.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img828.gif"><P>
+<P>
+Communication costs are less by a factor of about <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img829.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img829.gif"> than in
+Equation <A HREF="node45.html#eqlamatmulc" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#eqlamatmulc">4.4</A>.  Again, this benefit must be weighed
+against the cost of converting matrices <em> A</em>
+, <em> B</em>
+, and
+<em> C</em>
+ into the layout required by this algorithm.  This analysis is left as
+<A NAME=6062>&#160;</A>
+an exercise.
+<A NAME=6063>&#160;</A>
+<P>
+<A NAME=6064>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2398 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2406 HREF="node46.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node46.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2404 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2408 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2409 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2407 HREF="node46.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node46.html">4.7 Summary</A>
+<B>Up:</B> <A NAME=tex2html2405 HREF="node39.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html">4 Putting Components Together</A>
+<B> Previous:</B> <A NAME=tex2html2399 HREF="node44.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node44.html">4.5 Case Study: Tuple Space</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

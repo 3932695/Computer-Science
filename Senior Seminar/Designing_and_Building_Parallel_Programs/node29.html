@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.3 Developing Models</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.3 Developing Models">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2201 HREF="node28.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2209 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2207 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2211 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2212 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2210 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html">3.4 Scalability Analysis</A>
+<B>Up:</B> <A NAME=tex2html2208 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2202 HREF="node28.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html">3.2 Approaches to Performance Modeling</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02430000000000000000>3.3 Developing Models</A></H1>
+<P>
+<A NAME=3157>&#160;</A>
+A good performance model, like a good scientific theory, is able to
+explain available observations and predict future circumstances, while
+abstracting unimportant details.  Amdahl's law, empirical
+observations, and asymptotic analysis do not satisfy the first of
+these requirements.  On the other hand, conventional computer system
+modeling techniques, which typically involve detailed simulations of
+individual hardware components, introduce too many details to be of
+practical use to parallel programmers.  In the rest of this chapter,
+we introduce performance modeling techniques that provide an
+intermediate level of detail.  These techniques are certainly not
+appropriate for all purposes: they are specialized for the
+multicomputer architecture and do not take into account, for example,
+cache behavior.  However, they have been proven useful in a wide range
+of parallel algorithm design problems.  The chapter notes provide
+references to other approaches.
+<P>
+The performance models considered here specify a metric such as
+<A NAME=3158>&#160;</A>
+execution time <em> T</em>
+ as a function of problem size <em> N</em>
+, number
+<A NAME=3161>&#160;</A>
+of processors <em> P</em>
+, number of tasks <em> U</em>
+, and other algorithm
+and hardware characteristics:
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img378.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img378.gif"><P>
+<P>
+We define the <em> execution time
+ </em> of a parallel program as the time
+that elapses from when the first processor starts executing on the
+<A NAME=3167>&#160;</A>
+problem to when the last processor completes execution.  This
+definition is not entirely adequate for a timeshared parallel computer
+but suffices for our purposes.  During execution, each processor is
+computing, communicating, or idling, as illustrated in
+Figure <A HREF="node29.html#figeff" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#figeff">3.2</A>.  <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img379.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img379.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img380.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img380.gif">, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img381.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img381.gif"> are the time spent computing, communicating, and idling,
+respectively, on the <em> i</em>
+th processor.  Hence, total execution time
+<em> T</em>
+ can be defined in two ways: as the sum of computation,
+communication, and idle times on an arbitrary processor <em> j</em>
+,
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img382.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img382.gif"><P>
+or as the sum of these times over all processors divided by the
+number of processors <em> P</em>
+,
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img383.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img383.gif"><P>
+<P>
+<P><A NAME=4559>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img384.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img384.gif">
+<BR><STRONG>Figure 3.2:</STRONG> <em> Activity plot during execution of a parallel program on eight
+processors.  Each processor spends its time computing, communicating,
+or idling.  <em> T</em>
+ is the total execution time.</em><A NAME=figeff>&#160;</A><BR>
+<P>
+<P>
+The latter definition is often more useful, since it is typically easier
+to determine the total computation and communication performed by a
+parallel algorithm rather than the time spent computing and
+communicating on individual processors.
+<P>
+Thus, the goal is to develop mathematical expressions that specify
+execution time as functions of <em> N</em>
+, <em> P</em>
+, etc.  These models
+should be as simple as possible, while providing acceptable accuracy.
+We use the following techniques to reduce model complexity.
+<P>
+<UL><LI>
+We base our model on the idealized <i> multicomputer
+ </i> parallel
+architecture model introduced in Chapter <A HREF="node6.html#chap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html#chap1">1</A>.  Low-level
+hardware details such as memory hierarchies and the topology of the
+interconnection network are introduced only if there is evidence to
+suggest that they are important.  (The latter issue is discussed in
+Section <A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>.)
+<P>
+<LI> 
+<A NAME=3209>&#160;</A>
+We use <em> scale analysis
+ </em> to identify insignificant effects
+that can be ignored in the analysis.  For example, if an algorithm
+consists of an initialization step followed by several thousand
+iterations of a computation step, then unless initialization is very
+expensive we consider only the computation step in our analysis.
+<P>
+<LI> 
+We use <em> empirical studies
+ </em> to calibrate simple models rather
+than developing more complex models from first principles.
+</UL><H2><A NAME=SECTION02431000000000000000>3.3.1 Execution Time</A></H2>
+<P>
+We first examine the three components of total execution time:
+computation time, communication time, and idle time.
+<P>
+<H4><A NAME=SECTION02431010000000000000> Computation Time.</A></H4>
+<P>
+The <i> computation time
+ </i> of an algorithm (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img385.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img385.gif"> is the time
+<A NAME=3217>&#160;</A>
+spent performing computation rather than communicating or idling.  If
+we have a sequential program that performs the same computation as the
+parallel algorithm, we can determine <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img386.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img386.gif"> by timing that
+program.  Otherwise, we may have to implement key kernels.
+<P>
+Computation time will normally depend on some measure of problem size,
+whether that size is represented by a single parameter <em> N</em>
+ or by a set of
+parameters, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img387.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img387.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img388.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img388.gif">, ..., <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img389.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img389.gif">.  If the parallel algorithm
+replicates computation, then computation time will also depend on the
+number of tasks or processors.  In a heterogeneous parallel computer
+(such as a workstation network), computation time can vary according
+to the processor on which computation is performed.
+<P>
+Computation time will also depend on characteristics of processors and
+their memory systems.  For example, scaling problem size or number of
+processors can change cache performance or the effectiveness of
+processor pipelining.  As a consequence, one cannot automatically
+assume that total computation time will stay constant as the number of
+processors changes.
+<P>
+<H4><A NAME=SECTION02431020000000000000> Communication Time.</A></H4>
+<P>
+<A NAME=3221>&#160;</A>
+The <em> communication time
+ </em> of an algorithm (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img390.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img390.gif">) is
+<A NAME=3224>&#160;</A>
+the time that its tasks spend sending and receiving messages.  Two
+distinct types of communication can be distinguished: interprocessor
+communication and intraprocessor communication.  In <em>
+interprocessor
+ </em> communication, two communicating tasks are
+located on different processors.  This will always be the case if an
+algorithm creates one task per processor.  In <em>
+intraprocessor
+ </em> communication, two communicating tasks are
+located on the same processor.  For simplicity, we assume that
+interprocessor and intraprocessor communication costs are comparable.
+Perhaps surprisingly, this assumption is not unreasonable in many
+multicomputers, unless intraprocessor communication is highly
+optimized.  This is because the cost of the memory-to-memory copies
+and context switches performed in a typical implementation of
+intraprocessor communication is often comparable to the cost of an
+interprocessor communication.  In other environments, such as
+Ethernet-connected workstations, intraprocessor communication is much
+faster.
+<P>
+In the idealized multicomputer architecture, the cost of sending a
+message between two tasks located on different processors can be
+represented by two parameters: the message startup time <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img391.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img391.gif">, which
+<A NAME=3227>&#160;</A>
+is the time required to initiate the communication, and the transfer
+time per (typically four-byte) word <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img392.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img392.gif">, which is determined by the
+<A NAME=3228>&#160;</A>
+physical bandwidth of the communication channel linking the source and
+destination processors.  As illustrated in Figure <A HREF="node29.html#figperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#figperf">3.3</A>, the
+time required to send a message of size
+<em> L</em>
+ words is then
+<P><A NAME=eq88>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img393.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img393.gif"><P>
+<P>
+This idealized model of communication performance is adequate for many
+purposes but does break down in some situations.  More detailed
+models are described in Section <A HREF="node33.html#secperfrefine" tppabs="http://www.mcs.anl.gov/dbpp/text/node33.html#secperfrefine">3.7</A>.
+<P>
+<P><A NAME=4580>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img396.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img396.gif">
+<BR><STRONG>Figure 3.3:</STRONG> <em> Simple communication cost model: <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img395.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img395.gif">.  In this plot of time versus message length, the slope of the line
+corresponds to the cost per word transferred and the <b>y</b>-intercept to
+the message startup cost.</em><A NAME=figperf>&#160;</A><BR>
+<P>
+<P>
+Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A> lists approximate values for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img397.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img397.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img398.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img398.gif"> for
+some parallel computers.  Because these values tend to change rapidly
+as hardware and systems software evolve, they should be verified
+before being used in performance models.  Notice the considerable
+variation in both <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img399.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img399.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img400.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img400.gif"> values.  Clearly, different
+computers have very different communication performance
+characteristics.
+<P>
+The values in Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A> were obtained either from the
+literature or by fitting Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> to execution times
+measured for a small test program that sends messages back and forth
+between two processors.  Figure <A HREF="node29.html#figperfd" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#figperfd">3.4</A> presents some
+representative experimental data obtained with this program.  These
+times are for a single round trip and hence are twice those given by
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A>.  The impact of startup and per-word costs on
+communication time is clearly visible.  Notice the irregularities in
+<A NAME=3245>&#160;</A>
+both Ethernet and Fiber Distributed Data Interconnect (FDDI) times for
+small messages, and the periodic jumps in Paragon times.  These are
+due to details of the communication protocols and buffer management
+strategies used in communication libraries.  Nevertheless, we see that
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> is a reasonably accurate representation of
+message costs, particularly for larger messages.
+<P>
+<A NAME=3247>&#160;</A>
+<P><A NAME=4425>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img403.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img403.gif">
+<BR><STRONG>Table 3.1:</STRONG>  Approximate machine parameters for some parallel computers,
+in microseconds (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img402.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img402.gif">sec).  Some of these data provided by
+T. Dunigan.
+<A NAME=tabmach>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=4595>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img404.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img404.gif">
+<BR><STRONG>Figure 3.4:</STRONG> <em> Round-trip time for a single message between two processors
+as a function of message length on Ethernet-connected workstations,
+FDDI-connected workstations, Intel Paragon, and IBM SP1.  Data
+provided by W. Gropp.</em><A NAME=figperfd>&#160;</A><BR>
+<P>
+<P>
+Notice that both the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img405.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img405.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img406.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img406.gif"> terms are required in
+Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A>.  Asymptotically (for large
+<em> L</em>
+) only the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img407.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img407.gif"> term is important; yet as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img408.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img408.gif"> is generally
+much larger than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img409.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img409.gif">, the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img410.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img410.gif"> term can dominate in applications
+that send mostly small messages.
+<P>
+The values in Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A> represent ``best achievable''
+performance and in general may be used as a lower bound on
+communication costs when estimating performance.  Applications with
+less regular or structured communication patterns may perform less
+well.  In addition, the values in Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A> do not
+incorporate other costs such as buffer management associated with
+message passing.  However, these additional costs are typically
+proportional to the number and size of messages communicated.  Hence,
+it is generally possible, by fitting Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> to empirical
+data, to obtain system- and algorithm-dependent values for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img411.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img411.gif"> and
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img412.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img412.gif"> for which Equation <A HREF="node29.html#eq88" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq88">3.1</A> is valid for a large range of
+problem and machine sizes.  This procedure is applied in several
+examples later in this chapter.
+<P>
+<H4><A NAME=SECTION02431030000000000000> Idle Time.</A></H4>
+<P>
+<A NAME=3276>&#160;</A>
+Both computation and communication times are specified explicitly in a
+parallel algorithm; hence, it is generally straightforward to determine their
+contribution to execution time.  Idle time (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img413.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img413.gif">) can be
+more difficult to determine, however, since it often depends on the order in
+which operations are performed.
+<P>
+A processor may be idle due to lack of computation or lack of data. In
+the first case, idle time may be avoided by using load-balancing
+techniques such as those introduced in Section <A HREF="node19.html#seclbalgs" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#seclbalgs">2.5.1</A>.  In
+the second case, the processor is idle while the computation and
+communication required to generate remote data are performed.  This
+idle time can sometimes be avoided by structuring a program so that
+processors perform other computation or communication while waiting
+for remote data.  This technique is referred to as <em> overlapping
+computation and communication</em>, since local computation is performed
+concurrently with remote communication and computation
+(Figure <A HREF="node29.html#figover" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#figover">3.5</A>).  Such overlapping can be achieved in two
+ways.  A simple approach is to create multiple tasks on each
+processor.  When one task blocks waiting for remote data, execution
+may be able to switch to another task for which data are already
+available.  This approach has the advantage of simplicity but is
+efficient only if the cost of scheduling a new task is less than the
+idle time cost that is avoided.  Alternatively, a single task can be
+structured so that requests for remote data are interleaved explicitly
+with other computation.
+<P>
+<A NAME=3282>&#160;</A>
+<P><A NAME=4613>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img414.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img414.gif">
+<BR><STRONG>Figure 3.5:</STRONG> <em> Overlapping computation with communication.  Solid lines
+represent computation and dashed lines represent communication
+operations.  In both (a) and (b), processor P1 generates a request to
+processor P2 at time <em> t+2</em>
+ and receives a reply at time <em> t+8</em>
+.
+In both cases, the cost of actually sending the message is assumed to
+be 1 time unit.  In (a), P1 has no other useful work to do while
+waiting for the reply and hence is idle for five time units after
+sending the message.  In (b), P1 switches to another task as soon the
+request is generated.  As this task requires five time units to
+complete, P1 is never idle.</em><A NAME=figover>&#160;</A><BR>
+<P>
+<P>
+<A NAME=3287>&#160;</A>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img423.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img423.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img415.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img415.gif">    Finite Difference</b>:<A NAME=exfdx>&#160;</A>
+<P>
+Throughout this chapter, we use a parallel finite difference algorithm
+similar to the atmosphere model considered in Section <A HREF="node20.html#secatmsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#secatmsum">2.6</A>
+to illustrate how performance models are developed and used.  For
+simplicity, we assume a grid of size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img416.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img416.gif"> points, where
+<em> Z</em>
+ is the number of points in the vertical dimension.  Initially,
+we assume that this grid is decomposed in one horizontal dimension and
+partitioned among <em> P</em>
+ tasks, with each task responsible for a
+subgrid of size <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img417.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img417.gif">.  Each task performs the same
+computation on each grid point and at each time step.  Because the parallel
+algorithm does not replicate computation, we can model computation
+time in a single time step as
+<P><A NAME=eq87>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img418.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img418.gif"><P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img419.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img419.gif"> is the average computation time at a single grid point.
+<P>
+As in Section <A HREF="node20.html#secatmsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#secatmsum">2.6</A>, we consider a nine-point stencil,
+meaning that each task must exchange <em> 2 N Z</em>
+ data points with two
+neighboring tasks, for a total of two messages and <em> 4 N Z</em>
+ data.
+(We assume that each processor is allocated at least a
+2<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img420.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img420.gif"><em> N</em>
+ subgrid; if not, communications will be required
+with more than two neighbors.  Hence, the performance model that we
+develop does not apply on more than <em> N/2</em>
+ processors.)  The total
+communication cost, summed over <em> P</em>
+ processors, is
+<P>
+<P><A NAME=eq76>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img421.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img421.gif"><P>
+If <em> P</em>
+ divides <em> N</em>
+ and the amount of computation per grid
+point is a constant, idle time can be expected to be negligible
+in this example.  In these circumstances, we can combine
+Equations <A HREF="node29.html#eq87" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq87">3.2</A> and <A HREF="node29.html#eq76" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq76">3.3</A> to obtain the following
+performance model:
+<P><A NAME=eqfdt>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img422.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img422.gif"><P>
+<P>
+<BR><HR>
+<P>
+<A NAME=3320>&#160;</A>
+<H2><A NAME=SECTION02432000000000000000>3.3.2 Efficiency and Speedup</A></H2>
+<P>
+<A NAME=3322>&#160;</A>
+Execution time is not always the most convenient metric by which to
+evaluate parallel algorithm performance.  As execution time tends to
+<A NAME=3323>&#160;</A>
+vary with problem size, execution times must be normalized when
+comparing algorithm performance at different problem sizes.
+<A NAME=3324>&#160;</A>
+Efficiency---the fraction of time that processors spend doing useful
+work---is a related metric that can sometimes provide a more
+convenient measure of parallel algorithm quality.  It characterizes
+the effectiveness with which an algorithm uses the computational
+resources of a parallel computer in a way that is independent of
+problem size.  We define <em> relative efficiency</em> as
+<P>
+<P><A NAME=eq45>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img424.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img424.gif"><P>
+where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img425.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img425.gif"> is the execution time on one processor and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img426.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img426.gif"> is the
+time on <em> P</em>
+ processors.  The related quantity <em> relative
+speedup</em>,
+<P><A NAME=eq46>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img427.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img427.gif"><P>
+is the factor by which execution time is reduced on <em> P</em>
+ processors:
+<P>
+<A NAME=3339>&#160;</A>
+The quantities defined by Equations <A HREF="node29.html#eq45" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq45">3.5</A> and <A HREF="node29.html#eq46" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eq46">3.6</A>
+<A NAME=3342>&#160;</A>
+are called <em> relative
+ </em> efficiency and speedup because they are
+defined with respect to the parallel algorithm executing on a single
+processor.  They are useful when exploring the scalability of an
+algorithm but do not constitute an absolute figure of merit.  For
+example, assume that we have a parallel algorithm that takes 10,000
+seconds on 1 processor and 20 seconds on 1000 processors.  Another
+algorithm takes 1000 seconds on 1 processor and 5 seconds on 1000
+processors. Clearly, the second algorithm is superior for <em> P</em>
+ in
+the range 1 to 1000.  Yet it achieves a relative speedup of only 200,
+compared with 500 for the first algorithm.
+<P>
+When comparing two algorithms, it can be useful to have an
+algorithm-independent metric other than execution time.  Hence, we
+<A NAME=3345>&#160;</A>
+define <em> absolute
+ </em> efficiency and speedup, using as the
+baseline <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img428.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img428.gif"> the uniprocessor time for the best-known algorithm.  In
+many cases, this ``best'' algorithm will be the best-known
+uniprocessor (sequential) algorithm.  From this point forward, we
+shall frequently use the terms efficiency and speedup without
+<A NAME=3347>&#160;</A>
+qualifying them as relative or absolute.  However, the context will
+always make clear which is meant.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img432.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img432.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img429.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img429.gif">    Efficiency of Finite Difference Algorithm</b>:<A NAME=exfdy>&#160;</A>
+<P>
+<A NAME=3350>&#160;</A>
+In the finite difference algorithm, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img430.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img430.gif">, and so from
+Equation <A HREF="node29.html#eqfdt" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#eqfdt">3.4</A> we have the following model for efficiency in the
+absence of load imbalances and when <em> P</em>
+ divides <em> N</em>
+:
+<P><A NAME=eqfdte>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img431.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img431.gif"><P>
+Because the uniprocessor algorithm is identical to the parallel algorithm
+when <em> P=1</em>
+, this equation represents absolute efficiency.
+<P>
+<BR><HR>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2201 HREF="node28.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2209 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2207 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2211 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2212 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2210 HREF="node30.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html">3.4 Scalability Analysis</A>
+<B>Up:</B> <A NAME=tex2html2208 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2202 HREF="node28.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node28.html">3.2 Approaches to Performance Modeling</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2 Designing Parallel Algorithms</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2 Designing Parallel Algorithms">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2000 HREF="node13.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node13.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2008 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2006 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2010 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2011 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2009 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html">2.1 Methodical Design</A>
+<B>Up:</B> <A NAME=tex2html2007 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html">Part I: Concepts</A>
+<B> Previous:</B> <A NAME=tex2html2001 HREF="node13.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node13.html"> Chapter Notes</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02300000000000000000>2 Designing Parallel Algorithms</A></H1>
+<P>
+<A NAME=chap2>&#160;</A>
+<P>
+Now that we have discussed what parallel algorithms look like, we are ready to
+examine how they can be designed.  In this chapter, we show how a
+problem specification is translated into an algorithm that displays
+concurrency, scalability, and locality.  Issues relating to modularity
+are discussed in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>.
+<P>
+Parallel algorithm design is not easily reduced to simple recipes.
+Rather, it requires the sort of integrative thought that is commonly
+referred to as ``creativity.''  However, it <em> can
+ </em> benefit
+from a methodical approach that maximizes the range of options
+considered, that provides mechanisms for evaluating alternatives, and
+that reduces the cost of backtracking from bad choices.  We describe
+such an approach and illustrate its application to a range of
+problems.  Our goal is to suggest a framework within which parallel
+algorithm design can be explored.  In the process, we hope you will
+develop intuition as to what constitutes a good parallel algorithm.
+<P>
+After studying this chapter, you should be able to design simple
+parallel algorithms in a methodical fashion and recognize design flaws
+that compromise efficiency or scalability.  You should be able to
+partition computations, using both domain and functional decomposition
+techniques, and know how to recognize and implement both local and
+global, static and dynamic, structured and unstructured, and
+synchronous and asynchronous communication structures.  You should
+also be able to use agglomeration as a means of reducing communication
+and implementation costs and should be familiar with a range of
+load-balancing strategies.
+<P>
+
+<HR>
+<UL> 
+<LI> <A NAME=tex2html2012 HREF="node15.html#SECTION02310000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html#SECTION02310000000000000000">2.1 Methodical Design</A>
+<LI> <A NAME=tex2html2013 HREF="node16.html#SECTION02320000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#SECTION02320000000000000000">2.2 Partitioning</A>
+<LI> <A NAME=tex2html2014 HREF="node17.html#SECTION02330000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#SECTION02330000000000000000">2.3 Communication</A>
+<LI> <A NAME=tex2html2015 HREF="node18.html#SECTION02340000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#SECTION02340000000000000000">2.4 Agglomeration</A>
+<LI> <A NAME=tex2html2016 HREF="node19.html#SECTION02350000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#SECTION02350000000000000000">2.5 Mapping</A>
+<LI> <A NAME=tex2html2017 HREF="node20.html#SECTION02360000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node20.html#SECTION02360000000000000000">2.6 Case Study: Atmosphere Model</A>
+<LI> <A NAME=tex2html2018 HREF="node21.html#SECTION02370000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#SECTION02370000000000000000">2.7 Case Study: Floorplan Optimization</A>
+<LI> <A NAME=tex2html2019 HREF="node22.html#SECTION02380000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#SECTION02380000000000000000">2.8 Case Study: Computational Chemistry</A>
+<LI> <A NAME=tex2html2020 HREF="node23.html#SECTION02390000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html#SECTION02390000000000000000">2.9 Summary</A>
+<LI> <A NAME=tex2html2021 HREF="node24.html#SECTION023100000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#SECTION023100000000000000000"> Exercises</A>
+<LI> <A NAME=tex2html2022 HREF="node25.html#SECTION023110000000000000000" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html#SECTION023110000000000000000"> Chapter Notes</A>
+</UL>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2000 HREF="node13.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node13.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2008 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2006 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2010 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2011 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2009 HREF="node15.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node15.html">2.1 Methodical Design</A>
+<B>Up:</B> <A NAME=tex2html2007 HREF="node4.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node4.html">Part I: Concepts</A>
+<B> Previous:</B> <A NAME=tex2html2001 HREF="node13.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node13.html"> Chapter Notes</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

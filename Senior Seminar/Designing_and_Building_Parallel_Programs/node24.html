@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Exercises</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Exercises">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2131 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2139 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2137 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2141 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2142 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2140 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2138 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2132 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html">2.9 Summary</A>
+<BR><HR><P>
+<H1><A NAME=SECTION023100000000000000000> Exercises</A></H1>
+<P>
+Some of the exercises in this chapter ask you to design parallel
+algorithms; others ask you to implement algorithms described in the
+text or designed by you.  It is important to attempt both types of
+problem.  Your implementations should use one of the tools described
+in Part II.
+<P>
+<OL><LI>
+<A NAME=excomplab>&#160;</A>
+<A NAME=2189>&#160;</A>
+The component labeling problem in image processing is defined as
+follows.  We are given a two-dimensional array of pixels valued 0 or
+1.  The 1-pixels must be labeled in such a way that two pixels have
+the same label if and only if they are in the same connected
+component.  Two 1-pixels are in the same connected component if there
+is a path of contiguous 1-pixels linking them together.  Two pixels
+are contiguous if they are adjacent vertically or horizontally.
+Develop a parallel algorithm based on the following approach.  First,
+each 1-pixel is assigned a unique label (for example, its address).
+Then, each 1-pixel is updated to contain the minimum of its current
+label and those of its four neighbors.  The second step is repeated
+until all adjacent 1-pixels have the same label.
+<P>
+<LI>
+Modify the algorithm in Exercise <A HREF="node24.html#excomplab" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#excomplab">1</A> to deal with the
+situation in which pixels are also contiguous when adjacent diagonally.
+<P>
+<LI>
+Implement the algorithm developed in Exercise <A HREF="node24.html#excomplab" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#excomplab">1</A> and
+measure its performance for a variety of array sizes and processor
+counts.
+<P>
+<LI>
+A compiler consists of six distinct stages.  The tokenizer translates
+characters (input from one or more files) into tokens.  The parser
+translates tokens into procedures.  The canonicalizer translates
+procedures into a canonical form.  The encoder translates procedures
+in this canonical form into low-level code.  The optimizer rewrites
+this low-level code. Finally, the assembler generates object code.
+Apply domain and functional decomposition techniques to obtain two
+different parallel algorithms for the compiler.  Compare and contrast
+the scalability and expected efficiency of the two algorithms.
+<P>
+<LI>
+<A NAME=exfd87>&#160;</A>
+Design and implement a parallel algorithm for a 1-D finite-difference
+algorithm with a three-point stencil.  Study the performance of the
+resulting program as a function of problem size and processor count,
+assuming one task per processor.
+<P>
+<LI>
+Extend the algorithm and program developed in Exercise <A HREF="node24.html#exfd87" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exfd87">5</A>
+to incorporate a simple convergence test: terminate execution when the
+difference between values computed at successive steps is less than a
+specified threshold for all grid points.
+<P>
+<LI>
+<A NAME=exfd89>&#160;</A>
+Design and implement parallel algorithms based on both 1-D and 2-D
+decompositions of a 2-D finite-difference algorithm with a five-point
+stencil.  Study the performance of the resulting programs as a
+function of problem size and processor count, assuming one task per
+processor.
+<P>
+<LI>
+Using a parallel tool such as CC++
+  or Fortran M that supports
+multiple tasks per processor, study the performances of the programs
+developed in Exercises <A HREF="node24.html#exfd87" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exfd87">5</A> and <A HREF="node24.html#exfd89" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exfd89">7</A> for a fixed
+number of processors as the number of tasks is varied.
+<P>
+<LI>
+Implement the various parallel summation algorithms described in
+Section <A HREF="node17.html#seccommglobal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommglobal">2.3.2</A>, and study their performance as a
+function of problem size and processor count.  Account for any
+differences.
+<P>
+<LI>
+<A NAME=exgs>&#160;</A>
+Design parallel algorithms for the Gauss-Seidel method described in
+Section <A HREF="node17.html#seclocal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seclocal">2.3.1</A>, for both 1-D and 2-D grids.
+<P>
+<LI>
+<A NAME=exgs2>&#160;</A>
+Implement the parallel Gauss-Seidel algorithms of
+Exercise <A HREF="node24.html#exgs" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exgs">10</A>.  Quantify the available parallelism (a) in a
+single time step and (b) when performing <em> T</em>
+ time steps in a
+pipelined fashion.
+<P>
+<LI>
+The branch-and-bound search algorithm (Section <A HREF="node21.html#secfloor" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#secfloor">2.7</A>)
+replicates the data defining the search problem on every processor.
+Is it worthwhile distributing these data?  Explain.
+<P>
+<LI>
+<A NAME=exsss>&#160;</A>
+An all-solutions search problem explores a search tree similar to that
+shown in Figure <A HREF="node21.html#figfloor2" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#figfloor2">2.28</A> in its entirety without the benefit
+of pruning.  A function is applied to each leaf-node to determine
+whether it is a solution, and solutions are collected.  Develop a
+parallel algorithm for this problem.  Initially, assume that the cost
+of a node evaluation is a constant and that the tree is of uniform and
+known depth; then relax these assumptions.
+<P>
+<LI>
+A single-solution search is like the all-solutions search of
+Exercise <A HREF="node24.html#exsss" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exsss">13</A>, except that it terminates when a single
+solution is found.  Develop a parallel algorithm for this problem.
+<P>
+<LI>
+<A NAME=exfock>&#160;</A>
+Design a variant of the ``partial replication'' Fock matrix 
+construction algorithm (Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A>) that can execute on
+<em> P</em>
+ processors, where <em> P&gt;N</em>
+.
+<P>
+<LI>
+Design a variant of the ``partial replication'' Fock matrix
+construction algorithm (Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A>) that reduces
+communication requirements to less than two messages per task.
+Characterize the savings that can be achieved by this scheme as a
+function of available memory.  <em> Hint
+ </em>: Cache data.
+<P>
+<LI>
+<A NAME=exbb45>&#160;</A>
+Develop an analytic model for the maximum performance possible in a
+branch-and-bound search algorithm in which tasks poll a central manager
+for an up-to-date search bound.
+<P>
+<LI>
+Implement the branch-and-bound search algorithm studied in
+Exercise <A HREF="node24.html#exbb45" tppabs="http://www.mcs.anl.gov/dbpp/text/node24.html#exbb45">17</A> and compare its performance with that of your model.
+Propose and investigate refinements to the centralized algorithm.
+<P>
+<LI>
+A deficiency of the parallel branch-and-bound search algorithm of
+Section <A HREF="node21.html#secfloor" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html#secfloor">2.7</A> is that it does not provide a mechanism for
+informing workers when a search is complete.  Hence, an idle worker
+will never stop requesting work from other workers.  Design a
+mechanism that ensures that all workers cease execution some finite
+time after the last solution is reported.
+<P>
+<LI>
+Discuss the circumstances under which a random mapping of tasks to
+processors might be expected to be effective in the branch-and-bound
+search problem.  When might it be expected to be ineffective?
+<P>
+<LI>
+Discuss the relative advantages and disadvantages of random and cyclic
+mappings of tasks to processors in the partial replication Fock matrix
+construction algorithm of Section <A HREF="node22.html#secchemx" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchemx">2.8.2</A>.
+<P>
+<LI>
+Educate yourself about the basic operations employed in a relational
+database, and design parallel algorithms that could be used to perform
+these operations when a database is distributed over the processors of
+a multicomputer.
+<P>
+<LI>
+Without referring to Section <A HREF="node45.html#seclamm" tppabs="http://www.mcs.anl.gov/dbpp/text/node45.html#seclamm">4.6</A>, design parallel
+algorithms based on both 1-D and 2-D decompositions for the matrix
+multiplication problem, in which we compute <em> C=A.B</em>
+, where
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img360.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img360.gif">.
+<P>
+</OL>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2131 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2139 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2137 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2141 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2142 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2140 HREF="node25.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node25.html"> Chapter Notes</A>
+<B>Up:</B> <A NAME=tex2html2138 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2132 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html">2.9 Summary</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

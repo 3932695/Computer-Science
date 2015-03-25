@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>5.13 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="5.13 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2703 HREF="node63.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2711 HREF="node65.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node65.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2709 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2713 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2714 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2712 HREF="node65.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node65.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html2710 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2704 HREF="node63.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html">5.12 Case Study: Fock Matrix Construction</A>
+<BR><HR><P>
+<H1><A NAME=SECTION032130000000000000000>5.13 Summary</A></H1>
+<P>
+In this chapter, we have learned about a programming language,
+CC++
+ , that provides a small set of extensions to C++
+  for specifying
+concurrency, locality, communication, and mapping.  CC++
+  does not
+support the task and channel abstractions of Part I directly, but its
+constructs can be used to build libraries that provide these
+abstractions.  In keeping with the design methodology of
+Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A>, CC++
+  allows mapping decisions to be changed
+independently of other aspects of a design.  The performance modeling
+techniques of Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> and the modular design
+techniques of Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A> also apply directly.
+Table <A HREF="node64.html#tabccsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node64.html#tabccsum">5.1</A> summarizes the language constructs that have
+been introduced.
+<P>
+The CC++
+  programs presented in this chapter tend to be more verbose
+than the equivalent Fortran M, High Performance Fortran, or Message
+Passing Interface programs to be presented in the chapters that
+follow.  To a greater extent than these other systems,
+CC++
+  provides basic <em> mechanisms
+ </em> that can be used to
+implement a variety of different parallel program structures.  For
+example, we must implement a channel library in order to use channels
+in a CC++
+  program, and a processor object array library to create
+arrays of processor objects.  Once these libraries have been
+written, however, they can be reused in many situations.  This reuse is
+facilitated by the object-oriented features of C++
+ .
+<P>
+<P><A NAME=7977>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img868.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img868.gif">
+<BR><STRONG>Table 5.1:</STRONG>  CC++
+  quick reference: the constructs described in this
+<A NAME=8626>&#160;</A>
+chapter, the section in which they are described, and programs that
+illustrate their use.
+<A NAME=tabccsum>&#160;</A><BR>
+<P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2703 HREF="node63.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2711 HREF="node65.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node65.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2709 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2713 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2714 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2712 HREF="node65.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node65.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html2710 HREF="node51.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node51.html">5 Compositional C++
+ </A>
+<B> Previous:</B> <A NAME=tex2html2704 HREF="node63.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node63.html">5.12 Case Study: Fock Matrix Construction</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

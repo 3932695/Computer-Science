@@ -1,0 +1,4 @@
+echo "Wrapper for tar command"
+echo " Doing some pre processing"
+exec "/bin/tar" "$@"
+echo " Doing some post processing"

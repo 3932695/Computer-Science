@@ -1,0 +1,30 @@
+echo -n "Enter your nick name: " 
+read name 
+echo "Good morning, $name" 
+
+echo -n "Enter your first name and last name: " 
+read fname lname 
+echo "Good morning, $fname $lname" 
+
+echo -n "Enter your first name, last name, and something else: " 
+read fname lname remaining 
+echo "Good morning, $fname $lname. You said: $remaining" 
+
+echo -n "Enter anything: " 
+read -a arr 
+echo "Array values: $arr" 
+
+read -p "Enter your name: " name1 
+echo $name1 
+
+read -s -p "Enter your password: " password 
+echo "Your password is: $password" 
+
+read -t 5 -p "Enter the value within 5 seconds: " timeout 
+echo "You entered: $timeout" 
+
+read -N 5 -p "Read will read exactly 5 character: " charact 
+echo "You entered: $charact" 
+
+read -r -p "Enter a value with back slash: " good 
+echo $good 

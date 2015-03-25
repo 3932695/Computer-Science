@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.5 Dummy Arguments and Modularity</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.5 Dummy Arguments and Modularity">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3000 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3008 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3006 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3010 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3011 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3009 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html">7.6 Other HPF Features</A>
+<B>Up:</B> <A NAME=tex2html3007 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3001 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html">7.4 Concurrency</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03450000000000000000>7.5 Dummy Arguments and Modularity</A></H1>
+<P>
+<A NAME=sechpfmod>&#160;</A>
+<P>
+<A NAME=11204>&#160;</A>
+A large HPF program is typically constructed as a sequence of calls to
+<A NAME=11205>&#160;</A>
+subroutines and functions that implement different aspects of program
+<A NAME=11206>&#160;</A>
+logic.  In the terminology used in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, the program is a
+<A NAME=11208>&#160;</A>
+sequential composition of program components.  As discussed in
+that chapter, one critical issue that arises when using
+<A NAME=11209>&#160;</A>
+sequential composition is the distribution of data structures that are
+<A NAME=11210>&#160;</A>
+shared by components.
+<P>
+Consider what happens when a subroutine is called in an HPF program.
+For a particular computer and problem size, there is presumably a
+distribution of that subroutine's dummy arguments and local variables
+that is optimal in the sense that it minimizes execution time in that
+subroutine.  However, this optimal distribution may not correspond to the distribution
+specified in the calling program for variables passed as arguments.
+Hence, we have a choice of two different strategies at a subroutine
+interface.  These strategies, and the HPF mechanisms that support
+them, are as follows.
+<P>
+<OL><LI>
+We can ignore the distribution used in the calling program and specify
+a local distribution that must apply, even if it requires a
+(potentially expensive) remapping operation.  For this purpose, we
+use the distribution directives <tt> DISTRIBUTE</tt> and <tt> ALIGN</tt>
+to specify the mapping of the dummy
+arguments.
+<P>
+<LI>
+We can use whatever data distribution is used in the calling program,
+even though it may not be locally optimal.  For this purpose, we
+use the <tt> INHERIT</tt> directive.
+<P>
+</OL>
+<P>
+As noted in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>, several tradeoffs
+must be
+evaluated when determining which strategy to adopt in a particular
+circumstance.  The cost of the remapping inherent in strategy 1 should
+be weighed against the performance degradation that may occur if
+strategy 2 is used.  Similarly, the effort required to optimize a
+subroutine for a particular distribution must be weighed against the
+subroutine's execution cost and frequency of use.  These tradeoffs are
+more complex if a subroutine may be used in several contexts.  In some
+cases, it may be worthwhile for a subroutine to incorporate different
+code for different distributions.
+<P>
+<H4><A NAME=SECTION03450010000000000000> Strategy 1: Remap Arguments.</A></H4>
+<P>
+Strategy 1 is straightforward to apply.  Ordinary distribution
+directives are applied to dummy arguments.  As for any other variable,
+<A NAME=11218>&#160;</A>
+these directives recommend that the requested distribution hold.  Any
+necessary data movement is performed automatically when the subroutine
+or function is called.  (In the absence of a <tt> DISTRIBUTE</tt> or <tt>
+ALIGN</tt> directive for a dummy argument, the compiler may choose to use
+any distribution or alignment.)  Any redistribution is undone upon
+return from the subroutine, so any data movement costs introduced in
+this way are incurred twice.  The exception to this rule are arguments
+used for input or output only, as specified by the use of the F90 <tt>
+intent</tt> directive.
+<P>
+Program <A HREF="node87.html#proghpffft" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html#proghpffft">7.5</A> illustrates some of the issues involved in
+strategy 1.  Arrays <tt> X</tt> and <tt> Y</tt> are distributed by rows and
+columns in the calling program, respectively, while the dummy argument
+<tt> Z</tt> of the subroutine <tt> fft</tt> is distributed by columns.  Hence,
+the first call to <tt> fft</tt> requires that two matrix transpose
+operations be performed to convert from one distribution to the
+other---one upon entry to and one upon exit from the routine.  In
+contrast, the second call to <tt> fft</tt> does not require any data
+movement because the array <tt> Y</tt> is already distributed
+appropriately.
+<P>
+<P><A NAME=proghpffft>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img978.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img978.gif"><P><H4><A NAME=SECTION03450020000000000000> Strategy 2: Use Parent Mapping.</A></H4>
+<P>
+The second strategy is supported by the <tt> INHERIT</tt> directive, which,
+however, does not form part of the HPF subset because of the difficulty of
+<A NAME=11253>&#160;</A>
+generating code that can handle multiple distributions.  For that
+reason, we do not consider this language feature in detail.
+<P>
+The following code fragment illustrates the use of <tt> INHERIT</tt>.  This
+is an alternative version of the <tt> fft</tt> routine in
+Program <A HREF="node87.html#proghpffft" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html#proghpffft">7.5</A>.  The <tt> INHERIT</tt> directive indicates that
+no remapping is to occur; hence, the two calls to <tt> fft</tt> in
+Program <A HREF="node87.html#proghpffft" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html#proghpffft">7.5</A> will execute with <tt> (BLOCK,*)</tt> and <tt>
+(*,BLOCK)</tt> distribution, respectively.
+<A NAME=11262>&#160;</A>
+<P>
+<PRE><TT> 
+             				 <tt> subroutine fft(n, Z)</tt>
+<P>
+             				 <tt> real Z(n,n)</tt>
+<P>
+             				 <tt> ...</tt>
+<P>
+<tt> !HPF$</tt> 				 <tt> INHERIT Z</tt>  				 ! <tt> Z</tt> has parent mapping
+<P>
+             				 <tt> ...</tt>
+<P>
+             				 <tt> end</tt>
+<P>
+</TT></PRE>
+<P>
+<A NAME=11273>&#160;</A>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3000 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3008 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3006 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3010 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3011 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3009 HREF="node88.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node88.html">7.6 Other HPF Features</A>
+<B>Up:</B> <A NAME=tex2html3007 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html3001 HREF="node86.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node86.html">7.4 Concurrency</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

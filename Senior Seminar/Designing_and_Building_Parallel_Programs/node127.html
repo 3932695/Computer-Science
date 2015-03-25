@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>11.4 Mergesort</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="11.4 Mergesort">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3518 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3526 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3524 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3528 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3529 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3527 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html">11.5 Summary</A>
+<B>Up:</B> <A NAME=tex2html3525 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3519 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html">11.3 Matrix Transposition</A>
+<BR><HR><P>
+<H1><A NAME=SECTION04340000000000000000>11.4 Mergesort</A></H1>
+<P>
+<A NAME=15107>&#160;</A>
+Sorting is a common and important problem in computing.  Given a
+<A NAME=15108>&#160;</A>
+sequence of <em> N</em>
+ data elements, we are required to generate an
+<A NAME=15110>&#160;</A>
+ordered sequence that contains the same elements.  Here, we present a
+<A NAME=15111>&#160;</A>
+parallel version of the well-known mergesort algorithm.  The
+<A NAME=15112>&#160;</A>
+algorithm assumes that the sequence to be sorted is distributed and so
+generates a distributed sorted sequence.  For simplicity, we assume
+that <em> N</em>
+ is an integer multiple of <em> P</em>
+, that the <em> N</em>
+ data
+are distributed evenly among <em> P</em>
+ tasks, and that <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1151.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1151.gif"> is an
+integer power of two.  Relaxing these assumptions does not change the
+essential character of the algorithm but would complicate the
+presentation.
+<P>
+<P><A NAME=15470>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1152.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1152.gif">
+<BR><STRONG>Figure 11.4:</STRONG> <em> Mergesort, used here to sort the sequence  [6,2,9,5].
+The two partition phases each split the input sequence; the two merge
+phases each combine two sorted subsequences generated in a previous
+phase.</em><A NAME=figmsort>&#160;</A><BR>
+<P>
+<P>
+The sequential mergesort algorithm is as follows; its execution is
+illustrated in Figure <A HREF="node127.html#figmsort" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html#figmsort">11.4</A>.
+<A NAME=15121>&#160;</A>
+<OL><LI> If the input sequence has fewer than two elements, return.
+<LI> Partition the input sequence into two halves.
+<LI> Sort the two subsequences using the same algorithm.
+<LI> Merge the two sorted subsequences to form the output sequence.
+</OL>
+<P>
+The merge operation employed in step (4) combines two sorted
+subsequences to produce a single sorted sequence.  It repeatedly
+compares the heads of the two subsequences and outputs the lesser
+value until no elements remain.  Mergesort requires <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1153.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1153.gif">
+time to sort <em> N</em>
+ elements, which is the best that can be achieved
+(modulo constant factors) unless data are known to have special
+properties such as a known distribution or degeneracy.
+<P>
+<A NAME=15128>&#160;</A>
+We first describe two algorithms required in the implementation of
+parallel mergesort: compare-exchange and parallel merge.
+<P>
+<H4><A NAME=SECTION04340010000000000000> Compare-Exchange.</A></H4>
+<P>
+<A NAME=15130>&#160;</A>
+A compare-exchange operation merges two sorted sequences of length
+<em> M</em>
+, contained in tasks <em> A</em>
+ and <em> B</em>
+.  Upon completion
+of the operation, both tasks have <em> M</em>
+ data, and all elements in
+task <em> A</em>
+ are less than or equal to all elements in task <em> B</em>
+.
+As illustrated in Figure <A HREF="node127.html#figsort2" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html#figsort2">11.5</A>, each task sends its data to
+the other task.  Task <em> A</em>
+ identifies the <em> M</em>
+ lowest elements
+and discards the remainder; this process requires at least
+<em> M/2</em>
+ and at most
+<em> M</em>
+ comparisons.  Similarly, task <em> B</em>
+ identifies the
+<em> M</em>
+ highest elements.
+<P>
+<P><A NAME=15503>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1154.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1154.gif">
+<BR><STRONG>Figure 11.5:</STRONG> <em> The compare-exchange algorithm, with <em> M=4</em>
+.  (a) Tasks
+<em> A</em>
+ and <em> B</em>
+ exchange their sorted subsequences.  (b) They perform a
+merge operation to identify the lowest and highest <em> M</em>
+ elements,
+respectively.  (c) Other elements are discarded, leaving a single
+sorted sequence partitioned over the two tasks.</em><A NAME=figsort2>&#160;</A><BR>
+<P>
+<P>
+Notice that a task may not need all <em> M</em>
+ of its neighbor's data in
+order to identify the <em> M</em>
+ lowest (or highest) values.  On average,
+only <em> M/2</em>
+ values are required.  Hence, it may be more efficient
+in some situations to require the consumer to request data explicitly.
+This approach results in more messages that contain a total of less than
+<em> M</em>
+ data, and can at most halve the amount of data transferred.
+<P>
+<P><A NAME=15528>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1155.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1155.gif">
+<BR><STRONG>Figure 11.6:</STRONG> <em> The parallel merge operation, performed in hypercubes
+of dimension one, two, and three.  In a hypercube of dimension
+<em> d</em>
+, each task performs <em> d</em>
+ compare-exchange operations.  Arrows
+point from the ``high'' to the ``low'' task in each
+exchange.</em><A NAME=figsort3>&#160;</A><BR>
+<P><H4><A NAME=SECTION04340020000000000000> Parallel Merge.</A></H4>
+<P>
+A parallel merge algorithm performs a merge operation on two sorted
+sequences of length <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1156.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1156.gif">, each distributed over <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1157.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1157.gif"> tasks, to
+produce a single sorted sequence of length <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1158.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1158.gif"> distributed over
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1159.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1159.gif"> tasks.  As illustrated in Figure <A HREF="node127.html#figsort3" tppabs="http://www.mcs.anl.gov/dbpp/text/node127.html#figsort3">11.6</A>, this is
+achieved by using the hypercube communication template.  Each of the
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1160.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1160.gif"> tasks engages in <em> d+1</em>
+ compare-exchange steps, one with
+each neighbor.  In effect, each node executes
+Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>, applying the following operator at each
+step.
+<P>
+
+<PRE><TT> 
+		<tt> if ( myid AND <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1161.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1161.gif"> &gt; 0 ) then</tt>
+<P>
+				<tt> state = compare_exchange_high(state,message)</tt>
+<P>
+		<tt> else</tt>
+<P>
+				<tt> state = compare_exchange_low(state,message)</tt>
+<P>
+		<tt> endif</tt>
+<P>
+</TT></PRE>
+
+<P>
+In this code fragment, <tt> AND</tt> is a bitwise logical and operator,
+used to determine whether the task is ``high'' or ``low'' in a
+particular exchange; <tt> myid</tt> and <tt> i</tt> are as in
+Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>.
+<P>
+<H4><A NAME=SECTION04340030000000000000> Mergesort.</A></H4>
+<P>
+We next describe the parallel mergesort algorithm proper.  Each task in
+the computation executes the following logic.
+<P>
+<PRE>    procedure parallel_mergesort(myid, d, data, newdata)
+    begin
+      data = sequential_mergesort(data)
+      for dim = 1 to d
+        data = parallel_merge(myid, dim, data)
+      endfor
+      newdata = data
+    end
+</PRE>
+<P>
+First, each task sorts its local sequence using sequential mergesort.
+Second, and again using the hypercube communication structure, each of
+the <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1162.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1162.gif"> tasks executes the parallel merge algorithm <em> d</em>
+ times,
+for subcubes of dimension 1..<em> d</em>
+.  The <em> i</em>
+th parallel merge
+takes two sequences, each distributed over <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1163.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1163.gif"> tasks, and
+generates a sorted sequence distributed over <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1164.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1164.gif"> tasks.  After
+<em> d</em>
+ such merges, we have a single sorted list distributed over
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1165.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1165.gif"> tasks.
+<P>
+<H4><A NAME=SECTION04340040000000000000> Performance</A></H4>
+<P>
+<A NAME=15185>&#160;</A>
+Parallel mergesort uses the hypercube communication template at
+multiple levels.  We review these uses and develop a performance
+model.  We assume <em> N</em>
+ data distributed over <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1166.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1166.gif"> tasks (that
+is, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1167.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1167.gif">), with <em> N</em>
+ an integer multiple of <em> P</em>
+.  Hence,
+the total number of compare-exchanges is
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1168.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1168.gif"><P>
+<P>
+Because each compare-exchange requires one message containing
+<em> N/P</em>
+ data, the per-processor communication cost is
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1169.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1169.gif"><P>
+<P>
+The computation costs comprise the initial intraprocessor sort and the
+comparisons performed during the interprocessor communication phase.
+The former involves a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1170.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1170.gif"> comparisons, while the
+latter requires at most <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img1171.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1171.gif"> comparisons, thereby giving
+computation costs summed over <em> P</em>
+ processors of
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1172.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1172.gif"><P>
+<P>
+Because the algorithm is perfectly balanced, we can assume that idle
+time is negligible. Thus, we obtain the following model for parallel
+execution time:
+<A NAME=15214>&#160;</A>
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1173.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1173.gif"><P>
+<A NAME=15237>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3518 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3526 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3524 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3528 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3529 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3527 HREF="node128.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node128.html">11.5 Summary</A>
+<B>Up:</B> <A NAME=tex2html3525 HREF="node123.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html">11 Hypercube Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html3519 HREF="node126.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node126.html">11.3 Matrix Transposition</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

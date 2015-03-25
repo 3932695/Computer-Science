@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.4 Asynchronous Communication</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.4 Asynchronous Communication">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3141 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3149 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3147 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3151 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3152 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3150 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html">8.5 Modularity</A>
+<B>Up:</B> <A NAME=tex2html3148 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3142 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html">8.3 Global Operations</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03540000000000000000>8.4 Asynchronous Communication</A></H1>
+<P>
+<A NAME=secmpinquire>&#160;</A>
+<P>
+<A NAME=12829>&#160;</A>
+Recall from Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> that the need for asynchronous
+<A NAME=12831>&#160;</A>
+communication can arise when a computation must access elements of a
+<A NAME=12832>&#160;</A>
+shared data structure in an unstructured manner.  One implementation
+approach is to encapsulate the data structure in a set of specialized
+data tasks to which read and write requests can be directed.  This
+approach is not typically efficient in MPI, however, because of its
+MPMD programming model.
+<P>
+As noted in Section <A HREF="node17.html#seccommas" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommas">2.3.4</A>, an alternative implementation
+approach is to distribute the shared data structure among the
+<A NAME=12834>&#160;</A>
+computational processes, which must then poll periodically for pending
+read and write requests.  This technique is supported by the <tt>
+MPI_IPROBE</tt> function, which is described in this section along with
+the related functions <tt> MPI_PROBE</tt> and <tt> MPI_GET_COUNT</tt>.  The
+three functions are summarized in
+<A NAME=12838>&#160;</A>
+Figure <A HREF="node98.html#figmpiinquiry" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#figmpiinquiry">8.6</A>.
+<P>
+<P><A NAME=13820>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1023.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1023.gif">
+<BR><STRONG>Figure 8.6:</STRONG>  MPI inquiry and probe operations.
+<A NAME=figmpiinquiry>&#160;</A><BR>
+<P>
+<A NAME=12878>&#160;</A>
+<P>
+The <tt> MPI_IPROBE</tt> function checks for the existence of pending
+messages without receiving them, thereby allowing us to write programs that
+interleave local computation with the processing of incoming messages.
+A call to <tt> MPI_IPROBE</tt> has the general form
+<tt> MPI_IPROBE(source, tag, comm, flag, status)</tt>
+<P>
+and sets a Boolean argument <tt> flag</tt> to indicate whether a message
+that matches the specified source, tag, and communicator is available.
+If an appropriate message is available, <tt> flag</tt> is set to <tt>
+true</tt>; otherwise, it is set to <tt> false</tt>.  The message can then be
+received by using <tt> MPI_RECV</tt>.  The receive call must specify the
+same source, tag, and communicator; otherwise, a different message may
+be received.
+<P>
+Related to <tt> MPI_IPROBE</tt> is the function <tt> MPI_PROBE</tt>, which
+<A NAME=12891>&#160;</A>
+blocks until a message of the specified source, tag, and communicator
+is available and then returns and sets its <tt> status</tt> argument.  The
+<tt> MPI_PROBE</tt> function is used to receive messages for which we
+have incomplete information.
+<P>
+The <tt> status</tt> argument constructed by an <tt> MPI_RECV</tt> call, an
+<tt> MPI_PROBE</tt> call, or a successful <tt> MPI_IPROBE</tt> call can be
+used to determine the (pending) message's source, tag, and size.  The
+inquiry function <tt> MPI_GET_COUNT</tt> yields the length of a message
+just received.  Its first two (input) parameters are a <tt> status</tt>
+object set by a previous probe or <tt> MPI_RECV</tt> call and the <tt>
+datatype</tt> of the elements to be received, while the third (output)
+parameter is an integer used to return the number of elements received
+(Figure <A HREF="node98.html#figmpiinquiry" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#figmpiinquiry">8.6</A>).  Other information about the received
+message can be obtained directly from the <tt> status</tt> object.  In the
+C language binding, this object is a structure with fields <tt>
+MPI_SOURCE</tt> and <tt> MPI_TAG</tt>.  Thus, <tt> status.MPI_SOURCE</tt> and
+<tt> status.MPI_TAG</tt> contain the source and tag of the message just
+received.  In Fortran, the <tt> status</tt> object is an array of size
+<tt> MPI_STATUS_SIZE</tt>, and the constants <tt> MPI_SOURCE</tt> and <tt>
+MPI_TAG</tt> are the indices of the array elements containing the source
+and tag information.  Thus, <tt> status(MPI_SOURCE)</tt> and <tt>
+status(MPI_TAG)</tt> contain the source and tag of the message just
+received.
+<P>
+The following code fragment use these functions to receive a message
+from an unknown source and containing an unknown number of integers.
+It first detects arrival of the message using <tt> MPI_PROBE</tt>.  Then,
+it determines the message source and uses <tt> MPI_GET_COUNT</tt> to
+determine the message size.  Finally, it allocates a buffer of the
+appropriate size and receives the message.
+<P>
+
+<PRE>    int count, *buf, source;
+    MPI_Probe(MPI_ANY_SOURCE, 0, comm, &amp;status);
+    source = status.MPI_SOURCE;
+    MPI_Get_count(status, MPI_INT, &amp;count);
+    buf = malloc(count*sizeof(int));
+    MPI_Recv(buf, count, MPI_INT, source, 0, comm, &amp;status);
+</PRE>
+
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1025.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1025.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1024.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1024.gif">    Fock Matrix Construction</b>:<A NAME=exmpfock1>&#160;</A>
+<P>
+The Fock matrix construction algorithm of Section <A HREF="node22.html#secchem" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#secchem">2.8</A>
+<A NAME=12920>&#160;</A>
+allocates to each processor a data task, which manages part of the
+<A NAME=12921>&#160;</A>
+<tt> D</tt> and <tt> F</tt> matrices, and a computation task, which generates
+requests for matrix elements.  The two tasks execute concurrently,
+with the data task responding to requests for data and the computation
+<A NAME=12924>&#160;</A>
+task performing computation.  Briefly, the two tasks are defined as
+follows.
+<P>
+
+<PRE><TT> 
+		<tt> /*</tt> Data task <tt> */</tt> 						
+	  		<tt> /*</tt> Computation task <tt> */</tt>
+<P>
+		<tt> while(done != TRUE) {</tt>  						 <tt> while(done != TRUE) {</tt>
+<P>
+				<tt> receive(request);</tt> 						 <tt> identify_next_task();</tt>
+<P>
+				<tt> reply_to(request);</tt>						 <tt> generate_requests();</tt>
+<P>
+		<tt> }</tt>                 								 <tt> process_replies();</tt>
+<P>
+		                         						 <tt> }</tt>
+<P>
+</TT></PRE>
+
+<P>
+A polling version of this program integrates the functions of the
+database and computation tasks into a single process, which alternates
+between checking for pending data requests and performing computation.
+This integration can be achieved as in Program <A HREF="node98.html#progmpfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#progmpfock">8.6</A>.
+The program uses the <tt> MPI_IPROBE</tt> function to
+determine whether database messages are pending.  If they are, these
+messages are processed before further computation is performed.
+<P>
+For simplicity, the procedure <tt> process_request</tt> deals with a
+single type of request: a read operation on a single array element.  A
+process receiving such a request determines the source of the message,
+retrieves the requested value, and returns the value to the source
+<A NAME=12943>&#160;</A>
+process.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progmpfock>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1026.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1026.gif"><P>
+<P>
+<A NAME=12977>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3141 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3149 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3147 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3151 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3152 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3150 HREF="node99.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node99.html">8.5 Modularity</A>
+<B>Up:</B> <A NAME=tex2html3148 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3142 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html">8.3 Global Operations</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

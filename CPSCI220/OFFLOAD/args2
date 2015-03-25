@@ -1,0 +1,9 @@
+IFS="<^"
+echo -n '[$*] = '
+echo $*
+echo -n '[$@] = '
+echo $@
+echo -n '["$*"] = '
+echo "$*"
+echo -n '["$@"] = '
+echo "$@"

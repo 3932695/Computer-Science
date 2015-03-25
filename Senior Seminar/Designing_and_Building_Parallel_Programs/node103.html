@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.9 Summary</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.9 Summary">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3201 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3209 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3207 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3211 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3212 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3210 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3208 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3202 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html">8.8 Case Study: Earth System Model</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03590000000000000000>8.9 Summary</A></H1>
+<P>
+This chapter has described the message-passing library approach to
+parallel programming and has shown how parallel algorithm designs
+developed using the techniques from Part I can be translated into
+message-passing programs.  It has also provided a tutorial
+introduction to the MPI message-passing standard.
+Table <A HREF="node103.html#tabmpsum" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html#tabmpsum">8.2</A> summarizes the MPI routines described in this
+chapter; Tables <A HREF="node103.html#tabmpc" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html#tabmpc">8.3</A> and <A HREF="node103.html#tabmpf" tppabs="http://www.mcs.anl.gov/dbpp/text/node103.html#tabmpf">8.4</A> summarize the C and
+Fortran language bindings, respectively, for these functions and give
+the types of each function's arguments.
+<P>
+<A NAME=13471>&#160;</A>
+<P><A NAME=13839>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1055.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1055.gif">
+<BR><STRONG>Table 8.2:</STRONG>  MPI quick reference: the functions included in the MPI
+subset, the figure in which each is defined, the section in which
+each is described, and the programs that illustrate their
+use.
+<A NAME=tabmpsum>&#160;</A><BR>
+<P>
+<P>
+The principal features of the message-passing programming model as
+realized in MPI are as follows.
+<P>
+<OL><LI>
+A computation consists of a (typically fixed) set of heavyweight
+processes, each with a unique identifier (integers 0..P--1).
+<P>
+<LI>
+Processes interact by exchanging typed messages, by engaging in
+collective communication operations, or by probing for pending
+messages.
+<P>
+<LI>
+Modularity is supported via communicators, which allow subprograms to
+encapsulate communication operations and to be combined in sequential
+and parallel compositions.
+<P>
+<LI>
+Algorithms developed using the techniques set out in Part I can be expressed
+directly if they do not create tasks dynamically or place multiple
+tasks on a processor.
+<P>
+<LI>
+Algorithms that <em> do
+ </em> create tasks dynamically or place
+multiple tasks on a processor can require substantial refinement
+before they can be implemented in MPI.
+<P>
+<LI>
+Determinism is not guaranteed but can be achieved with careful
+programming.
+<P>
+</OL>
+<P>
+<P><A NAME=13840>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1056.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1056.gif">
+<BR><STRONG>Table 8.3:</STRONG>  MPI quick reference:  C language binding.
+<A NAME=tabmpc>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=13844>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1057.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1057.gif">
+<BR><STRONG>Table:</STRONG>  MPI quick reference: Fortran language binding.  For brevity,
+we adopt the convention that arguments with an <tt> I</tt> prefix have
+type <tt> INTEGER</tt> unless specified otherwise.  The <tt> ISTATUS</tt>
+argument is always an integer array of size <tt>
+MPI_STATUS_SIZE</tt>.
+<A NAME=tabmpf>&#160;</A><BR>
+<P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3201 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3209 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3207 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3211 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3212 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3210 HREF="node104.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node104.html"> Exercises</A>
+<B>Up:</B> <A NAME=tex2html3208 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3202 HREF="node102.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node102.html">8.8 Case Study: Earth System Model</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

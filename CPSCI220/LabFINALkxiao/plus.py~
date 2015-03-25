@@ -1,0 +1,11 @@
+def plus(list):
+    sum = 0
+    for e in range(list):
+        sum += e
+    return sum
+
+list = [1, 2, 3, 4]
+
+total = plus(list)
+
+print(total)

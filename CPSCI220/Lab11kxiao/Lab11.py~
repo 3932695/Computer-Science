@@ -1,0 +1,21 @@
+print("Question 2 demonstrations: ")
+
+print("x = 'Hello, '")
+x = 'Hello, '
+
+print("y = x ")
+y = x
+
+print("print(x) ")
+print(x)
+
+print("y += 'World'")
+y += 'World'
+
+print("print(x) ")
+print(x)
+
+print("print(y) ")
+print(y)
+
+print("See, x and y are not the same! y only copies over x's value because strings are immutable.")

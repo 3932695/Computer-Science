@@ -1,0 +1,188 @@
+  /* definitions */
+
+  /* keyword   void|int|double|bool|string|class|interface|null|this|extends|implements|for|while|if|else|return|break|New|NewArray|Print|ReadInteger|ReadLine
+   */
+
+%{
+
+#include <iostream>
+
+using namespace std;
+
+#include "tokentype.h"
+
+string resultString;
+int lineNo;
+Token* myTok;
+
+int error(string msg, int line)
+{
+  cout << msg << " on line " << line << endl;
+  return -1;
+}
+
+TokenType makeToken(TokenType type) {
+    myTok = new Token(type, yytext, yylineno);
+    return type;
+}
+
+
+%}
+
+%option yylineno
+%x STRING
+%x COMMENT
+%x BLOCK
+%x DOUBLE
+
+%%
+
+  /* =================== rules ===================== */
+
+  /* other */
+
+\+ { return makeToken(T_Plus); }
+\- { return makeToken(T_Minus); }
+\* { return makeToken(T_Times); }
+\/ { return makeToken(T_Div); }
+\% { return makeToken(T_Mod); }
+\< { return makeToken(T_Less); }
+\<\= { return makeToken(T_LessEqual); }
+\> { return makeToken(T_Greater); }
+\>\= { return makeToken(T_GreaterEqual); }
+\= { return makeToken(T_Assign); }
+\=\= { return makeToken(T_Equal); }
+\!\= { return makeToken(T_NotEqual); }
+\&\& { return makeToken(T_And); }
+\|\| { return makeToken(T_Or); }
+\! { return makeToken(T_Not); }
+\; { return makeToken(T_Semicolon); }
+\, { return makeToken(T_Comma); }
+\. { return makeToken(T_Dot); }
+\[ { return makeToken(T_LBracket); }
+\] { return makeToken(T_RBracket); }
+\( { return makeToken(T_LParen); }
+\) { return makeToken(T_RParen); }
+\{ { return makeToken(T_LBrace); }
+\} { return makeToken(T_RBrace); }
+
+  /* keywords */
+
+void  		{ return makeToken(T_Void); }
+int 		{ return makeToken(T_Int); }
+double 		{ return makeToken(T_Double); }
+bool 		{ return makeToken(T_Bool); }
+string		{ return makeToken(T_String); }
+class 		{ return makeToken(T_Class); }
+interface  	{ return makeToken(T_Interface); }
+null		{ return makeToken(T_Null); }
+this  		{ return makeToken(T_This); }
+extends   	{ return makeToken(T_Extends); }
+implements	{ return makeToken(T_Implements); }
+for   		{ return makeToken(T_For); }
+while   	{ return makeToken(T_While); }
+if   		{ return makeToken(T_If); }
+else   		{ return makeToken(T_Else); }
+return  	{ return makeToken(T_Return); }
+break   	{ return makeToken(T_Break); }
+New   		{ return makeToken(T_New); }
+NewArray 	{ return makeToken(T_NewArray); }
+Print   	{ return makeToken(T_Print); }
+ReadInteger	{ return makeToken(T_ReadInteger); }
+ReadLine 	{ return makeToken(T_ReadLine); }
+
+  /* bools */
+
+true  							{ return makeToken(T_BoolConstant); }
+false  							{ return makeToken(T_BoolConstant); }
+
+
+  /* ignore whitespace | [[:space:]] */
+
+  /* identifier */
+[A-Za-z][A-Za-z0-9_]* 		{ 
+								resultString = "";
+								resultString += yytext;
+								if(resultString.length() > 31){
+									return error("identifier \"" + resultString + "\" too long", yylineno); 
+								}
+								return makeToken(T_Identifier); 
+								
+							}
+								
+
+
+  /* ints */
+[0-9]+ 							{ return makeToken(T_IntConstant); }
+0[Xx][0-9A-Fa-f]+ 				{ return makeToken(T_IntConstant); }
+
+  /* doubles */
+  
+[0-9]+\.[0-9]*[Ee][+-]?[0-9]+ 	{ return makeToken(T_DoubleConstant); } 
+
+[0-9]+\.[0-9]* 					{ return makeToken(T_DoubleConstant); } 
+
+
+
+
+
+  /* string */
+  /* \"(.|\\.)*\"  { return makeToken(T_StringConstant); }  */
+
+\n {}
+
+\" { BEGIN(STRING); resultString = "\""; }
+<STRING>[^\n"]* { resultString += yytext; }
+<STRING>\n      {return error("missing \" at end of string constant", 
+		yylineno-1); }
+<STRING><<EOF>>  {return error("missing \" at end of string constant", 
+		yylineno); } 
+<STRING>\"     { BEGIN(INITIAL); 
+	         myTok = new Token(T_StringConstant,resultString + "\"", 
+                                  yylineno);
+		 return T_StringConstant; }
+
+  /* comments */
+  
+\/\/ { BEGIN(COMMENT); resultString = ""; }
+<COMMENT>[^\n]* { resultString += yytext; }
+<COMMENT><<EOF>> { return error("missing new line character before EOF (how does this even happen?)",
+		 yylineno); }
+<COMMENT>\n  	 { BEGIN(INITIAL);}
+
+\/\* { BEGIN(BLOCK); resultString = ""; lineNo = yylineno; }
+<BLOCK>[^*/]* { resultString += yytext; }
+<BLOCK><<EOF>> { return error("missing */ at end of comment block", lineNo); }
+<BLOCK>\*\/  	 { BEGIN(INITIAL);}
+
+[^ \t\n] { resultString = "stray '"; resultString += yytext; resultString += "'"; return error(resultString, yylineno); }
+[ \t\n] {}
+                  
+<<EOF>> { return -1; }
+
+%%
+
+  /* subroutines */
+
+int yywrap(void) {
+    return 1;  // makes it stop at EOF.
+} 
+
+int main(int argc, char **argv) {
+    int tok;
+    /* Make sure there's a given file name */
+    if (argc != 2) {
+        cout << "USAGE: " << argv[0] << " FILE" << endl;
+        exit(1);
+    }       
+    yyin = fopen(argv[1], "r");
+    /* and that it exists and can be read */
+    if (!yyin) {
+        cout << argv[1] << ": No such file or file can't be opened for reading." 
+             << endl;
+        exit(1);
+    }
+    /* Read tokens until finished */
+    while ((tok=yylex()) != -1)
+        myTok->print();
+}

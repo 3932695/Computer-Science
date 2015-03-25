@@ -1,0 +1,9 @@
+void main() {
+	//int n;
+	//n = readinteger();
+	//print(n);
+
+	string s;
+	s = readline();
+	print(s);
+}

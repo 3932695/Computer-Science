@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.10 Performance Issues</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.10 Performance Issues">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2871 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2879 HREF="node78.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2877 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2881 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2882 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2880 HREF="node78.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html">6.11 Case Study: Fock Matrix Construction</A>
+<B>Up:</B> <A NAME=tex2html2878 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2872 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html">6.9 Modularity</A>
+<BR><HR><P>
+<H1><A NAME=SECTION033100000000000000000>6.10 Performance Issues</A></H1>
+<P>
+Because FM provides a direct implementation of the task/channel
+<A NAME=9754>&#160;</A>
+programming model, the performance analysis techniques developed in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A> can be applied directly to FM programs.
+Normally, a send on an outport results in a single communication.  As
+noted in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>, the cost of each message can be
+specified with reasonable accuracy in terms of a startup cost and a
+per-word cost.  It is necessary to distinguish between the
+communication costs incurred when communicating processes are located
+on different processors (<em> interprocessor
+ </em> communication) or
+on the same processor (<em> intraprocessor
+ </em> communication).  Both
+these costs can depend significantly on implementation technology.
+Typically, interprocessor communication costs are similar to those in
+Table <A HREF="node29.html#tabmach" tppabs="http://www.mcs.anl.gov/dbpp/text/node29.html#tabmach">3.1</A> in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>, and intraprocessor
+communication is cheaper.  However, on some multicomputers with fast
+interprocessor communication and relatively low memory bandwidth,
+intraprocessor communication can actually be slower than
+interprocessor communication.
+<P>
+The following issues must also be considered when examining the
+performance of FM programs.
+<P>
+<em> Process creation.</em>
+<A NAME=9763>&#160;</A>
+Process creation and deletion costs will only be a significant
+contributor to total execution time if a program creates and destroys
+many processes.  These costs are influenced by the location of the
+created process (remote creation is typically more expensive than
+local creation) and by the number and size of process arguments
+(arguments must be copied upon call and return: see
+Section <A HREF="node74.html#secarg" tppabs="http://www.mcs.anl.gov/dbpp/text/node74.html#secarg">6.7</A>).  In addition, a compiler may implement FM
+processes as heavyweight <em> Unix processes</em>, in which case process
+creation is relatively expensive, or as lightweight <em> threads</em>, in
+which case process creation is cheap.
+<P>
+<em> Fairness.</em> When two or more processes execute on the same
+processor, FM guarantees that execution is fair: that is, that no
+<A NAME=9769>&#160;</A>
+process that is not blocked waiting for data will be prevented
+indefinitely from executing.  However, the time that a process waits
+before executing can vary significantly depending on characteristics
+of both the application and a particular FM implementation.  Hence,
+care must be taken if application performance depends on obtaining
+timely responses to remote requests.
+<P>
+<em> Compiler optimization.</em> Because FM is a programming language
+<A NAME=9772>&#160;</A>
+rather than a library, a compiler may in some situations be able to
+<A NAME=9773>&#160;</A>
+reduce communication costs by coalescing messages or otherwise
+reorganizing a program to improve performance.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2871 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2879 HREF="node78.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2877 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2881 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2882 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2880 HREF="node78.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node78.html">6.11 Case Study: Fock Matrix Construction</A>
+<B>Up:</B> <A NAME=tex2html2878 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2872 HREF="node76.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html">6.9 Modularity</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

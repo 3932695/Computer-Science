@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>7.1 Data Parallelism</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="7.1 Data Parallelism">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2952 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2960 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2958 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2962 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2963 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2961 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html">7.2 Fortran 90</A>
+<B>Up:</B> <A NAME=tex2html2959 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2953 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03410000000000000000>7.1 Data Parallelism</A></H1>
+<P>
+We first provide a general introduction to data parallelism and
+data-parallel languages, focusing on concurrency, locality, and
+algorithm design.
+<P>
+<H2><A NAME=SECTION03411000000000000000>7.1.1 Concurrency</A></H2>
+<P>
+<A NAME=10592>&#160;</A>
+Depending on the programming language used, the data ensembles
+operated on in a data-parallel program may be regular (e.g., an array)
+or irregular (e.g., a tree or sparse matrix).  In F90 and HPF, the
+data structures operated on are arrays.  In contrast, the
+<A NAME=10593>&#160;</A>
+data-parallel language pC++
+  allows programs to operate not only on
+arrays but also on trees, sets, and other more complex data
+structures.
+<P>
+<A NAME=10594>&#160;</A>
+Concurrency may be implicit or may be expressed by using explicit
+<A NAME=10595>&#160;</A>
+parallel constructs.  For example, the F90 array assignment statement
+is an <em> explicitly
+ </em> parallel construct; we write
+<PRE><TT> 
+		<tt> A = B*C</tt>          		 ! <tt> A</tt>, <tt> B</tt>, <tt> C</tt> are arrays
+<P>
+</TT></PRE>
+to specify that each element of array <tt> A</tt> is to be assigned the
+product of the corresponding elements of arrays <tt> B</tt> and <tt> C</tt>.
+<A NAME=10606>&#160;</A>
+This statement also implies <em> conformality
+ </em>; that is, the three
+<A NAME=10608>&#160;</A>
+arrays have the same size and shape. 
+In contrast, the following do-loop
+<A NAME=10609>&#160;</A>
+is <em> implicitly
+ </em> parallel: a compiler may be able to detect
+that the various do-loop iterations are independent (meaning that one
+iteration does not write a variable read or written by another) and
+hence can be performed in parallel, but this detection requires some
+analysis.
+<P>
+
+<PRE><TT> 
+		<tt> do i = 1,m</tt>
+<P>
+				<tt> do j = 1,n</tt>
+<P>
+						<tt> A(i,j) = B(i,j)*C(i,j)</tt>
+<P>
+				<tt> enddo</tt>
+<P>
+		<tt> enddo</tt>
+<P>
+</TT></PRE>
+
+<P>
+A data-parallel program is a sequence of explicitly and implicitly
+parallel statements.  On a distributed-memory parallel computer,
+compilation typically translates these statements into an SPMD
+<A NAME=10618>&#160;</A>
+program (Section <A HREF="node9.html#sec1other" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#sec1other">1.3.2</A>), in which each processor executes
+the same code on a subset of the data structures.  In many cases, the
+compiler can construct this program by first partitioning data
+structures into disjoint subdomains, one per processor, and then
+<A NAME=10620>&#160;</A>
+applying the owner computes rule to determine which operations should
+be performed on each processor.  This rule states that the computation
+required to produce a datum is performed on the processor on which
+that datum is located.  However, compilers can also use different
+techniques.
+<P>
+Compilation also introduces communication operations when computation
+mapped to one processor requires data mapped to another processor.  As
+an example, consider the following program.
+<P>
+
+<PRE><TT> 
+		<tt> real y, s, X(100)</tt>  				 ! <tt> y</tt>, <tt> s</tt> scalars; <tt> X</tt> an array
+<P>
+		<tt> X = X*y</tt>             				 ! Multiply each <tt> X(i)</tt> by <tt> y</tt>
+<P>
+		<tt> do i = 2,99</tt>
+<P>
+				<tt> X(i) = (X(i-1) + X(i+1))/2</tt> 		 ! Communication required
+<P>
+		<tt> enddo</tt>
+<P>
+		<tt> s = SUM(X)</tt>          				 ! Communication required
+<P>
+</TT></PRE>
+
+<P>
+The communication requirements of this program depend on how the
+variables <tt> X</tt>, <tt> y</tt>, and <tt> s</tt> are distributed over
+processors.  If <tt> X</tt> is distributed while <tt> y</tt> and <tt> s</tt> are
+replicated, then the first assignment can proceed without
+communication, with each <tt> X(i)</tt> being computed by the processor
+that owns <tt> X(i)</tt>.  The second assignment (in the do-loop) requires
+communication: the processor computing <tt> X(i)</tt> requires the values
+of <tt> X(i-1)</tt> and <tt> X(i+1)</tt>, which may be located on different
+processors.  The summation also requires communication.
+<P>
+<H2><A NAME=SECTION03412000000000000000>7.1.2 Locality</A></H2>
+<P>
+<A NAME=10646>&#160;</A>
+Data placement is an essential part of a data-parallel algorithm, since
+the mapping of data to processors determines the <em> locality
+ </em>
+of data references and hence, to a large extent, the performance of a
+parallel program.  For example, the simple array assignment <tt>
+A = B*C</tt> either can proceed without any communication or can require
+communication for every assignment, depending on whether corresponding
+elements of the arrays <tt> A</tt>, <tt> B</tt>, and <tt> C</tt> are located on
+the same or different processors.
+<P>
+Identifying the best distribution of the various data structures
+<A NAME=10652>&#160;</A>
+operated on by a data-parallel program is a global optimization
+problem and not generally tractable.  Hence, data-parallel languages
+often provide the programmer with the ability to define how data
+<A NAME=10653>&#160;</A>
+structures are to be distributed.  In HPF, the <tt> DISTRIBUTE</tt>
+directive fulfills this function.  The statements
+<PRE>     !HPF$   PROCESSORS pr(16)
+             real X(1024)
+     !HPF$   DISTRIBUTE X(BLOCK) ONTO pr
+</PRE>
+indicate that the array <tt> X</tt> is to be distributed in a blocked
+fashion over 16 processors---processor 0 gets the first
+1024/16 elements, processor 1 the second 1024/16 elements, and so on.
+<P>
+<H2><A NAME=SECTION03413000000000000000>7.1.3 Design</A></H2>
+<P>
+The data-parallel programming model is both higher level and more
+<A NAME=10657>&#160;</A>
+restrictive than the task/channel model introduced in Part I.  It is
+<A NAME=10658>&#160;</A>
+<em> higher level
+ </em> in that the programmer is not required to
+specify communication structures explicitly: these are derived by a
+compiler from the domain decomposition specified by the programmer.
+It is <em> more restrictive
+ </em> because not all algorithms can be
+specified in data-parallel terms.  For these reasons, data parallelism,
+although important, is not a universal parallel programming paradigm.
+<P>
+Despite these differences between the task/channel and data-parallel
+programming models, the program design techniques developed in Part I
+are still applicable.  Recall that we have decomposed the design
+process into partitioning, communication, agglomeration, and mapping
+phases.  Data-parallel languages address the first phase directly, by
+providing implicit and explicit constructs that can be used to specify
+a very fine grained partition of a computation, in which one task is
+created for each data element.  As noted in
+Section <A HREF="node16.html#secpartition" tppabs="http://www.mcs.anl.gov/dbpp/text/node16.html#secpartition">2.2</A>, a key concern at this stage is to define
+a partition that identifies sufficient concurrency.
+<P>
+The PCAM design strategy of Chapter <A HREF="node14.html#chap2" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html#chap2">2</A> requires that once we
+have developed a fine-grained partition, we 
+<A NAME=10663>&#160;</A>
+determine communication requirements, agglomerate fine-grained tasks
+into larger tasks, and map tasks to processors.  The beauty of the
+<A NAME=10664>&#160;</A>
+data-parallel approach is that the latter issues can be addressed at a
+<A NAME=10665>&#160;</A>
+particularly high level, by means of directives, rather than in terms
+<A NAME=10666>&#160;</A>
+of explicit communication and mapping operations.  Directives indicate
+<A NAME=10667>&#160;</A>
+how arrays are to be aligned and distributed over processors and hence
+specify agglomeration and mapping.  Communication operations are not
+specified explicitly by the programmer but are instead inferred by the
+compiler from the program.
+<P>
+The translation from fine-grained source program and directives to
+executable (typically SPMD) program is an automatic process that is performed
+by the data-parallel compiler.  Nevertheless, the programmer must
+<A NAME=10668>&#160;</A>
+understand the essential characteristics of this translation in order
+<A NAME=10669>&#160;</A>
+to write efficient code and identify inefficient
+constructs.  For example, an inappropriate choice of directives may
+lead to load imbalances or unnecessary communication. Alternatively, a
+data-parallel compiler may fail to recognize opportunities for
+concurrent execution.  Generally, a data-parallel language compiler
+can be expected to generate reasonably efficient code when a program's
+communication structure is regular and local.  Programs involving
+irregular and global communication patterns are less likely to be
+compiled efficiently.  These and other performance issues are
+addressed in Section <A HREF="node89.html#secdpperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node89.html#secdpperf">7.7</A>.
+<P>
+Finally, we note that the modular design techniques introduced in
+<A NAME=10671>&#160;</A>
+Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A> apply to data-parallel programs.  The issues
+<A NAME=10673>&#160;</A>
+involved are straightforward.  Because data-parallel programs have
+sequential semantics, we need be concerned only with sequential
+composition of program components (Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>).  The
+primary concern in a parallel environment is the choice of data
+distributions in components that are to be composed. This issue is
+discussed in Section <A HREF="node87.html#sechpfmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node87.html#sechpfmod">7.5</A>.
+<P>
+<H2><A NAME=SECTION03414000000000000000>7.1.4 Data-Parallel Languages</A></H2>
+<P>
+<A NAME=10677>&#160;</A>
+<P>
+In the remainder of this chapter, we first briefly
+<A NAME=10678>&#160;</A>
+introduce  F90 and then describe HPF.  Much of this material 
+also applies to other data-parallel languages.  The chapter notes
+provide pointers to relevant documentation.
+<P>
+<A NAME=10679>&#160;</A>
+F90 is a data-parallel programming language in its own right. Its
+<A NAME=10680>&#160;</A>
+array assignment statement and array intrinsic functions can be used
+to specify certain classes of data-parallel computations.  Our main
+interest in F90, however, is that it forms the basis for HPF, which
+<A NAME=10681>&#160;</A>
+augments F90 with data distribution directives, a <tt> FORALL</tt>
+statement, the <tt> INDEPENDENT</tt> directive, and new intrinsics.  Array
+assignment, the <tt> FORALL</tt> statement, and the <tt> INDEPENDENT</tt>
+directive are used to identify <em> concurrency
+ </em> in an algorithm,
+while data distribution directives specify how data should be placed
+on physical processors and hence provide control over <em> locality</em>.
+<P>
+Although HPF defines only a small set of extensions to F90, it is
+nevertheless a complex language. The extensions have numerous
+variants and can interact with F90 constructs and with each other in
+a wide variety of ways.  In the interests of succinctness and clarity,
+our presentation does not aim for completeness but rather seeks to
+present the essential ideas required to understand data-parallel
+programming and the HPF constructs required to write simple programs.
+<A NAME=10688>&#160;</A>
+These constructs are taken from the official <em> HPF subset</em>, which
+should in principle be supported by all HPF compilers.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2952 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2960 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2958 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2962 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2963 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2961 HREF="node84.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node84.html">7.2 Fortran 90</A>
+<B>Up:</B> <A NAME=tex2html2959 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<B> Previous:</B> <A NAME=tex2html2953 HREF="node82.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node82.html">7 High Performance Fortran</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

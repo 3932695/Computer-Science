@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.8 Case Study: Computational Chemistry</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.8 Case Study: Computational Chemistry">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2107 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2115 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2113 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2117 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2118 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2116 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html">2.9 Summary</A>
+<B>Up:</B> <A NAME=tex2html2114 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2108 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html">2.7 Case Study: Floorplan Optimization</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02380000000000000000>2.8 Case Study: Computational Chemistry</A></H1>
+<P>
+<A NAME=secchem>&#160;</A>
+<P>
+<A NAME=1966>&#160;</A>
+Our third case study, like the first, is from computational science.
+<A NAME=1967>&#160;</A>
+It is an example of an application that accesses a distributed
+<A NAME=1968>&#160;</A>
+data structure in an asynchronous fashion and that is amenable to a
+functional decomposition.
+<P>
+<H2><A NAME=SECTION02381000000000000000>2.8.1 Chemistry Background</A></H2>
+<P>
+Computational techniques are being used increasingly as an alternative
+to experiment in chemistry.  In what is called <em> ab initio
+quantum chemistry
+ </em>, computer programs are used to compute fundamental
+properties of atoms and molecules, such as bond strengths and reaction
+energies, from first principles, by solving various approximations to
+the Schr&#246;dinger equation that describes their basic structures.
+This approach allows the chemist to explore reaction pathways that
+would be hazardous or expensive to explore experimentally.  One
+application for these techniques is in the investigation of biological
+processes.  For example,
+<A HREF="#bash">Plate 6</A>
+
+<P>
+shows a molecular model for the active site region in the enzyme
+malate dehydrogenase, a key enzyme in the conversion of
+glucose to the high-energy molecule ATP. This image is taken from a
+simulation of the transfer of a hydride anion from the substrate,
+malate, to a cofactor, nicotinamide adenine diphosphate. The two
+isosurfaces colored blue and brown represent lower and higher electron
+densities, respectively, calculated by using a combined quantum and
+classical mechanics methodology.  The green, red, blue, and white
+balls are carbon, oxygen, nitrogen, and hydrogen atoms, respectively.
+<P>
+Fundamental to several methods used in quantum chemistry is the need
+to compute what is called the <em> Fock matrix</em>, a two-dimensional
+<A NAME=1977>&#160;</A>
+array representing the electronic structure of an atom or molecule.
+This matrix, which is represented here as <tt> F</tt>, has size
+<em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img317.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img317.gif"><em> N</em>
+ and is formed by evaluating the following
+summation for each element:
+<P><A NAME=eqnfock>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img318.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img318.gif"><P>
+where <tt> D</tt> is a two-dimensional array of size
+<em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img319.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img319.gif"><em> N</em>
+ that is only read, not written, by this
+computation and the <tt> I</tt> represent integrals that are
+computed using elements <em> i</em>
+, <em> j</em>
+, <em> k</em>
+, and <em> l</em>
+ of a
+read-only, one-dimensional array <tt> A</tt> with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img320.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img320.gif"> elements.  An
+integral can be thought of as an approximation to the repulsive force
+between two electrons.
+<P>
+<P><A NAME=algfock>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img321.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img321.gif"><P>
+<P>
+Because Equation <A HREF="node22.html#eqnfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#eqnfock">2.3</A> includes a double summation, apparently
+2<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img322.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img322.gif"> integrals must be computed for each element of <tt> F</tt>,
+for a total of 2<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img323.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img323.gif"> integrals.  However, in practice it is possible
+to exploit redundancy in the integrals and symmetry in <tt> F</tt> and
+reduce this number to a total of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img324.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img324.gif">.  When this is done, the
+algorithm can be reduced to the rather strange logic given as
+Algorithm <A HREF="node22.html#algfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#algfock">2.3</A>.  In principle, the calculation of each
+element of <tt> F</tt> requires access to all elements of <tt> D</tt> and <tt>
+A</tt>; furthermore, access patterns appear highly irregular.  In this
+respect, the Fock matrix construction problem is representative of
+many numeric problems with irregular and nonlocal communication
+patterns.
+<P>
+For the molecular systems of interest to chemists, the problem size
+<em> N</em>
+ may be in the range <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img325.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img325.gif">.  Because the evaluation
+of an integral is a fairly expensive operation, involving <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img326.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img326.gif">
+operations, the construction of the Fock matrix may require
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img327.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img327.gif"> operations.  In addition, most methods require that
+a series of Fock matrices be constructed, each representing a more
+accurate approximation to a molecule's electronic structure.  These
+considerations have motivated a considerable amount of work on both
+efficient parallel algorithms for Fock matrix construction and
+improved methods that require the computation of less than <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img328.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img328.gif">
+integrals.
+<P>
+<A NAME=2055>&#160;</A>
+<P>
+<H2><A NAME=SECTION02382000000000000000>2.8.2 Chemistry Algorithm Design</A></H2>
+<P>
+<A NAME=secchemx>&#160;</A>
+<P>
+<H4><A NAME=SECTION02382010000000000000> Partition.</A></H4>
+<P>
+Because the Fock matrix problem is concerned primarily with the symmetric
+two-dimensional matrices <tt> F</tt> and <tt> D</tt>, an obvious partitioning
+strategy is to apply domain decomposition techniques to these matrices
+to create <em> N(N+1)/2</em>
+ tasks, each containing a single element from
+each matrix (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img329.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img329.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img330.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img330.gif">) and responsible for the
+operations required to compute its <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img331.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img331.gif">.  This yields
+<em> N(N+1)/2</em>
+ tasks, each with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img332.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img332.gif"> data and each responsible for
+<A NAME=2069>&#160;</A>
+computing 2<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img333.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img333.gif"> integrals, as specified in Equation <A HREF="node22.html#eqnfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#eqnfock">2.3</A>.
+<P>
+This domain decomposition strategy is simple but suffers from a
+significant disadvantage: it cannot easily exploit redundancy and
+symmetry and, hence, performs eight times too many
+integral computations.  Because an alternative algorithm based on
+<A NAME=2071>&#160;</A>
+functional decomposition techniques is significantly more efficient
+(it does not perform redundant computation and does not incur high
+communication costs), the domain decomposition
+algorithm is not considered further.
+<P>
+<P><A NAME=2998>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img338.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img338.gif">
+<BR><STRONG>Figure 2.31:</STRONG> <em> Functional decomposition of Fock matrix problem.  This
+yields about <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img336.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img336.gif"> data tasks, shown in the upper part of the
+figure, and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img337.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img337.gif"> computation tasks, shown in the lower part of the
+figure. Computation tasks send read and write requests to data
+tasks.</em><A NAME=figfockd2>&#160;</A><BR>
+<P>
+<P>
+Quite a different parallel algorithm can be developed by focusing on
+the computation to be performed rather than on the data structures
+manipulated, in other words, by using a functional decomposition.
+When redundancy is considered, one naturally thinks of a computation
+as comprising a set of integrals (the <tt> integral</tt> procedure of
+Algorithm <A HREF="node22.html#algfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#algfock">2.3</A>), each requiring six <tt> D</tt> elements and
+contributing to six <tt> F</tt> elements.  Focusing on these computations,
+we define <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img339.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img339.gif"> ``computation'' tasks, each responsible for one
+integral.
+<P>
+Having defined a functional decomposition, we next need to distribute
+data structures over tasks.  However, we see no obvious criteria by
+which data elements might be associated with one computation task
+rather than another: each data element is accessed by many tasks.  In
+effect, the <tt> F</tt>, <tt> D</tt>, and <tt> A</tt> arrays constitute large data
+structures that the computation tasks need to access in a distributed
+and asynchronous fashion.  This situation suggests that the techniques
+described in Section <A HREF="node17.html#seccommas" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommas">2.3.4</A> for asynchronous communication
+may be useful.  Hence, for now we simply define two sets of ``data''
+tasks that are responsible only for responding to requests to read and write
+data values.  These tasks encapsulate elements of the two-dimensional
+arrays <tt> D</tt> and <tt> F</tt> (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img340.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img340.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img341.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img341.gif">) and of the
+one-dimensional array <tt> A</tt> (<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img342.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img342.gif">), respectively.  In all,
+our partition yields a total of approximately <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img343.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img343.gif"> computation
+tasks and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img344.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img344.gif"> data tasks (Figure <A HREF="node22.html#figfockd2" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#figfockd2">2.31</A>).
+<P>
+<H4><A NAME=SECTION02382020000000000000> Communication and Agglomeration.</A></H4>
+<P>
+<A NAME=2094>&#160;</A>
+We have now defined <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img345.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img345.gif"> computation tasks and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img346.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img346.gif"> data
+<A NAME=2095>&#160;</A>
+tasks.  Each computation task must perform sixteen communications: six
+to obtain <tt> D</tt> matrix elements, four to obtain <tt> A</tt> matrix
+elements, and six to store <tt> F</tt> matrix elements.  As the
+computational costs of different integrals can vary significantly,
+there does not appear to be any opportunity for organizing these
+communication operations into a regular structure, as is advocated in
+Section <A HREF="node17.html#seccommglobal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommglobal">2.3.2</A>.
+<P>
+On many parallel computers, the cost of an integral will be comparable
+to the cost of a communication.  Hence, communication requirements
+must be reduced by agglomeration.  We describe two alternative
+strategies that can be used to achieve this goal.  Their data
+requirements are illustrated in Figure <A HREF="node22.html#figfockagg" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#figfockagg">2.32</A>.
+<P>
+<P><A NAME=3018>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img347.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img347.gif">
+<BR><STRONG>Figure 2.32:</STRONG> <em> Agglomeration strategies for Fock matrix construction with
+<em> N=P=5</em>
+, for (a) the total replication algorithm and (b) the partial
+replication algorithm.  In each case, the five tasks are shown with
+shading used to represent the portion of the symmetric <tt> D</tt> and
+<tt> F</tt> matrices allocated to each task.  In (a), each matrix is
+replicated in each task.  In (b), each task is given a single row and
+column; this corresponds to a factor of two
+replication.</em><A NAME=figfockagg>&#160;</A><BR>
+<P>
+<P>
+1.  <em> Total replication.</em> Communication costs can be cut dramatically
+by replicating the <tt> F</tt> and <tt> D</tt> matrices in each of
+<em> P</em>
+ tasks, one per processor of a parallel computer.  Each task is given
+responsibility for <em> 1/P</em>
+ of the integrals.  Computation can then
+proceed in each task without any communication.  The only coordination
+required is a final summation to accumulate partial <tt> F</tt> matrices.
+This can be achieved using a parallel vector reduction
+algorithm described in Section <A HREF="node125.html#secvecred" tppabs="http://www.mcs.anl.gov/dbpp/text/node125.html#secvecred">11.2</A>.
+<P>
+The technique of replicating data structures on each processor of a
+parallel computer is commonly used in parallel computing to reduce
+software engineering costs.  It allows an existing sequential code to
+be adapted quickly for parallel execution, since there is no need to
+modify data structures.  The principal disadvantage of the technique
+is that it is nonscalable.  Because total memory requirements
+scale with the number of tasks created, the largest
+<A NAME=2114>&#160;</A>
+problem that can be solved is determined not by the total amount of
+memory in a parallel computer, but by the amount available in a single
+processor.  For example, on a 512-processor computer with 16 MB of
+memory per processor, an implementation of the quantum chemistry code
+DISCO that uses this strategy cannot solve problems with <em> N&gt;400</em>
+.
+<A NAME=2116>&#160;</A>
+In principle, it would be interesting to solve problems where
+<em> N</em>
+ is 10 times larger.
+<P>
+<P><A NAME=3040>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img348.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img348.gif">
+<BR><STRONG>Figure 2.33:</STRONG> <em> Data requirements for integral clusters.  Each task accesses
+three rows (and sometimes columns) of the <tt> D</tt> and <tt> F</tt>
+matrices.</em><A NAME=figfock99>&#160;</A><BR>
+<P>
+<P>
+2.  <em> Partial replication.</em> An alternative approach is as follows.
+<A NAME=2124>&#160;</A>
+First, we agglomerate computation in what seems an obvious way, namely,
+by making the inner loop of the procedure <tt> fock_build</tt> in
+Algorithm <A HREF="node22.html#algfock" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#algfock">2.3</A> into a task.  This yields <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img349.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img349.gif"> computation
+tasks, each responsible for <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img350.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img350.gif"> integrals.  Next, we examine the
+communication requirements of each such task.  We find that there is
+considerable locality in the data required by these clusters of
+integrals: each cluster accesses the <em> i</em>
+th, <em> j</em>
+th, and
+<em> k</em>
+th row (and sometimes column) of <tt> D</tt> and <tt> F</tt>
+(Figure <A HREF="node22.html#figfock99" tppabs="http://www.mcs.anl.gov/dbpp/text/node22.html#figfock99">2.33</A>).  To exploit this locality, we
+agglomerate data to create <em> N</em>
+ data tasks, each containing a
+row/column pair of the two-dimensional arrays <tt> D</tt> and <tt> F</tt> and
+all of the one-dimensional array <tt> A</tt>.  In this scheme, each
+element of <tt> D</tt> and <tt> F</tt> is replicated once, and <tt> A</tt> is
+replicated <em> N</em>
+ times, so total storage requirements are increased
+from an average of <em> N</em>
+ to <em> 3N</em>
+ per task.  Because of this
+replication, each computation task now requires data from just three
+data tasks.  Hence, the number of messages is reduced from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img351.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img351.gif">
+to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img352.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img352.gif">.  The total volume communicated remains <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img353.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img353.gif">.  Because
+the cost of communicating a word is typically much less than the cost
+of computing an integral, this is an efficient parallel algorithm.
+<P>
+<H4><A NAME=SECTION02382030000000000000> Mapping.</A></H4>
+<P>
+<A NAME=2144>&#160;</A>
+The ``partial replication'' Fock matrix construction algorithm creates
+<em> N</em>
+ data tasks and <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img354.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img354.gif"> computation tasks.  We use the notation
+<em> (i j k)</em>
+ to identify the computation task responsible for
+computing the <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img355.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img355.gif"> integrals <em> I</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img356.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img356.gif">; this task requires
+data from data tasks <em> i</em>
+, <em> j</em>
+, and <em> k</em>
+.  To complete the
+parallel algorithm, we must define a mapping of data and computation
+tasks to processors.
+<P>
+We assume <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img357.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img357.gif"> processors.  Since each data task will receive
+roughly the same number of requests, we allocate one data task to each
+processor.  This leaves the problem of mapping computation tasks.  We
+can imagine a variety of approaches:
+<OL><LI>
+A simple mapping, in which task <em> (i j k)</em>
+ is mapped to the same
+processor as data task <em> i</em>
+; since each task communicates with data
+tasks <em> i</em>
+, <em> j</em>
+, and <em> k</em>
+, off-processor communication
+requirements are reduced by one third.  A disadvantage of this
+strategy is that since both the number of integrals in a task and the
+amount of computation per integral can vary, different processors may
+be allocated different amounts of computation.
+<P>
+<LI>
+<A NAME=2158>&#160;</A>
+A probabilistic mapping, in which computation tasks are mapped to
+processors at random or using a cyclic strategy.
+<P>
+<LI>
+A task-scheduling algorithm to allocate tasks to idle processors.
+Since a problem can be represented by three integers (<em> i</em>
+,
+<em> j</em>
+, <em> k</em>
+) and multiple problems can easily be agglomerated
+into a single message, a simple centralized scheduler can be used.
+(Empirical studies suggest that a centralized scheduler performs well
+on up to a few hundred processors.)
+<P>
+<LI>
+Hybrid schemes in which, for example, tasks are allocated randomly to
+sets of processors, within which a manager/worker scheduler is used.
+</OL>
+The best scheme will depend on performance requirements and on problem
+and machine characteristics.
+<P>
+<H2><A NAME=SECTION02383000000000000000>2.8.3 Chemistry Summary</A></H2>
+<P>
+We have developed two alternative parallel algorithms for the Fock
+matrix construction problem.
+<P>
+<OL><LI>
+The <tt> F</tt> and <tt> D</tt> matrices are replicated in each of
+<em> N</em>
+ tasks.  Integral computations are distributed among the tasks, and a
+summation algorithm is used to sum <tt> F</tt> matrix contributions
+accumulated in the different tasks.  This algorithm is simple but
+nonscalable.
+<P>
+<LI>
+The <tt> F</tt>, <tt> D</tt>, and <tt> A</tt> matrices are partitioned among
+<em> N</em>
+ tasks, with a small amount of replication.  Integral
+computations are agglomerated into <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img358.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img358.gif"> tasks, each containing
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img359.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img359.gif"> integrals. 
+These tasks are mapped to processors either
+statically or using a task-scheduling scheme.
+<P>
+</OL>
+<P>
+This case study illustrates some of the tradeoffs that can arise in
+the design process.  The first algorithm slashes communication and
+software engineering costs; however, it is not scalable.  In
+contrast, the second algorithm has higher communication costs but is
+highly scalable: its memory requirements increase only with problem
+size, not the number of processors.  To choose between the
+two algorithms, we need to quantify their parallel performance
+and then to determine the importance of scalability, by assessing
+application requirements and the characteristics of the target
+parallel computer.
+<P>
+<A NAME=2174>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2107 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2115 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2113 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2117 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2118 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2116 HREF="node23.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node23.html">2.9 Summary</A>
+<B>Up:</B> <A NAME=tex2html2114 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2108 HREF="node21.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node21.html">2.7 Case Study: Floorplan Optimization</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

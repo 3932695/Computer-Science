@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>8.2 MPI Basics</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="8.2 MPI Basics">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3117 HREF="node95.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node95.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3125 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3123 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3127 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3128 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3126 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html">8.3 Global Operations</A>
+<B>Up:</B> <A NAME=tex2html3124 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3118 HREF="node95.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node95.html">8.1 The MPI Programming Model</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03520000000000000000>8.2 MPI Basics</A></H1>
+<P>
+<A NAME=secmpibasics>&#160;</A>
+<P>
+Although MPI is a complex and multifaceted system, we can solve a wide
+range of problems using just six of its functions!  We introduce MPI
+<A NAME=12208>&#160;</A>
+by describing these six functions, which initiate and
+terminate a computation, identify processes, and send and
+receive messages:
+<P>
+<PRE><TT> 
+<tt> MPI_INIT</tt>      		:		 Initiate an MPI computation.
+<P>
+<tt> MPI_FINALIZE</tt>  		:		 Terminate a computation.
+<P>
+<tt> MPI_COMM_SIZE</tt>		:		 Determine number of processes.
+<P>
+<tt> MPI_COMM_RANK</tt>		:		 Determine my process identifier.
+<P>
+<tt> MPI_SEND</tt>      		:		 Send a message.
+<P>
+<tt> MPI_RECV</tt>      		:		 Receive a message.
+<P>
+</TT></PRE>
+<P>
+Function parameters are detailed in Figure <A HREF="node96.html#figmpibasics" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#figmpibasics">8.1</A>.  In
+this and subsequent figures, the labels <tt> IN</tt>, <tt> OUT</tt>, and <tt>
+INOUT</tt> indicate whether the function uses but does not modify the
+parameter (<tt> IN</tt>), does not use but may update the parameter (<tt>
+OUT</tt>), or both uses and updates the parameter (<tt> INOUT</tt>).
+<P>
+<P><A NAME=13842>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1005.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1005.gif">
+<BR><STRONG>Figure 8.1:</STRONG>  Basic MPI.  These six functions suffice to write a
+wide range of parallel programs.  The arguments are characterized as
+having mode <tt> IN</tt> or <tt> OUT</tt> and as having type integer, choice,
+handle, or status.  These terms are explained in the text.
+<P>
+<A NAME=figmpibasics>&#160;</A><BR>
+<P>
+<P>
+All but the first two calls take a communicator handle as
+an argument.  A communicator identifies the process group and context
+with respect to which the operation is to be performed.  As explained
+later in this chapter, communicators provide a mechanism for
+identifying process subsets during development of modular programs and
+for ensuring that messages intended for different purposes are not
+confused.  For now, it suffices to provide the default value <tt>
+MPI_COMM_WORLD</tt>, which identifies <em> all
+ </em> processes involved
+in a computation.  Other arguments have type integer, datatype handle,
+or status.  These datatypes are explained in the following.
+<P>
+<A NAME=12297>&#160;</A>
+The functions <tt> MPI_INIT</tt> and <tt> MPI_FINALIZE</tt> are used to
+<A NAME=12300>&#160;</A>
+initiate and shut down an MPI computation, respectively.  <tt>
+MPI_INIT</tt> must be called before any other MPI function and must be
+called exactly once per process.  No further MPI functions can be
+called after <tt> MPI_FINALIZE</tt>.
+<P>
+<A NAME=12303>&#160;</A>
+The functions <tt> MPI_COMM_SIZE</tt> and <tt> MPI_COMM_RANK</tt>
+<A NAME=12306>&#160;</A>
+determine the number of processes in the current computation and the
+integer identifier assigned to the current process, respectively.
+(The processes in a process group are identified with unique,
+contiguous integers numbered from 0.)  For example, consider the
+following program.  This is not written in any particular language: we
+shall see in the next section how to call MPI routines from Fortran and C.
+<P>
+
+<PRE><TT> 
+<tt> program main</tt>
+<P>
+<tt> begin</tt>
+<P>
+		<tt> MPI_INIT()</tt>              		 Initiate computation
+<P>
+		<tt> MPI_COMM_SIZE(MPI_COMM_WORLD, count)</tt> 		 Find # of processes
+<P>
+		<tt> MPI_COMM_RANK(MPI_COMM_WORLD, myid)</tt>  		 Find my id
+<P>
+		<tt> print(&quot;I am&quot;, myid, &quot;of&quot;, count)</tt>         		 Print message
+<P>
+		<tt> MPI_FINALIZE()</tt>                          		 Shut down
+<P>
+<tt> end</tt>
+<P>
+</TT></PRE>
+
+<P>
+The MPI standard does not specify how a parallel computation is
+<A NAME=12331>&#160;</A>
+started.  However, a typical mechanism could be a command line
+argument indicating the number of processes that are to be created:
+for example, <tt> myprog -n 4</tt>, where <tt> myprog</tt> is the name of
+the executable.  Additional arguments might be used to specify
+processor names in a networked environment or executable names in an
+MPMD computation.
+<P>
+If the above program is executed by four processes, we will obtain
+something like the following output.  The order in which the output
+appears is not defined; however, we assume here that the output from
+individual print statements is not interleaved.
+<P>
+
+<PRE>                   I am 1 of 4
+                   I am 3 of 4
+                   I am 0 of 4
+                   I am 2 of 4
+</PRE>
+
+<P>
+Finally, we consider the functions <tt> MPI_SEND</tt> and <tt>
+MPI_RECV</tt>, which are used to send and receive messages,
+<A NAME=12337>&#160;</A>
+respectively.  A call to <tt> MPI_SEND</tt> has the general form
+<A NAME=12339>&#160;</A>
+<tt> MPI_SEND(buf, count, datatype, dest, tag, comm)</tt>
+<P>
+and specifies that a message containing <tt> count</tt> elements of the
+specified <tt> datatype</tt> starting at address <tt> buf</tt> is to be sent
+to the process with identifier <tt> dest</tt>.  As will be explained in
+greater detail subsequently, this message is associated with an 
+envelope comprising the specified <tt> tag</tt>, the source
+process's identifier, and the specified communicator (<tt> comm</tt>).
+<P>
+A
+call to <tt> MPI_RECV</tt> has the general form
+<P>
+<tt> MPI_RECV(buf, count, datatype, source, tag, comm, status)</tt>
+<P>
+and attempts to receive a message that has an envelope corresponding to
+the specified <tt> tag</tt>, <tt> source</tt>, and <tt> comm</tt>, blocking until
+such a message is available.  When the message arrives, elements of
+the specified <tt> datatype</tt> are placed into the buffer at address
+<tt> buf</tt>.  This buffer is guaranteed to be large enough to contain at
+least <tt> count</tt> elements.  The <tt> status</tt> variable can be used
+subsequently to inquire about the size, tag, and source of the
+received message (Section <A HREF="node98.html#secmpinquire" tppabs="http://www.mcs.anl.gov/dbpp/text/node98.html#secmpinquire">8.4</A>).
+<P>
+<P><A NAME=progmpi1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1006.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1006.gif"><P>
+<P>
+Program <A HREF="node96.html#progmpi1" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmpi1">8.1</A> illustrates the use of the six basic calls.
+This is an implementation of the bridge construction algorithm
+developed in Example <A HREF="node9.html#exbridge" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#exbridge">1.1</A>.  The program is designed to be
+<A NAME=12398>&#160;</A>
+executed by two processes.  The first process calls a procedure <tt>
+<A NAME=12399>&#160;</A>
+foundry</tt> and the second calls <tt> bridge</tt>, effectively creating two
+different tasks.  The first process makes a series of <tt> MPI_SEND</tt>
+calls to communicate 100 integer messages to the second process,
+terminating the sequence by sending a negative number.  The second
+process receives these messages using <tt> MPI_RECV</tt>.
+<P>
+<H2><A NAME=SECTION03521000000000000000>8.2.1 Language Bindings</A></H2>
+<P>
+Much of the discussion in this chapter will be language independent;
+that is, the functions described can be used in C, Fortran, or any
+other language for which an MPI library has been defined.  Only when
+we present example programs will a particular language be used.  In
+that case, programs will be presented using the syntax of either the
+Fortran or C language binding.  Different language bindings
+have slightly different syntaxes that reflect a language's peculiarities.
+Sources of syntactic difference include the function names themselves,
+the mechanism used for return codes, the representation of the
+<A NAME=12404>&#160;</A>
+handles used to access specialized MPI data structures such as
+<A NAME=12405>&#160;</A>
+communicators, and the implementation of the <tt> status</tt> datatype
+<A NAME=13813>&#160;</A>
+returned by <tt> MPI_RECV</tt>.  The use of handles hides the internal
+representation of MPI data structures.
+<P>
+<H4><A NAME=SECTION03521010000000000000> C Language Binding.</A></H4>
+<P>
+In the C language binding, function names are as in the MPI
+<A NAME=12410>&#160;</A>
+definition but with only the <tt> MPI</tt> prefix and the first letter of
+the function name in upper case.  Status values are returned as integer
+return codes.  The return code for successful completion is <tt>
+MPI_SUCCESS</tt>; a set of error codes is also defined.  Compile-time
+constants are all in upper case and are defined in the file <tt>
+mpi.h</tt>, which must be included in any program that makes MPI calls.
+Handles are represented by special defined types, defined in <tt>
+mpi.h</tt>.  These will be introduced as needed in the following discussion.
+Function parameters with type <tt> IN</tt> are passed by value, while
+parameters with type <tt> OUT</tt> and <tt> INOUT</tt> are passed by reference
+(that is, as pointers).  A <tt> status</tt> variable has type <tt>
+MPI_Status</tt> and is a structure with fields <tt> status.MPI_SOURCE</tt>
+and <tt> status.MPI_TAG</tt> containing source and tag information.
+Finally, an MPI datatype is defined for each C datatype: <tt>
+MPI_CHAR</tt>, <tt> MPI_INT</tt>, <tt> MPI_LONG</tt>, <tt>
+MPI_UNSIGNED_CHAR</tt>, <tt> MPI_UNSIGNED</tt>, <tt> MPI_UNSIGNED_LONG</tt>,
+<tt> MPI_FLOAT</tt>, <tt> MPI_DOUBLE</tt>, <tt> MPI_LONG_DOUBLE</tt>, etc.
+<P>
+<H4><A NAME=SECTION03521020000000000000> Fortran Language Binding.</A></H4>
+<P>
+In the Fortran language binding, function names are in upper case.
+Function return codes are represented by an additional integer
+<A NAME=12432>&#160;</A>
+argument.  The return code for successful completion is <tt>
+MPI_SUCCESS</tt>; a set of error codes is also defined.  Compile-time
+constants are all in upper case and are defined in the file <tt>
+mpif.h</tt>, which must be included in any program that makes MPI
+calls.  All handles have type <tt> INTEGER</tt>.  A <tt> status</tt> variable
+is an array of integers of size <tt> MPI_STATUS_SIZE</tt>, with the
+constants <tt> MPI_SOURCE</tt> and <tt> MPI_TAG</tt> indexing the source and
+tag fields, respectively.  Finally, an MPI datatype is defined for each Fortran
+datatype: <tt> MPI_INTEGER</tt>, <tt> MPI_REAL</tt>, <tt>
+MPI_DOUBLE_PRECISION</tt>, <tt> MPI_COMPLEX</tt>, <tt> MPI_LOGICAL</tt>, <tt>
+MPI_CHARACTER</tt>, etc.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1008.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1008.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1007.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1007.gif">    Pairwise Interactions</b>:<A NAME=expio>&#160;</A>
+<P>
+The pairwise interactions algorithm of
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A> illustrate the two language bindings.
+<A NAME=12449>&#160;</A>
+Recall that in this algorithm, <em> T</em>
+ tasks (<em> T</em>
+ an odd number)
+<A NAME=12452>&#160;</A>
+are connected in a ring.  Each task is responsible for computing
+interactions involving <em> N</em>
+ data.  Data are circulated around the
+ring in <em> T-1</em>
+ phases, with interactions computed at each phase.
+Programs <A HREF="node96.html#progmp1" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmp1">8.2</A> and <A HREF="node96.html#progmp2" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmp2">8.3</A> are C and Fortran versions
+of an MPI implementation, respectively.
+<P>
+The number of processes created is specified when the program is
+invoked.  Each process is responsible for 100 objects, and each object
+is represented by three floating-point values, so the various work
+arrays have size 300.  As each process executes the same program, the
+first few lines are used to determine the total number of processes
+involved in the computation (<tt> np</tt>), the process's identifier (<tt>
+myid</tt>), and the identify of the process's neighbors in the ring (<tt>
+lnbr</tt>, <tt> rnbr</tt>).  The computation then proceeds as described in
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A> but with messages sent to numbered
+processes rather than on channels.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progmp1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1009.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1009.gif"><P>
+<P>
+<A NAME=12490>&#160;</A>
+<P>
+<P><A NAME=progmp2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1010.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1010.gif"><P>
+<P>
+
+<H2><A NAME=SECTION03522000000000000000>8.2.2 Determinism</A></H2>
+<P>
+<A NAME=sectags>&#160;</A>
+<P>
+Before proceeding to more sophisticated aspects of MPI, we consider
+the important topic of determinism.  Message-passing programming
+<A NAME=12523>&#160;</A>
+models are by default nondeterministic: the arrival order of messages
+<A NAME=12524>&#160;</A>
+sent from two processes, A and B, to a third process, C, is not
+defined.  (However, MPI <em> does
+ </em> guarantee that two messages
+sent from one process, A, to another process, B, will arrive in the
+order sent.)  It is the programmer's responsibility to ensure that a
+computation is deterministic when (as is usually the case) this is
+required.
+<P>
+<A NAME=12526>&#160;</A>
+In the task/channel programming model, determinism is guaranteed by
+defining separate channels for different communications and by
+ensuring that each channel has a single writer and a single reader.
+Hence, a process C can distinguish messages received from A or B as
+they arrive on separate channels.  MPI does not support channels
+directly, but it does provide similar mechanisms.  In particular, it
+allows a receive operation to specify a source, tag, and/or context.
+(Recall that these data constitute a message's envelope.)  We consider
+the first two of these mechanisms in this section.
+<P>
+The <em> source
+ </em> specifier in the <tt> MPI_RECV</tt> function allows
+the programmer to specify that a message is to be received either from
+a single named process (specified by its integer process identifier)
+or from any process (specified by the special value <tt>
+MPI_ANY_SOURCE</tt>).  The latter option allows a process to receive
+data from any source; this is sometimes useful. However, the former
+is preferable because it eliminates errors due to messages arriving
+in time-dependent order.
+<P>
+Message <em> tags
+ </em> provide a further mechanism for distinguishing
+between different messages.  A sending process must associate an
+integer tag with a message. This is achieved via the tag field in the
+<A NAME=12531>&#160;</A>
+<tt> MPI_SEND</tt> call.  (This tag has always been set to 0 in the
+examples presented so far.)  A receiving process can then specify that
+it wishes to receive messages either with a specified tag or with any
+tag (<tt> MPI_ANY_TAG</tt>).  Again, the former option is preferable
+because it reduces the possibility of error.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1013.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1013.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1011.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1011.gif">    Nondeterministic Program</b>:<A NAME=exndx>&#160;</A>
+<P>
+To illustrate the importance of source specifiers and tags, we examine
+a program that fails to use them and that, consequently, suffers from
+<A NAME=12536>&#160;</A>
+nondeterminism.  Program <A HREF="node96.html#progmpnondet" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmpnondet">8.4</A> is part of an MPI
+<A NAME=12538>&#160;</A>
+implementation of the symmetric pairwise interaction algorithm of
+Section <A HREF="node10.html#exinteractions" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#exinteractions">1.4.2</A>.  Recall that in this algorithm,
+messages are communicated only half way around the ring (in
+<em> T/2-1</em>
+ steps, if the number of tasks <em> T</em>
+ is odd), with
+interactions accumulated both in processes and in messages.  As in
+Example <A HREF="node96.html#expio" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#expio">8.1</A>, we assume 100 objects, so the arrays to be
+communicated in this phase have size 100.3.2=600.  In a final step,
+each message (with size 100.3=300) is returned to its originating
+process.  Hence, each process sends and receives <em> N/2-1</em>
+ <em>
+data
+ </em> messages and one <em> result
+ </em> message.
+<P>
+<P><A NAME=progmpnondet>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1012.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1012.gif"><P>
+<P>
+<A NAME=12573>&#160;</A>
+<P>
+Program <A HREF="node96.html#progmpnondet" tppabs="http://www.mcs.anl.gov/dbpp/text/node96.html#progmpnondet">8.4</A> specifies neither sources nor tags in its
+<tt> MPI_RECV</tt> calls.  Consequently, a result message arriving before
+the final data message may be received as if it were a data message,
+thereby resulting in an incorrect computation.  Determinism can be
+achieved by specifying either a source processor or a tag in the
+receive calls.  It is good practice to use <em> both
+ </em> mechanisms.
+In effect, each ``channel'' in the original design is then represented
+by a unique (source, destination, tag) triple.
+<P>
+<BR><HR>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3117 HREF="node95.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node95.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3125 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3123 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3127 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3128 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3126 HREF="node97.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node97.html">8.3 Global Operations</A>
+<B>Up:</B> <A NAME=tex2html3124 HREF="node94.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html">8 Message Passing Interface</A>
+<B> Previous:</B> <A NAME=tex2html3118 HREF="node95.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node95.html">8.1 The MPI Programming Model</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

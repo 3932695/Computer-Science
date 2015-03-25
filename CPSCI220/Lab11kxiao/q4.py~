@@ -1,0 +1,6 @@
+import sys
+
+def main:
+    f = sys.argv[0]
+    emptyDic = {}
+    for line in myFile

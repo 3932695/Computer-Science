@@ -1,0 +1,7 @@
+i=1;
+states="CA,UT,NV,NY"
+IFS=,
+for state in $states
+do
+  echo "$((i++)). $state"
+done

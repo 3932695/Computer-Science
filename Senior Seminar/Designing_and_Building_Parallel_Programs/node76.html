@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>6.9 Modularity</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="6.9 Modularity">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2859 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2867 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2865 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2869 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2870 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2868 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html">6.10 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html2866 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2860 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html">6.8 Mapping</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03390000000000000000>6.9 Modularity</A></H1>
+<P>
+<A NAME=secfmmod>&#160;</A>
+<P>
+Example <A HREF="node75.html#exccmx" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html#exccmx">6.6</A> showed how FM constructs can be used to
+<A NAME=9581>&#160;</A>
+implement parallel and concurrent composition.  The basic ideas are
+straightforward. A process (task) is defined for each component of a
+multicomponent program. These processes are then composed using a
+process block, with channels and/or mergers connecting ports in the
+different components.  Mapping constructs control resource allocation
+and hence determine whether program components execute on the same or
+different processors.
+<P>
+In this section, we discuss the techniques used to implement <em>
+<A NAME=9582>&#160;</A>
+sequential
+ </em> composition in FM programs.  Recall that in
+<A NAME=9583>&#160;</A>
+sequential composition, different program components execute in
+sequence on all processors (Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>).  These
+program components may themselves communicate and synchronize, but
+they cannot create new tasks.  Hence, each process executes the same
+program, and the entire computation moves sequentially from one
+parallel operation to the next.  This is the SPMD programming model
+discussed in Section <A HREF="node9.html#sec1other" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html#sec1other">1.3.2</A>.
+<P>
+An FM implementation of an SPMD program comprises two components: initialization and execution.  The
+<em> initialization
+ </em> component creates the SPMD process structure
+<A NAME=9587>&#160;</A>
+and the communication structures (channels and mergers) required by
+<A NAME=9588>&#160;</A>
+the program components called in the sequential composition.  The
+initialization typically comprises some channel and merger creation
+code followed by a process do-loop that creates one process per
+processor, with the appropriate ports passed as arguments.
+<P>
+The <em> execution
+ </em> component implements the program executed by
+each process created by the process do-loop.  This program comprises a
+sequence of calls to the program components involved in the sequential
+composition.  These components can perform internal communication
+using the communication structure established during the setup phase
+of the computation.
+<P>
+The important point to understand about this structure is that once
+appropriate communication structures have been defined in the
+initialization phase, sequential composition can be used directly in
+the main body of the program, without any special constructs.
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img925.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img925.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img924.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img924.gif">    Sequential Composition</b>:<A NAME=exfmseq>&#160;</A>
+<P>
+<A NAME=9592>&#160;</A>
+We consider the SPMD finite difference computation used to illustrate
+<A NAME=9593>&#160;</A>
+sequential composition in Section <A HREF="node41.html#secseqcomp" tppabs="http://www.mcs.anl.gov/dbpp/text/node41.html#secseqcomp">4.2.2</A>.  This
+computation is structured as a sequence of calls to a finite
+difference routine that performs nearest-neighbor communication and a
+reduction routine used to detect termination; the latter routine
+performs global communication.
+<A NAME=9595>&#160;</A>
+The basic logic executed by each process in this computation is as
+<A NAME=9596>&#160;</A>
+follows, where <tt> localgrid</tt> is the local component of the grid data
+structure.
+<P>
+
+<PRE><TT> 
+		<tt> subroutine node</tt>
+<P>
+		<tt> real localgrid(N,N/P)</tt>
+<P>
+		<tt> while(.not. done) do</tt>
+<P>
+				<tt> call finite_difference(localgrid, localmax)</tt>
+<P>
+				<tt> call global_maximum(localmax, globmax)</tt>
+<P>
+				<tt> if(globmax .lt. threshold) done = .true.</tt>
+<P>
+		<tt> enddo</tt>
+<P>
+		<tt> end</tt>
+<P>
+</TT></PRE>
+
+<P>
+Programs <A HREF="node76.html#progfmfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdi">6.10</A> and <A HREF="node76.html#progfmfdx" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdx">6.11</A> implement the
+initialization and execution components of an FM implementation of
+this program.  Because the program components invoked in the
+sequential composition perform both nearest-neighbor and hypercube
+communication, the initialization code first creates channels
+implementing these two communication structures.  (The function <tt>
+xor</tt> is used as in Algorithm <A HREF="node124.html#algbutalg" tppabs="http://www.mcs.anl.gov/dbpp/text/node124.html#algbutalg">11.1</A>.)  Then, a process
+do-loop creates <tt> P</tt> instances of the <tt> node</tt> process, passing
+each instance the appropriate ports.
+<P>
+The execution code comprises the process <tt> node</tt>, which calls first
+the procedure <tt> finite_difference</tt> and then the procedure <tt>
+global_maximum</tt>.  These procedures use the ports passed as arguments
+to perform internal communication.
+<P>
+The various port variables passed as arguments in the execution
+component make for a rather clumsy program.  The program can be made
+tidier by storing the ports in <tt> PROCESS COMMON</tt> with a series of
+<tt> MOVEPORT</tt> calls prior to calling user code.  Each process can
+then execute the simpler code presented at the beginning of this
+example.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmfdi>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img926.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img926.gif"><P>
+<P>
+<P><A NAME=progfmfdx>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img927.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img927.gif"><P>
+<P>
+<BR><HR>
+<b> Example <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img929.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img929.gif">.<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img928.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img928.gif">    Message-passing Library</b>:<A NAME=exfmmp>&#160;</A>
+<P>
+<A NAME=9686>&#160;</A>
+The initialization code in Program <A HREF="node76.html#progfmfdi" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmfdi">6.10</A> defined a
+separate communication structure for each component in the sequential
+composition.  In this example, we present an alternative approach in
+which the initialization component of an SPMD program creates a
+single, general-purpose communication structure that can be used to
+perform any communication.  In effect, we implement a message-passing
+library that provides similar functionality to the MPI library described
+in Chapter <A HREF="node94.html#chapmpi" tppabs="http://www.mcs.anl.gov/dbpp/text/node94.html#chapmpi">8</A>.  We also use this example to show how
+port variables can be stored in <tt> PROCESS COMMON</tt> to simplify program
+interfaces.
+<P>
+Program <A HREF="node76.html#progfmmp" tppabs="http://www.mcs.anl.gov/dbpp/text/node76.html#progfmmp">6.12</A> is a skeleton message-passing library that
+implements just simple send and receive functions.  The main program
+first creates <tt> P</tt> mergers to implement a fully connected network,
+<A NAME=9692>&#160;</A>
+and then creates <tt> P</tt> <tt> node</tt> processes, passing each a single
+inport and <tt> P</tt> outports.  The <tt> node</tt> process stashes the
+inport and outports in <tt> PROCESS COMMON</tt> and then calls the subroutine
+<tt> compute</tt>, which performs the actual computation.  The <tt> PROCESS
+COMMON</tt> is defined as follows (file <tt> mp_stashed.com</tt>).
+<P>
+
+<PRE><TT> 
+		<tt> C</tt> 		 File <tt> &quot;mp_stashed.com&quot;</tt>
+<P>
+        				 <tt> PROCESS COMMON /stashed/ stashed_inp, stashed_outp</tt>
+<P>
+        				 <tt> INPORT  (integer n, character x(n)) stashed_inp</tt>
+<P>
+        				 <tt> OUTPORT (integer n, character x(n)) stashed_outp(P)</tt>
+<P>
+</TT></PRE>
+
+<P>
+<A NAME=9708>&#160;</A>
+This initialization code makes it possible for the rest of the program
+to call <tt> mp_send</tt> and <tt> mp_receive</tt> routines to send and
+receive messages to and from other processes.
+<P>
+<BR><HR>
+<P>
+<P><A NAME=progfmmp>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img930.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img930.gif"><P>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2859 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2867 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2865 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2869 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2870 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2868 HREF="node77.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node77.html">6.10 Performance Issues</A>
+<B>Up:</B> <A NAME=tex2html2866 HREF="node67.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node67.html">6 Fortran M</A>
+<B> Previous:</B> <A NAME=tex2html2860 HREF="node75.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node75.html">6.8 Mapping</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

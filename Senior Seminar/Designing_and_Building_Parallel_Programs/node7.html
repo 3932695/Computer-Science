@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>1.1 Parallelism and Computing</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="1.1 Parallelism and Computing">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1918 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1926 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1924 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1928 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1929 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1927 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html">1.2 A Parallel Machine Model</A>
+<B>Up:</B> <A NAME=tex2html1925 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1919 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02210000000000000000>1.1 Parallelism and Computing</A></H1>
+<P>
+<A NAME=280>&#160;</A>
+A <i> parallel computer</i> is a set of processors that are able to work
+cooperatively to solve a computational problem.  This definition is
+broad enough to include parallel supercomputers that have hundreds or
+thousands of processors, networks of workstations, multiple-processor
+workstations, and embedded systems.  Parallel computers are
+interesting because they offer the potential to concentrate
+computational resources---whether processors, memory, or I/O
+bandwidth---on important computational problems.
+<P>
+Parallelism has sometimes been viewed as a rare and exotic subarea of
+computing, interesting but of little relevance to the average
+programmer.  A study of trends in applications, computer architecture,
+and networking shows that this view is no longer tenable.  Parallelism
+is becoming ubiquitous, and parallel programming is becoming central to the
+programming enterprise.
+<P>
+<H2><A NAME=SECTION02211000000000000000>1.1.1 Trends in Applications</A></H2>
+<P>
+<A NAME=283>&#160;</A>
+<P>
+As computers become ever faster, it can be tempting to suppose that
+<A NAME=284>&#160;</A>
+they will eventually become ``fast enough'' and that appetite for
+increased computing power will be sated.  However, history suggests
+that as a particular technology satisfies known applications, new
+applications will arise that are enabled by that technology and that
+will demand the development of new technology.  As an amusing
+illustration of this phenomenon, a report prepared for the British
+government in the late 1940s concluded that Great Britain's
+computational requirements could be met by two or perhaps three
+computers.  In those days, computers were used primarily for computing
+ballistics tables.  The authors of the report did not consider other
+applications in science and engineering, let alone the commercial
+applications that would soon come to dominate computing.  Similarly,
+the initial prospectus for Cray Research predicted a market for ten
+supercomputers; many hundreds have since been sold.
+<P>
+Traditionally, developments at the high end of computing have been
+motivated by numerical simulations of complex systems such as weather,
+<A NAME=285>&#160;</A>
+climate, mechanical devices, electronic circuits, manufacturing
+<A NAME=286>&#160;</A>
+processes, and chemical reactions.  However, the most significant
+forces driving the development of faster computers today are emerging
+commercial applications that require a computer to be able to process
+large amounts of data in sophisticated ways.  These applications
+<A NAME=287>&#160;</A>
+include video conferencing, collaborative work environments,
+<A NAME=288>&#160;</A>
+computer-aided diagnosis in medicine, parallel databases used for
+<A NAME=289>&#160;</A>
+decision support, and advanced graphics and virtual reality,
+<A NAME=290>&#160;</A>
+particularly in the entertainment industry.  For example, the
+integration of parallel computation, high-performance networking, and
+multimedia technologies is leading to the development of <em> video
+<A NAME=291>&#160;</A>
+servers,</em> computers designed to serve hundreds or thousands of
+simultaneous requests for real-time video.  Each video stream can
+involve both data transfer rates of many megabytes per second and
+large amounts of processing for encoding and decoding.  In graphics,
+three-dimensional data sets are now approaching <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img79.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img79.gif"> volume elements
+(1024 on a side).  At 200 operations per element, a display updated 30
+times per second requires a computer capable of 6.4<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img80.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img80.gif">
+operations per second.
+<P>
+Although commercial applications may define the architecture of most
+future parallel computers, traditional scientific applications will
+remain important users of parallel computing technology.  Indeed, as
+nonlinear effects place limits on the insights offered by purely
+theoretical investigations and as experimentation becomes more costly
+or impractical, computational studies of complex systems are becoming
+ever more important.  Computational costs typically increase as the
+fourth power or more of the ``resolution'' that determines accuracy,
+so these studies have a seemingly insatiable demand for more computer
+power.  They are also often characterized by large memory and
+input/output requirements.  For example, a ten-year simulation of the
+earth's climate using a state-of-the-art model may involve <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img81.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img81.gif">
+<A NAME=294>&#160;</A>
+floating-point operations---ten days at an execution speed of
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img82.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img82.gif"> floating-point operations per second (10 gigaflops).  This
+same simulation can easily generate a hundred gigabytes (<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img83.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img83.gif">
+bytes) or more of data.  Yet as Table <A HREF="node7.html#tabchammp" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html#tabchammp">1.1</A> shows,
+scientists can easily imagine refinements to these models that would
+increase these computational requirements 10,000 times.
+<P>
+<P><A NAME=772>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img88.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img88.gif">
+<BR><STRONG>Table 1.1:</STRONG>  Various refinements proposed to climate models, and
+the increased computational requirements associated with these
+refinements.  Altogether, these refinements could increase
+computational requirements by a factor of between <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img86.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img86.gif"> and
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img87.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img87.gif">.
+<A NAME=tabchammp>&#160;</A><BR>
+<P>
+<P>
+In summary, the need for faster computers is driven by the demands of
+both data-intensive applications in commerce and computation-intensive
+applications in science and engineering.  Increasingly, the
+requirements of these fields are merging, as scientific and
+engineering applications become more data intensive and commercial
+applications perform more sophisticated computations.
+<P>
+<H2><A NAME=SECTION02212000000000000000>1.1.2 Trends in Computer Design</A></H2>
+<P>
+<A NAME=313>&#160;</A>
+<P>
+The performance of the fastest computers has grown exponentially from
+<A NAME=314>&#160;</A>
+1945 to the present, averaging a factor of 10 every five years.
+While the first computers performed a few tens of floating-point
+<A NAME=315>&#160;</A>
+operations per second, the parallel computers of the mid-1990s achieve
+tens of billions of operations per second (Figure <A HREF="node7.html#figgrowth" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html#figgrowth">1.1</A>).
+Similar trends can be observed in the low-end computers of different
+eras: the calculators, personal computers, and workstations.  There is
+little to suggest that this growth will not continue.  However, the
+computer architectures used to sustain this growth are changing
+radically---from sequential to parallel.
+<P>
+<P><A NAME=797>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img89.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img89.gif">
+<BR><STRONG>Figure 1.1:</STRONG> <em> Peak performance of some of the fastest supercomputers,
+1945--1995.  The exponential growth flattened off somewhat in the
+1980s but is accelerating again as massively parallel
+supercomputers become available.  Here, ``o'' are uniprocessors, ``+''
+denotes modestly parallel vector computers with 4--16 processors, and
+``x'' denotes massively parallel computers with hundreds or thousands
+of processors.  Typically, massively parallel computers achieve a
+lower proportion of their peak performance on realistic applications
+than do vector computers.</em><A NAME=figgrowth>&#160;</A><BR>
+<P>
+<P>
+<A NAME=321>&#160;</A>
+The performance of a computer depends directly on the time required to
+perform a basic operation and the number of these basic operations
+<A NAME=322>&#160;</A>
+that can be performed concurrently.  The time to perform a basic
+<A NAME=323>&#160;</A>
+operation is ultimately limited by the ``clock cycle'' of the
+processor, that is, the time required to perform the most primitive operation.
+However, clock cycle times are decreasing slowly and appear to be
+approaching physical limits such as the speed of light
+(Figure <A HREF="node7.html#figcycletime" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html#figcycletime">1.2</A>).  We cannot depend on faster processors to
+provide increased computational performance.
+<P>
+
+<P>
+<P><A NAME=812>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img90.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img90.gif">
+<BR><STRONG>Figure 1.2:</STRONG> <em> Trends in computer clock cycle times.  Conventional vector
+supercomputer cycle times (denoted ``o'') have decreased only by a
+factor of 3 in sixteen years, from the CRAY-1 (12.5 nanoseconds) to
+the C90 (4.0).  RISC microprocessors (denoted ``+'') are fast
+approaching the same performance.  Both architectures appear to be
+approaching physical limits.</em><A NAME=figcycletime>&#160;</A><BR>
+<P>
+<P>
+To circumvent these limitations, the designer may attempt to utilize
+internal concurrency in a chip, for example, by operating
+simultaneously on all 64 bits of two numbers that are to be
+multiplied.  However, a fundamental result in Very Large Scale
+<A NAME=329>&#160;</A>
+Integration (VLSI) complexity theory says that this strategy is
+expensive.  This result states that for certain transitive
+computations (in which any output may depend on any input), the chip
+area <em> A</em>
+ and the time <em> T</em>
+ required to perform this computation
+are related so that <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img91.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img91.gif"> must exceed some problem-dependent function
+of problem size.  This result can be explained informally by assuming
+that a computation must move a certain amount of information from one
+side of a square chip to the other.  The amount of information that
+can be moved in a time unit is limited by the cross section of the
+chip, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img92.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img92.gif">.  This gives a transfer rate of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img93.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img93.gif">, from
+which the <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img94.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img94.gif"> relation is obtained.  To decrease the time required
+to move the information by a certain factor, the cross section must be
+increased by the same factor, and hence the total area must be
+increased by the square of that factor.
+<P>
+This <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img95.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img95.gif"> result means that not only is it difficult to build
+individual components that operate faster, it may not even be
+desirable to do so.  It may be cheaper to use more, slower components.
+For example, if we have an area <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img96.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img96.gif"> of silicon to use in a
+computer, we can either build <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img97.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img97.gif"> components, each of size
+<em> A</em>
+ and able to perform an operation in time <em> T</em>
+, or build a single
+component able to perform the same operation in time <em> T/n</em>
+.  The
+multicomponent system is potentially <em> n</em>
+ times faster.
+<P>
+Computer designers use a variety of techniques to overcome these
+<A NAME=338>&#160;</A>
+limitations on single computer performance, including pipelining
+(different stages of several instructions execute concurrently) and
+multiple function units (several multipliers, adders, etc., are
+controlled by a single instruction stream).  Increasingly, designers
+are incorporating multiple ``computers,'' each with its own processor,
+memory, and associated interconnection logic.  This approach is
+<A NAME=339>&#160;</A>
+facilitated by advances in VLSI technology that continue to decrease
+the number of components required to implement a computer.  As the
+cost of a computer is (very approximately) proportional to the number
+of components that it contains, increased integration also increases
+the number of processors that can be included in a computer for a
+particular cost.  The result is continued growth in processor counts
+(Figure <A HREF="node7.html#figprocs" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html#figprocs">1.3</A>).
+<P>
+
+<P>
+<P><A NAME=833>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img98.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img98.gif">
+<BR><STRONG>Figure 1.3:</STRONG> <em> Number of processors in massively parallel computers
+(``o'') and vector multiprocessors (``+'').  In both cases, a steady
+increase in processor count is apparent.  A similar trend is starting
+to occur in workstations, and personal computers can be expected to
+follow the same trend.</em><A NAME=figprocs>&#160;</A><BR>
+<P><H2><A NAME=SECTION02213000000000000000>1.1.3 Trends in Networking</A></H2>
+<P>
+<A NAME=346>&#160;</A>
+Another important trend changing the face of computing is an enormous
+<A NAME=347>&#160;</A>
+increase in the capabilities of the networks that connect computers.
+Not long ago, high-speed networks ran at 1.5 Mbits per second; by the
+end of the 1990s, bandwidths in excess of 1000 Mbits per second will
+be commonplace.  Significant improvements in reliability are also
+expected.  These trends make it feasible to develop applications that
+use physically distributed resources as if they were part of the same
+computer.  A typical application of this sort may utilize processors
+on multiple remote computers, access a selection of remote databases,
+perform rendering on one or more graphics computers, and provide
+real-time output and control on a workstation.
+<P>
+<A NAME=348>&#160;</A>
+We emphasize that computing on networked computers
+(``distributed computing'') is not just a subfield of parallel
+computing.  Distributed computing is deeply concerned with problems
+such as reliability, security, and heterogeneity that are generally
+regarded as tangential in parallel computing.  (As Leslie Lamport has
+observed, ``A distributed system is one in which the failure of a
+computer you didn't even know existed can render your own computer
+unusable.'')  Yet the basic task of developing programs that can run
+on many computers at once is a parallel computing problem.  In this
+respect, the previously distinct worlds of parallel and distributed
+computing are converging.
+<P>
+<H2><A NAME=SECTION02214000000000000000>1.1.4 Summary of Trends</A></H2>
+<P>
+This brief survey of trends in applications, computer architecture,
+and networking suggests a future in which parallelism pervades not only
+supercomputers but also workstations, personal computers, and
+networks.  In this future, programs will be required to exploit the
+multiple processors located inside each computer and the additional
+processors available across a network.  Because most existing algorithms
+<A NAME=350>&#160;</A>
+are specialized for a single processor, this situation implies a need
+<A NAME=351>&#160;</A>
+for new algorithms and program structures able to perform many
+operations at once.  <em> Concurrency
+ </em> becomes a fundamental
+requirement for algorithms and programs.
+<P>
+This survey also suggests a second fundamental lesson.  It appears
+likely that processor counts will continue to increase---perhaps, as
+they do in some environments at present, by doubling each year or two.
+Hence, software systems can be expected to experience substantial
+increases in processor count over their lifetime.  In this
+<A NAME=353>&#160;</A>
+environment, <em> scalability
+ </em>---resilience to increasing
+<A NAME=355>&#160;</A>
+processor counts---is as important as portability for protecting
+software investments.  A program able to use only a fixed number of
+processors is a bad program, as is a program able to execute on only a
+single computer.  Scalability is a major theme that will be stressed
+throughout this book.
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1918 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1926 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1924 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1928 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1929 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1927 HREF="node8.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html">1.2 A Parallel Machine Model</A>
+<B>Up:</B> <A NAME=tex2html1925 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1919 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

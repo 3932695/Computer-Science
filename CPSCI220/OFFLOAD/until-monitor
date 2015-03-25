@@ -1,0 +1,8 @@
+file=/tmp/logfile
+until [ $(ls -l $file | awk '{print $5}') -gt 2000 ]
+do
+   echo "Sleeping for next 5 seconds"
+   sleep 5
+done
+date=`date +%s`
+cp $file "$file-"$date.bak

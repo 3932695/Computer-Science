@@ -1,0 +1,18 @@
+city="Los Angeles"
+echo "1. Find and Replace - Basic"
+echo "${city/Angeles/Altos}"
+
+
+echo "2. Find and Replace - Global"
+echo "${city//e/E}"
+
+echo "3. Find and Replace - Delete Pattern"
+echo "${city/Los /}"
+echo "${city/Los }"
+
+echo "4. Find and Replace - Prefix Only"
+cities="Los Angeles CA,Los Altos CA"
+echo "${cities/#Los/City of Los}"
+
+echo "5. Find and Replace - Suffix Only"
+echo "${cities/%CA/California}"

@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>3.9 Case Study: Shortest-Path Algorithms</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="3.9 Case Study: Shortest-Path Algorithms">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2273 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2281 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2279 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2283 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2284 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2282 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html">3.10 Summary</A>
+<B>Up:</B> <A NAME=tex2html2280 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2274 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html">3.8 Input/Output</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02490000000000000000>3.9 Case Study: Shortest-Path Algorithms</A></H1>
+<P>
+<A NAME=secperfsp>&#160;</A>
+<A NAME=3993>&#160;</A>
+We conclude this chapter by using performance models
+<A NAME=3994>&#160;</A>
+to compare four different parallel algorithms for the all-pairs
+<A NAME=3995>&#160;</A>
+shortest-path problem.  This is an important problem in graph theory
+and has applications in communications, transportation, and electronics
+problems.  It is interesting because analysis shows that three
+of the four algorithms can be optimal in different circumstances,
+depending on tradeoffs between computation and communication costs.
+<P>
+<P><A NAME=5194>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img591.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img591.gif">
+<BR><STRONG>Figure 3.23:</STRONG> <em> A simple directed graph, <b>G</b>, and its adjacency matrix,
+<b>A</b>.</em><A NAME=figgrex>&#160;</A><BR>
+<P>
+<P>
+The all-pairs shortest-path problem involves finding the shortest path
+between all pairs of vertices in a graph.  A graph
+<em> G=(V,E)</em>
+ comprises a set <em> V</em>
+ of <em> N</em>
+ vertices, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img592.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img592.gif">, and a set
+<em> E</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img593.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img593.gif"><em> V</em>
+ of edges connecting vertices in <em> V</em>
+.  In a directed graph, each edge
+also has a direction, so edges <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img594.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img594.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img595.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img595.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img596.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img596.gif">,
+are distinct.  A graph can be represented as an adjacency matrix
+<em> A</em>
+ in which each element <em> (i,j)</em>
+ represents the edge between element
+<em> i</em>
+ and <em> j</em>
+.  <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img597.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img597.gif"> if there is an edge <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img598.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img598.gif">;
+otherwise, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img599.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img599.gif"><em> =0</em>
+ (Figure <A HREF="node35.html#figgrex" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrex">3.23</A>).
+<P>
+A <em> path
+ </em> from vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img600.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img600.gif"> to vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img601.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img601.gif"> is a sequence of
+edges <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img602.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img602.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img603.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img603.gif">, ..., <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img604.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img604.gif"> from <em> E</em>
+ in which
+no vertex appears more than once.  For example, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img605.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img605.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img606.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img606.gif"> is a
+path from vertex 1 to vertex 0 in Figure <A HREF="node35.html#figgrex" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrex">3.23</A>.  The
+shortest path between two vertices <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img607.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img607.gif"> and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img608.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img608.gif"> in a graph is the
+<A NAME=4017>&#160;</A>
+path that has the fewest edges.  The <em> single-source
+ </em>
+shortest-path problem requires that we find the shortest path from a
+single vertex to all other vertices in a graph.  The <em>
+all-pairs
+ </em> shortest-path problem requires that we find the
+shortest path between all pairs of vertices in a graph.  We consider
+the latter problem and present four different parallel algorithms, two
+based on a sequential shortest-path algorithm due to Floyd and two
+based on a sequential algorithm due to Dijkstra.  All four algorithms
+take as input an <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img609.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img609.gif"><em> N</em>
+ adjacency matrix <em> A</em>
+ and
+compute an <em> N</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img610.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img610.gif"><em> N</em>
+ matrix <em> S</em>
+, with <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img611.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img611.gif"> the
+length of the shortest path from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img612.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img612.gif"> to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img613.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img613.gif">, or a distinguished
+value (<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img614.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img614.gif">) if there is no path.
+<P>
+<H2><A NAME=SECTION02491000000000000000>3.9.1 Floyd's Algorithm</A></H2>
+<P>
+<A NAME=secfloyd>&#160;</A>
+<P>
+<A NAME=4029>&#160;</A>
+<P><A NAME=algfloyd>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img615.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img615.gif"><P>
+<P>
+Floyd's all-pairs shortest-path algorithm is given as
+<A NAME=4049>&#160;</A>
+Algorithm <A HREF="node35.html#algfloyd" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#algfloyd">3.1</A>.  It derives the matrix <em> S</em>
+ in
+<A NAME=4052>&#160;</A>
+<em> N</em>
+ steps, constructing at each step <em> k</em>
+ an intermediate matrix
+<em> I(k)</em>
+ containing the best-known shortest distance between each
+pair of nodes.  Initially, each <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img616.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img616.gif"> is set to the length of
+the edge <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img617.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img617.gif">, if the edge exists, and to <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img618.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img618.gif"> otherwise.
+The <em> k</em>
+th step of the algorithm considers each <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img619.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img619.gif"> in turn
+and determines whether the best-known path from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img620.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img620.gif"> to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img621.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img621.gif"> is
+longer than the combined
+lengths of the best-known paths from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img622.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img622.gif"> to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img623.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img623.gif"> and from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img624.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img624.gif"> to
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img625.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img625.gif">.  If so, the entry <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img626.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img626.gif"> is updated to reflect the shorter
+path (Figure <A HREF="node35.html#figgrfl" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrfl">3.24</A>).  This comparison operation is performed
+a total of <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img627.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img627.gif"> times; hence, we can approximate the sequential cost
+of this algorithm as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img628.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img628.gif">, where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img629.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img629.gif"> is the cost of a single
+comparison operation.
+<P>
+<P><A NAME=5255>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img640.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img640.gif">
+<BR><STRONG>Figure 3.24:</STRONG> <em> The fundamental operation in Floyd's sequential
+shortest-path algorithm: Determine whether a path going from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img635.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img635.gif"> to
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img636.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img636.gif"> via <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img637.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img637.gif"> is shorter than the best-known path from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img638.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img638.gif"> to
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img639.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img639.gif">.</em><A NAME=figgrfl>&#160;</A><BR>
+<P><H4><A NAME=SECTION02491010000000000000> Parallel Floyd 1.</A></H4>
+<P>
+The first parallel Floyd algorithm is based on a one-dimensional,
+rowwise domain decomposition of the intermediate matrix <em> I</em>
+ and
+the output matrix <em> S</em>
+.  Notice that this means the algorithm
+can use at most <em> N</em>
+ processors.  Each task has one or more
+adjacent rows of <em> I</em>
+ and is responsible for performing computation
+on those rows.  That is, it executes the following logic.
+<P>
+
+<tt>
+<PRE><TT> 
+		 for <em> k = 0</em>
+ to <em> N-1</em>
+<P>
+				 for <em> i</em>
+ = local_i_start to local_i_end
+<P>
+						 for <em> j = 0</em>
+ to <em> N-1</em>
+<P>
+								 <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img641.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img641.gif">(<b>k+1</b>) = min(<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img642.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img642.gif">(<b>k</b>), <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img643.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img643.gif">(<b>k</b>)+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img644.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img644.gif">(<b>k</b>))
+<P>
+						 endfor
+<P>
+				 endfor
+<P>
+		 endfor
+<P>
+</TT></PRE>
+</tt>
+
+<P>
+<P><A NAME=5282>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img645.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img645.gif">
+<BR><STRONG>Figure 3.25:</STRONG> <em> Parallel version of Floyd's algorithm based on a
+one-dimensional decomposition of the <em> I</em>
+ matrix.  In (a), the data
+allocated to a single task are shaded: a contiguous block of rows.  In
+(b), the data required by this task in the <em> k</em>
+th step of the
+algorithm are shaded: its own block and the <em> k</em>
+th
+row.</em><A NAME=figgrfl2>&#160;</A><BR>
+<P>
+<P>
+In the <em> k</em>
+th step, each task requires, in addition to its local
+data, the values <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img646.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img646.gif">, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img647.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img647.gif">, ..., <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img648.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img648.gif">, that is, the
+<em> k</em>
+th row of <em> I</em>
+ (Figure <A HREF="node35.html#figgrfl2" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrfl2">3.25</A>).  Hence, we specify
+that the task with this row broadcast it to all other tasks.  This
+communication can be performed by using a tree structure in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img649.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img649.gif">
+steps.  Because there are <em> N</em>
+ such broadcasts and each message has
+size <em> N</em>
+, the cost is
+<P>
+<P><A NAME=eqgrfl1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img650.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img650.gif"><P>
+<P>
+Notice that each task must serve as the ``root'' for at least one
+broadcast (assuming <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img651.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img651.gif">).  Rather than defining <em> P</em>
+ binary
+tree structures, it suffices to connect the <em> P</em>
+ tasks using a
+hypercube structure (Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>), which has the useful
+property of allowing any node to broadcast to all other nodes in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img652.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img652.gif"> steps.
+<P>
+<H4><A NAME=SECTION02491020000000000000> Parallel Floyd 2.</A></H4>
+<P>
+An alternative parallel version of Floyd's algorithm uses a
+two-dimensional decomposition of the various matrices.  This version allows
+the use of up to <IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img653.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img653.gif"> processors and requires that each task execute
+the following logic.
+<P>
+
+<tt> 
+<PRE><TT> 
+		 for <em> k = 0</em>
+ to <em> N-1</em>
+<P>
+				 for <em> i</em>
+ = local_i_start to local_i_end
+<P>
+						 for <em> j</em>
+ = local_j_start to local_j_end
+<P>
+								 <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img654.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img654.gif">(<b>k+1</b>) = min(<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img655.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img655.gif">(<b>k</b>), <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img656.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img656.gif">(<b>k</b>)+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img657.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img657.gif">(<b>k</b>))
+<P>
+						 endfor
+<P>
+				 endfor
+<P>
+		 endfor
+<P>
+</TT></PRE>
+</tt>
+
+<P>
+<P><A NAME=5316>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img658.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img658.gif">
+<BR><STRONG>Figure 3.26:</STRONG> <em> Parallel version of Floyd's algorithm based on a
+two-dimensional decomposition of the <em> I</em>
+ matrix.  In (a), the data
+allocated to a single task are shaded: a contiguous submatrix.  In
+(b), the data required by this task in the <em> k</em>
+th step of the
+algorithm are shaded: its own block, and part of the <em> k</em>
+th row and
+column.</em><A NAME=figgrfl3>&#160;</A><BR>
+<P>
+<P>
+In each step, each task requires, in addition to its local data,
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img659.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img659.gif"> values from two tasks located in the same row and column
+of the 2-D task array (Figure <A HREF="node35.html#figgrfl3" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrfl3">3.26</A>).  Hence, communication
+requirements at the <em> k</em>
+th step can be structured as two broadcast
+operations: from the task in each row that possesses part of column
+<em> k</em>
+ to all other tasks in that row, and from the task in
+each column that possesses part of row <em> k</em>
+ to all other tasks in
+that column.
+<P>
+In each of <em> N</em>
+ steps, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img660.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img660.gif"> values must be broadcast to the
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img661.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img661.gif"> tasks in each row and column, and the total cost is
+<P>
+<P><A NAME=eqgrfl2>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img662.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img662.gif"><P>
+<P>
+Notice that each task must serve as the ``root'' node for at least one
+broadcast to each task in the same row and column of the 2-D task
+array.  These communication requirements can be satisfied by
+connecting tasks in the same row or column in a hypercube structure.
+<P>
+<A NAME=4139>&#160;</A>
+<P>
+<H2><A NAME=SECTION02492000000000000000>3.9.2 Dijkstra's Algorithm</A></H2>
+<P>
+<A NAME=4141>&#160;</A>
+Dijkstra's <em> single-source
+ </em> shortest-path algorithm computes
+<A NAME=4143>&#160;</A>
+all shortest paths from a single vertex, <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img663.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img663.gif">.  It can also be used
+<A NAME=4144>&#160;</A>
+for the all-pairs shortest-path problem, by the simple expedient of
+applying it <em> N</em>
+ times---once to each vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img664.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img664.gif">, ..., <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img665.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img665.gif">.
+<P>
+Dijkstra's sequential single-source algorithm is given as
+Algorithm <A HREF="node35.html#algdij1" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#algdij1">3.2</A>.  It maintains as <em> T</em>
+ the set of vertices
+for which shortest paths have not been found, and as <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img666.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img666.gif"> the
+shortest known path from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img667.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img667.gif"> to vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img668.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img668.gif">.  Initially,
+<em> T=V</em>
+ and all <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img669.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img669.gif">.  At each step of the algorithm, the vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img670.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img670.gif">
+in <em> T</em>
+ with the smallest <em> d</em>
+ value is removed from <em> T</em>
+.
+Each neighbor of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img671.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img671.gif"> in <em> T</em>
+ is examined to see whether a path
+through <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img672.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img672.gif"> would be shorter than the currently best-known path
+(Figure <A HREF="node35.html#figgrdi1" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrdi1">3.27</A>).
+<P>
+<P><A NAME=algdij1>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img673.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img673.gif"><P>
+<P>
+<P><A NAME=5365>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img684.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img684.gif">
+<BR><STRONG>Figure 3.27:</STRONG> <em> The comparison operation performed in Dijkstra's
+single-source shortest-path algorithm.  The best-known path from the
+source vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img679.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img679.gif"> to vertex <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img680.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img680.gif"> is compared with the path that
+leads from <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img681.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img681.gif"> to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img682.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img682.gif"> and then to <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img683.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img683.gif">.</em><A NAME=figgrdi1>&#160;</A><BR>
+<P>
+<P>
+An all-pairs algorithm executes Algorithm <A HREF="node35.html#algdij1" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#algdij1">3.2</A>
+<em> N</em>
+ times, once for each vertex.  This involves <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img685.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img685.gif"> comparisons and
+takes time <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img686.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img686.gif"><em> F</em>
+, where <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img687.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img687.gif"> is the cost of a single
+comparison in Floyd's algorithm and <em> F</em>
+ is a constant.  Empirical
+studies show that <em> F</em>
+<IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img688.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img688.gif">1.6; that is, Dijkstra's algorithm
+is slightly more expensive than Floyd's algorithm.
+<P>
+<H4><A NAME=SECTION02492010000000000000> Parallel Dijkstra 1.</A></H4>
+<P>
+The first parallel Dijkstra algorithm replicates the graph in each of
+<em> P</em>
+ tasks.  Each task executes the sequential algorithm for
+<em> N/P</em>
+ vertices.  This algorithm requires no communication but can utilize at
+most <em> N</em>
+ processors.  Because the sequential Dijkstra algorithm is
+<em> F</em>
+ times slower than the sequential Floyd algorithm, the parallel
+algorithm's execution time is
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img689.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img689.gif"><P><H4><A NAME=SECTION02492020000000000000> Parallel Dijkstra 2.</A></H4>
+<P>
+The second parallel Dijkstra algorithm allows for the case when
+<em> P&gt;N</em>
+.  We define <em> N</em>
+ sets of <em> P/N</em>
+ tasks.  Each set of tasks is
+given the entire graph and is responsible for computing shortest paths
+for a single vertex (Figure <A HREF="node35.html#figgrdi2" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#figgrdi2">3.28</A>).  Within each set of
+tasks, the vertices of the graph are partitioned.  Hence, the
+operation
+<tt> Find <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img690.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img690.gif"> with minimum <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img691.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img691.gif"></tt>
+<P>
+requires first a local computation to find the local vertex with
+minimum <em> d</em>
+ and second a reduction involving all <em> P/N</em>
+ tasks
+in the same set in order to determine the globally minimum <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img692.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img692.gif">.  The
+reduction can be achieved by using the butterfly communication
+structure of Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>, in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img693.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img693.gif"> steps.  Hence, as
+the reduction is performed <em> N</em>
+ times and involves two values, the
+total cost of this algorithm is
+<P>
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img694.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img694.gif"><P>
+<P>
+<P><A NAME=5404>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img695.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img695.gif">
+<BR><STRONG>Figure 3.28:</STRONG> <em> The second parallel Dijkstra algorithm allocates
+<em> P/N</em>
+ tasks to each of <em> N</em>
+ instantiations of Dijkstra's single-source
+shortest-path algorithm.  In this figure, <em> N=9</em>
+ and <em> P=36</em>
+, and one
+set of <em> P/N=4</em>
+ tasks is shaded.</em><A NAME=figgrdi2>&#160;</A><BR>
+<P><H2><A NAME=SECTION02493000000000000000>3.9.3 Shortest-Path Algorithms Summary</A></H2>
+<P>
+<A NAME=4209>&#160;</A>
+<P>
+<A NAME=4210>&#160;</A>
+Table <A HREF="node35.html#tabgrsp" tppabs="http://www.mcs.anl.gov/dbpp/text/node35.html#tabgrsp">3.7</A> summarizes the performance models developed for
+<A NAME=4212>&#160;</A>
+the four all-pairs shortest-path algorithms.  Clearly, Floyd 2 will
+always be more efficient that Floyd 1. Both algorithms have the same
+computation costs and send the same number of messages, but Floyd 2
+communicates considerably less data.  On the other hand, Floyd 1 is
+easier to implement.  Algorithms Dijkstra 1 and 2 will be more
+efficient than Floyd 2 in certain circumstances.  For example,
+Dijkstra 1 is more efficient than Floyd 2 if <em> P</em>
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img696.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img696.gif"><em> N</em>
+ and
+<P><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img697.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img697.gif"><P>
+<P>
+<P><A NAME=4468>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img698.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img698.gif">
+<BR><STRONG>Table 3.7:</STRONG>  Performance of four parallel shortest-path algorithms.
+<A NAME=tabgrsp>&#160;</A><BR>
+<P>
+<P>
+<A NAME=4234>&#160;</A>
+In addition to these factors, we must consider the fact that
+algorithms Dijkstra 1 and Dijkstra 2 replicate the graph <em> P</em>
+ and
+<em> P/N</em>
+ times, respectively.  This replication may compromise the
+scalability of these algorithms.  Also, the cost of replicating an
+originally distributed graph must be considered if (as is likely) the
+shortest-path algorithm forms part of a larger program in which the
+graph is represented as a distributed data structure.
+<P>
+Clearly, the choice of shortest-path algorithm for a particular
+problem will involve complex tradeoffs between flexibility,
+scalability, performance, and implementation complexity.  The
+performance models developed in this case study provide a basis for
+<A NAME=4237>&#160;</A>
+evaluating these tradeoffs.
+<A NAME=4238>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2273 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2281 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2279 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2283 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2284 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2282 HREF="node36.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node36.html">3.10 Summary</A>
+<B>Up:</B> <A NAME=tex2html2280 HREF="node26.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html">3 A Quantitative Basis for Design</A>
+<B> Previous:</B> <A NAME=tex2html2274 HREF="node34.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node34.html">3.8 Input/Output</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

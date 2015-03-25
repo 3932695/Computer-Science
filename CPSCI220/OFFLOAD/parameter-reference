@@ -1,0 +1,6 @@
+city_in_california="Los Angeles"
+echo "Value of city_in_california is: $city_in_california"
+pointer=${!city*}
+echo "Value of pointer is: $pointer"
+var=${!pointer}
+echo "Value of the variable that is referred by the pointer is: $var"

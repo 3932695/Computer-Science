@@ -1,0 +1,5 @@
+array1=("one" "two" "three" "four")
+echo ${array1[@]}
+
+array2=([0]="one" [5]="two" [11]="three" [13]="four")
+echo ${array2[@]}

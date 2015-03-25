@@ -1,0 +1,7 @@
+if [ $# -ne 2 ]; then 
+cat <<-EOF
+	Usage: here-backup.sh source destination 
+	source - The source directory for backup 
+	destination - The destination directory to store the backup 
+EOF
+fi

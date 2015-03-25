@@ -1,0 +1,5 @@
+echo ${fname:+Jason}
+
+lname=Bourne
+echo ${lname:+Smith}
+echo $lname

@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>9.2 Data Collection</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="9.2 Data Collection">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3264 HREF="node107.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node107.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3272 HREF="node109.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node109.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3270 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3274 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3275 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3273 HREF="node109.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node109.html">9.3 Data Transformation and Visualization</A>
+<B>Up:</B> <A NAME=tex2html3271 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B> Previous:</B> <A NAME=tex2html3265 HREF="node107.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node107.html">9.1 Performance Analysis</A>
+<BR><HR><P>
+<H1><A NAME=SECTION03620000000000000000>9.2 Data Collection</A></H1>
+<P>
+<A NAME=14308>&#160;</A>
+<P>
+Next, we examine in  more detail the
+techniques used
+to collect performance data.  We consider in turn profiling, counters,
+and event traces, focusing in each case on the principles involved.
+Individual tools are described in Section <A HREF="node110.html#secpttools" tppabs="http://www.mcs.anl.gov/dbpp/text/node110.html#secpttools">9.4</A>.
+<P>
+<H2><A NAME=SECTION03621000000000000000>9.2.1 Profiles</A></H2>
+<P>
+The concept of a profile should be familiar from sequential computing.
+<A NAME=14311>&#160;</A>
+Typically, a profile shows the amount of time spent in
+different program components.  This information is often obtained by
+sampling techniques, which are simple but not necessarily highly
+accurate.  The value of the program counter is determined at fixed
+intervals and used to construct a histogram of execution frequencies.
+These frequences are then combined with compiler symbol table
+information to estimate the amount of time spent in different parts of
+a program.  This profile data may be collected on a per-processor
+basis and may be able to identify idle time and communication time as
+well as execution time.
+<P>
+<A NAME=14312>&#160;</A>
+Profiles have two important advantages.  They can be obtained
+automatically, at relatively low cost, and they can provide a
+high-level view of program behavior that allows the programmer to
+identify problematic program components without generating huge
+amounts of data.  (In general, the amount of data associated with a
+profile is both small and independent of execution time.)  Therefore,
+a profile should be the first technique considered when seeking to
+understand the performance of a parallel program.
+<P>
+A profile can be used in numerous ways.  For example, a single profile
+on a moderate number of processors can help identify the program
+components that are taking the most time and that hence may require
+further investigation.  Similarly, profiles performed for a range of
+processor counts and problem sizes can identify components that do not
+scale.
+<P>
+Profiles also have limitations.  In
+<A NAME=14313>&#160;</A>
+particular, they do not incorporate temporal aspects of program
+execution.  For example, consider a program in which every processor
+sends to each other processor in turn.  If all processors send to
+processor 0, then to processor 1, and so on, overall performance may
+be poor.  This behavior would not be revealed in a profile, as every
+processor would be shown to communicate the same amount of data.
+<P>
+Profilers are available on most parallel computers but vary widely in
+their functionality and sophistication.  The most basic do little more
+than collect sequential profile data on each processor; the most
+sophisticated provide various mechanisms for reducing this data,
+displaying it, and relating it to source code.  Because efficient
+profiling requires the assistance of a compiler and runtime system,
+most profiling tools are vendor supplied and machine specific.
+<P>
+<H2><A NAME=SECTION03622000000000000000>9.2.2 Counters</A></H2>
+<P>
+As its name suggests, a counter is a storage location that can be
+<A NAME=14315>&#160;</A>
+incremented each time a specified event occurs.  Counters
+<A NAME=14316>&#160;</A>
+can be used to record the number of procedure calls, total number of
+messages, total message volume, or the number of messages sent between
+each pair of processors.  Counts may be generated by
+compiler-generated code, by code incorporated in communication
+libraries, or by user-inserted calls to counter routines.
+<P>
+Counters complement profilers by providing information that is not
+easily obtainable using sampling techniques.  For example, they
+can provide the total number and volume of messages, information that
+can be combined with communication time data from a profile to
+determine the efficiency of communication operations.
+<P>
+A useful variant of a counter is an <em> interval timer</em>, a timer used
+to determine the length of time spent executing a particular piece of
+<A NAME=14318>&#160;</A>
+code.  This information can be accumulated in a counter to provide an
+accurate determination of the total time spent executing that program
+component.  A disadvantage of interval timers is that the logic
+required to obtain a timer value can be expensive.
+<P>
+The use of counters and interval timers in a computational chemistry
+code was illustrated in Section <A HREF="node32.html#secperfpt" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#secperfpt">3.6</A>: see
+in particular 
+Tables <A HREF="node32.html#tabperfx" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#tabperfx">3.4</A> and <A HREF="node32.html#tabperfy" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#tabperfy">3.5</A>.
+<P>
+<A NAME=14322>&#160;</A>
+<H2><A NAME=SECTION03623000000000000000>9.2.3 Traces</A></H2>
+<P>
+<A NAME=14324>&#160;</A>
+<P>
+<P><A NAME=14578>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1065.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1065.gif">
+<BR><STRONG>Figure 9.1:</STRONG>  Trace records generated by the Portable Instrumented
+Communication Library.  The various records contain information
+regarding the type of event, the processor number involved, a time
+stamp, and other information.  Clearly, these records are not meant to
+be interpreted by humans.
+<A NAME=figpttrace>&#160;</A><BR>
+<P>
+<P>
+An execution trace is the most detailed and low-level approach to
+<A NAME=14342>&#160;</A>
+performance data collection.  Trace-based systems typically generate
+log files containing time-stamped event records representing
+significant occurrences in a program's execution, such as calling a
+procedure or sending a message.  Trace records may include
+information such as the type of event and the procedure name or
+destination task, and can be generated either automatically or under
+programmer control.  Figure <A HREF="node108.html#figpttrace" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html#figpttrace">9.1</A> shows an example of
+trace records.
+<P>
+Trace-based approaches support a particularly broad study of program
+behavior.  They can be used to examine causal relationships between
+communications, to localize sources of idle time, and to identify
+temporary hot spots.  For example, an execution trace could be used to
+determine that all processors are sending to the same processor at the
+same time.  An execution trace can also be postprocessed to obtain
+profile, count, and interval timer information; to compute
+higher-order statistics such as the means and variances of these
+values; and to obtain other data such as mean message queue length in
+a message-passing system.
+<P>
+<A NAME=14344>&#160;</A>
+The disadvantages of trace-based approaches stem primarily from the
+huge volume of data that can be generated.  Particularly when a
+program is executing on large numbers of processors, it is easy to
+generate tens, hundreds, or even thousands of megabytes of data.  (For
+example, if a 20-byte record is logged for every message on a
+128-processor system, then assuming messages are sent at the rate of
+one every 10 milliseconds, trace data will be generated at
+256 kilobytes per second, or about 1 gigabyte per hour.)  This large
+data volume has three unwelcome consequences.  First, the logging of
+this data tends to perturb performance, thereby leading to what is
+<A NAME=14345>&#160;</A>
+called the <em> probe effect
+ </em> in which the measuring of
+performance data changes their characteristics.  Second, the sheer
+volume of data makes postprocessing difficult.  Frequently,
+sophisticated analysis is required to extract relevant information.
+Third, the programmer, in order to combat the problems caused by
+volume, may have to spend considerable effort tuning the data
+collection process so that only relevant events are recorded while the
+phenomenon of interest is retained.  Tracing then becomes a
+<A NAME=14347>&#160;</A>
+labor-intensive process.  For these reasons, tracing should be used with
+care and only if other data collection techniques are not available
+or do not provide sufficient information.
+<P>
+Many parallel programming tools provide some automatic tracing
+capabilities, for example by generating a trace record for every
+message generated or received.  These capabilities are invoked by
+linking with a specialized version of a communication library and/or
+by a runtime flag.  Mechanisms for generating user-defined events may
+also be provided.
+<P>
+In principle, event traces can be interpreted in various
+<A NAME=14348>&#160;</A>
+ways by using different tools.  A stumbling block here
+is a lack of standards for event log records.  One proposed
+<A NAME=14349>&#160;</A>
+standard is the Pablo Self Describing Data Format (SDDF) designed at the
+University of Illinois.  As illustrated in Figure <A HREF="node108.html#figptsddf" tppabs="http://www.mcs.anl.gov/dbpp/text/node108.html#figptsddf">9.2</A>,
+this associates an integer event type with a record description that
+specifies a type and name for each field.
+<P>
+<P><A NAME=14581>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img1066.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img1066.gif">
+<BR><STRONG>Figure 9.2:</STRONG>  An example of the Pablo Self Describing Data Format.
+The data record <tt> &quot;Procedure Exit Trace&quot;</tt> has an event type of 105
+and six data fields, all integers.
+<A NAME=figptsddf>&#160;</A><BR>
+<P>
+<A NAME=14373>&#160;</A>
+<P>
+<H2><A NAME=SECTION03624000000000000000>9.2.4 Summary of Data Collection Tools</A></H2>
+<P>
+A broad spectrum of data collection mechanisms can be used to obtain
+<A NAME=14375>&#160;</A>
+information about parallel program performance.  In general, those
+requiring the least programmer intervention are also the least
+intrusive and provide the highest-level, least-detailed view of
+program behavior; those providing greater detail are progressively
+more intrusive and demand more programmer effort.  Hence, for maximum
+programmer efficiency, the process of collecting and interpreting
+performance data should proceed in a staged manner, as follows.
+<P>
+<OL><LI>
+Use profile and count information to obtain any parameter values
+needed to complete performance models.
+<P>
+<LI>
+Measure execution times for a range of processor counts and problem
+sizes, and compare these results with values predicted by performance
+models.
+<P>
+<LI>
+If observed and modeled performance differ significantly, use profile
+and count information to verify the basic assumptions underlying your
+model.  For example, check that message counts and volumes match your
+predictions, and check for load imbalances and replicated computation
+(Section <A HREF="node32.html#secperfpt" tppabs="http://www.mcs.anl.gov/dbpp/text/node32.html#secperfpt">3.6</A>).
+<P>
+<LI>
+If there are still unexplained aspects of program performance,
+incorporate simple tracing (or enable automatic tracing capabilities),
+and study performance on a few processors.  Increase the number of
+processors as your understanding improves.
+<P>
+</OL>
+<P>
+Of course, the actual path followed to obtain performance data will
+also depend on the functionality provided in a particular parallel
+programming system.
+<P>
+<A NAME=14379>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html3264 HREF="node107.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node107.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html3272 HREF="node109.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node109.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html3270 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html3274 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html3275 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html3273 HREF="node109.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node109.html">9.3 Data Transformation and Visualization</A>
+<B>Up:</B> <A NAME=tex2html3271 HREF="node106.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node106.html">9 Performance Tools</A>
+<B> Previous:</B> <A NAME=tex2html3265 HREF="node107.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node107.html">9.1 Performance Analysis</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

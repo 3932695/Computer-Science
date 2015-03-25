@@ -1,0 +1,29 @@
+echo -e "\n1. Print Fixed Width (space before):"
+printf "%5s %s\n" "123" "ramesh"
+printf "%5s %s\n" "1234" "john"
+printf "%5s %s\n" "12345" "jason"
+printf "%5s %s\n" "123456" "preeti"
+
+echo -e "\n2. Print Exact Width (truncate characters):"
+printf "%.5s\n" "123456"
+
+echo -e "\n3. Print Fixed Width (using argument):"
+printf "%*s\n" 5 "123"
+
+echo -e "\n4. Print Fixed Width (space after):"
+printf "%-5s %s\n" "123" "ramesh"
+printf "%-5s %s\n" "1234" "john"
+printf "%-5s %s\n" "12345" "jason"
+
+echo -e "\n5. Print Numbers:"
+printf "%20s %5d\n" "Decimal" 123
+printf "%20s %+5d\n" "Decimal (with sign)" 123
+printf "%20s %+5d\n" "Decimal (with sign)" -90
+printf "%20s %5o\n" "Octal" 80
+printf "%20s %5x\n" "Hexadecimal" 1298
+
+echo -e "\n6. Print Fixed Width Numbers (zeros before):"
+printf "%05d %s\n" "123" "ramesh"
+printf "%05d %s\n" "1234" "john"
+printf "%05d %s\n" "12345" "jason"
+

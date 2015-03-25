@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>1.2 A Parallel Machine Model</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="1.2 A Parallel Machine Model">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1930 HREF="node7.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1938 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1936 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1940 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1941 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1939 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html">1.3 A Parallel Programming Model</A>
+<B>Up:</B> <A NAME=tex2html1937 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1931 HREF="node7.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html">1.1 Parallelism and Computing</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02220000000000000000>1.2 A Parallel Machine Model</A></H1>
+<P>
+The rapid penetration of computers into commerce, science, and
+education owed much to the early standardization on a single machine
+<A NAME=357>&#160;</A>
+model, the von Neumann computer.  A von Neumann computer comprises
+a central processing unit (CPU) connected to a storage unit 
+(memory) (Figure <A HREF="node8.html#figvon" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html#figvon">1.4</A>).  The CPU executes a stored program
+that specifies a sequence of read and write operations on the memory.
+This simple model has proved remarkably robust.  Its persistence over
+more than forty years has allowed the study of such
+important topics as algorithms and programming languages to proceed to
+a large extent independently of developments in computer architecture.
+Consequently, programmers can be trained in the abstract art of
+``programming'' rather than the craft of ``programming machine X''
+and can design algorithms for an abstract von Neumann machine,
+confident that these algorithms will execute on most target computers
+with reasonable efficiency.
+<P>
+<A NAME=360>&#160;</A>
+<P><A NAME=848>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img99.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img99.gif">
+<BR><STRONG>Figure 1.4:</STRONG> <em> The von Neumann computer.  A central processing unit (CPU)
+executes a program that performs a sequence of read and write
+operations on an attached memory.</em><A NAME=figvon>&#160;</A><BR>
+<P>
+<P>
+Our study of parallel programming will be most rewarding if we can
+identify a parallel machine model that is as general and useful as the
+von Neumann sequential machine model.  This machine model
+must be both simple and realistic: <i> simple</i> to facilitate
+understanding and programming, and <i> realistic</i> to ensure that
+programs developed for the model execute with reasonable efficiency on
+real computers.
+<P>
+<H2><A NAME=SECTION02221000000000000000>1.2.1 The Multicomputer</A></H2>
+<P>
+A parallel machine model called the <em> multicomputer
+ </em> fits these
+<A NAME=368>&#160;</A>
+requirements.  As illustrated in Figure <A HREF="node8.html#figmulticomputer" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html#figmulticomputer">1.5</A>, a
+<A NAME=370>&#160;</A>
+multicomputer comprises a number of von Neumann computers, or <em>
+nodes</em>, linked by an <em> interconnection network</em>.  Each computer
+<A NAME=373>&#160;</A>
+executes its own program.  This program may access local memory and
+may send and receive messages over the network.  Messages are used to
+communicate with other computers or, equivalently, to read and write
+remote memories.  In the idealized network, the cost of sending a
+message between two nodes is independent of both node location and
+other network traffic, but does depend on message length.
+<P>
+<P><A NAME=863>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img100.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img100.gif">
+<BR><STRONG>Figure 1.5:</STRONG> <em> The multicomputer, an idealized parallel computer model.
+Each node consists of a von Neumann machine: a CPU and memory.
+A node can communicate with other nodes by sending and receiving
+messages over an interconnection
+network.</em><A NAME=figmulticomputer>&#160;</A><BR>
+<P>
+<P>
+A defining attribute of the multicomputer model is that accesses to
+local (same-node) memory are less expensive than accesses to
+remote (different-node) memory.  That is, read and write are less
+costly than send and receive.  Hence, it is desirable that accesses to
+local data be more frequent than accesses to remote data.  This
+property, called <em> locality</em>, is a third fundamental requirement
+<A NAME=379>&#160;</A>
+for parallel software, in addition to concurrency and scalability.
+<A NAME=380>&#160;</A>
+The importance of locality depends on the ratio of remote to local
+access costs.  This ratio can vary from 10:1 to 1000:1 or greater,
+depending on the relative performance of the local computer, the
+network, and the mechanisms used to move data to and from the network.
+<P>
+
+<P>
+<H2><A NAME=SECTION02222000000000000000>1.2.2 Other Machine Models</A></H2>
+<P>
+<A NAME=sec1othermachine>&#160;</A>
+<P>
+<A NAME=383>&#160;</A>
+<P>
+<P><A NAME=878>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img101.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img101.gif">
+<BR><STRONG>Figure 1.6:</STRONG> <em> Classes of parallel computer architecture.  From top
+to bottom: a distributed-memory MIMD computer with a mesh
+interconnect, a shared-memory multiprocessor, and a local area network
+(in this case, an Ethernet).  In each case, P denotes an independent
+processor.</em><A NAME=figcomputers>&#160;</A><BR>
+<P>
+<P>
+<A NAME=388>&#160;</A>
+We review important parallel computer architectures (several are
+illustrated in Figure <A HREF="node8.html#figcomputers" tppabs="http://www.mcs.anl.gov/dbpp/text/node8.html#figcomputers">1.6</A>) and discuss briefly how
+these differ from the idealized multicomputer model.
+<P>
+The multicomputer is most similar to what is often called the <em>
+distributed-memory MIMD
+ </em> (multiple instruction multiple data)
+computer.  MIMD means that each processor can execute a
+<A NAME=391>&#160;</A>
+separate stream of instructions on its own local data;
+distributed memory means that memory is distributed among the
+processors, rather than placed in a central location.  The principal
+difference between a multicomputer and the distributed-memory MIMD
+computer is that in the latter, the cost of sending a message between
+two nodes may not be independent of node location and other network
+<A NAME=392>&#160;</A>
+traffic.  These issues are discussed in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<A NAME=394>&#160;</A>
+Examples of this class of machine include the IBM SP, Intel Paragon,
+<A NAME=395>&#160;</A>
+Thinking Machines CM5, Cray T3D,
+<A NAME=396>&#160;</A>
+Meiko CS-2, and
+<A NAME=397>&#160;</A>
+nCUBE.
+<P>
+Another important class of parallel computer is the <em>
+multiprocessor</em>, or shared-memory MIMD computer.  In multiprocessors,
+<A NAME=399>&#160;</A>
+all processors share access to a common memory, typically via a bus or
+a hierarchy of buses.  In the idealized Parallel Random Access Machine
+(PRAM) model, often used in theoretical studies of parallel
+algorithms, any processor can access any memory element in the same
+amount of time.  In practice, scaling this architecture usually
+introduces some form of memory hierarchy; in particular, the frequency
+with which the shared memory is accessed may be reduced by storing
+<A NAME=400>&#160;</A>
+copies of frequently used data items in a <em> cache
+ </em> associated
+<A NAME=402>&#160;</A>
+with each processor.  Access to this cache is much faster than access
+<A NAME=403>&#160;</A>
+to the shared memory; hence, locality is usually important, and the
+differences between multicomputers and multiprocessors are really just
+questions of degree.  Programs developed for multicomputers can also
+execute efficiently on multiprocessors, because shared memory permits an
+efficient implementation of message passing.  Examples of this class
+<A NAME=404>&#160;</A>
+of machine include the Silicon Graphics Challenge,
+<A NAME=405>&#160;</A>
+Sequent Symmetry,
+<A NAME=406>&#160;</A>
+and the many multiprocessor workstations.
+<P>
+A more specialized class of parallel computer is the <em> SIMD
+ </em>
+<A NAME=408>&#160;</A>
+(single instruction multiple data) computer.  In SIMD machines, all
+processors execute the same instruction stream on a different piece of
+data.  This approach can reduce both hardware and software complexity
+but is appropriate only for specialized problems characterized by a
+high degree of regularity, for example, image processing and certain
+numerical simulations.  Multicomputer algorithms <em> cannot
+ </em> in
+general be executed efficiently on SIMD computers.  The MasPar MP is
+<A NAME=410>&#160;</A>
+an example of this class
+<A NAME=411>&#160;</A>
+of machine.
+<P>
+Two classes of computer system that are sometimes used as parallel
+<A NAME=412>&#160;</A>
+computers are the local area network (LAN), in which computers in
+<A NAME=413>&#160;</A>
+close physical proximity (e.g., the same building) are connected by a
+<A NAME=414>&#160;</A>
+fast network, and the wide area network (WAN), in which geographically
+<A NAME=415>&#160;</A>
+distributed computers are connected.  Although systems of this sort
+introduce additional concerns such as reliability and security, they
+<A NAME=416>&#160;</A>
+can be viewed for many purposes as multicomputers, albeit with high
+<A NAME=417>&#160;</A>
+remote-access costs.  Ethernet and asynchronous transfer mode (ATM)
+<A NAME=418>&#160;</A>
+are commonly used network technologies.
+<P>
+<A NAME=419>&#160;</A>
+<P>
+
+<P>
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html1930 HREF="node7.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html1938 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html1936 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html1940 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html1941 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html1939 HREF="node9.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node9.html">1.3 A Parallel Programming Model</A>
+<B>Up:</B> <A NAME=tex2html1937 HREF="node6.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html">1 Parallel Computers and Computation</A>
+<B> Previous:</B> <A NAME=tex2html1931 HREF="node7.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node7.html">1.1 Parallelism and Computing</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,414 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>2.4 Agglomeration</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="2.4 Agglomeration">
+<meta name="keywords" value="book">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2059 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2067 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2065 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2069 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2070 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2068 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html">2.5 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2066 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2060 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html">2.3 Communication</A>
+<BR><HR><P>
+<H1><A NAME=SECTION02340000000000000000>2.4 Agglomeration</A></H1>
+<P>
+<A NAME=1453>&#160;</A>
+In the first two stages of the design process, we partitioned the
+computation to be performed into a set of tasks and introduced
+communication to provide data required by these tasks.  The resulting
+algorithm is still abstract in the sense that it is not specialized
+for efficient execution on any particular parallel computer.  In fact,
+it may be highly inefficient if, for example, it creates many more
+tasks than there are processors on the target computer and this
+computer is not designed for efficient execution of small tasks.
+<P>
+In the third stage, <em> agglomeration,</em> we move from the abstract
+toward the concrete.  We revisit decisions made in the partitioning
+and communication phases with a view to obtaining an algorithm that
+will execute efficiently on some class of parallel computer.  In
+particular, we consider whether it is useful to combine, or <em>
+agglomerate</em>, tasks identified by the partitioning phase, so as to
+provide a smaller number of tasks, each of greater size
+(Figure <A HREF="node18.html#figagglom" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figagglom">2.11</A>).  We also determine whether it is worthwhile
+to <em> replicate
+ </em> data and/or computation.
+<P>
+<P><A NAME=2573>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img208.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img208.gif">
+<BR><STRONG>Figure 2.11:</STRONG> <em> Examples of agglomeration.  In (a), the size of tasks is
+increased by reducing the dimension of the decomposition from three to
+two.  In (b), adjacent tasks are combined to yield a three-dimensional
+decomposition of higher granularity.  In (c), subtrees in a
+divide-and-conquer structure are coalesced.  In (d), nodes in a tree
+algorithm are combined.</em><A NAME=figagglom>&#160;</A><BR>
+<P>
+<P>
+The number of tasks yielded by the agglomeration phase, although
+reduced, may still be greater than the number of processors.  In this
+case, our design remains somewhat abstract, since issues relating to
+the mapping of tasks to processors remain unresolved.  Alternatively,
+we may choose during the agglomeration phase to reduce the number of
+tasks to exactly one per processor.  We might do this, for example,
+because our target parallel computer or program
+<A NAME=1462>&#160;</A>
+development environment demands an SPMD program.  In this case, our
+design is already largely complete, since in defining <em> P</em>
+ tasks
+that will execute on <em> P</em>
+ processors, we have also addressed the
+mapping problem.  In this section, we focus on general issues that
+arise when
+<A NAME=1465>&#160;</A>
+increasing task granularity. Specific issues relating to the
+generation of SPMD programs are discussed in Section <A HREF="node19.html#sectmap" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#sectmap">2.5</A>.
+<P>
+Three sometimes-conflicting goals guide decisions concerning
+agglomeration and replication: reducing communication costs by
+increasing computation and communication <em> granularity</em>, retaining
+<em> flexibility
+ </em> with respect to scalability and mapping
+decisions, and reducing <em> software engineering
+ </em> costs.  These
+goals are discussed in the next three subsections.
+<P>
+<H2><A NAME=SECTION02341000000000000000>2.4.1 Increasing Granularity</A></H2>
+<P>
+<A NAME=secbfly>&#160;</A>
+<P>
+In the partitioning phase of the design process, our efforts are
+focused on defining as many tasks as possible.  This is a useful
+discipline because it forces us to consider a wide range of
+opportunities for parallel execution.  We note, however, that defining
+a large number of fine-grained tasks does not necessarily produce an
+efficient parallel algorithm.
+<P>
+One critical issue influencing parallel performance is communication
+costs.  On most parallel computers, we have to stop computing in order
+to send and receive messages.  Because we typically would rather be
+computing, we can improve performance by reducing the amount of time
+spent communicating.  Clearly, this performance improvement can be
+achieved by sending less data.  Perhaps less obviously, it can also be
+achieved by using fewer messages, even if we send the same amount of
+data.  This is because each communication incurs not only a cost
+proportional to the amount of data transferred but also a fixed
+startup cost.  These issues are discussed in detail in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>, where we use analytic models to quantify
+communication costs.
+<P>
+In addition to communication costs, we may need to be concerned with
+task creation costs.  For example, the performance of the fine-grained
+search algorithm illustrated in Figure <A HREF="node10.html#figtree" tppabs="http://www.mcs.anl.gov/dbpp/text/node10.html#figtree">1.13</A>, which creates
+one task for each search tree node, is sensitive to task creation
+costs.
+<P>
+<A NAME=1474>&#160;</A>
+<P>
+<P><A NAME=2590>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img221.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img221.gif">
+<BR><STRONG>Figure 2.12:</STRONG> <em> Effect of increased granularity on communication costs in
+a two-dimensional finite difference problem with a five-point stencil.
+The figure shows fine- and coarse-grained two-dimensional partitions
+of this problem.  In each case, a single task is exploded to show its
+outgoing messages (dark shading) and incoming messages (light
+shading).  In (a), a computation on an <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img215.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img215.gif"> grid is partitioned
+into <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img216.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img216.gif"> tasks, each responsible for a single point, while
+in (b) the same computation is partioned into <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img217.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img217.gif"> tasks, each
+responsible for 16 points.  In (a), <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img218.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img218.gif"> communications
+are required, 4 per task; these transfer a total of 256 data values.
+In (b), only <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img219.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img219.gif"> communications are required, and only
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img220.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img220.gif"> data values are transferred.</em><A NAME=figgran>&#160;</A><BR>
+<P>
+<P>
+<H4><A NAME=SECTION02341010000000000000> Surface-to-Volume Effects.</A></H4>
+<P>
+If the number of communication partners per task is small, we can
+often reduce both the number of communication operations and the total
+communication volume by increasing the granularity of our
+<A NAME=1481>&#160;</A>
+partition, that is, by agglomerating several tasks into one.  This
+effect is illustrated in Figure <A HREF="node18.html#figgran" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figgran">2.12</A>.  In this figure, the
+<A NAME=1483>&#160;</A>
+reduction in communication costs is due to a <em> surface-to-volume
+effect
+ </em>. In other words, the communication requirements of a task
+are proportional to the surface of the subdomain on which it operates,
+while the computation requirements are proportional to the subdomain's
+volume.  In a two-dimensional problem, the ``surface'' scales with the
+problem size while the ``volume'' scales as the problem size squared.
+Hence, the amount of communication performed for a unit of computation
+(the
+<A NAME=1485>&#160;</A>
+<em> communication/computation ratio
+ </em>) decreases as task size
+increases.  This effect is often visible when a partition is obtained
+by using domain decomposition techniques.
+<P>
+<A NAME=1487>&#160;</A>
+A consequence of surface-to-volume effects is that higher-dimensional
+decompositions are typically the most efficient, other things being
+equal, because they reduce the surface area (communication) required for a
+given volume (computation).  Hence, from the viewpoint of efficiency
+it is usually best to increase granularity by agglomerating tasks in
+all dimensions rather than reducing the dimension of the
+decomposition.  This issue is explored quantitatively in
+Example <A HREF="node30.html#experfgrid" tppabs="http://www.mcs.anl.gov/dbpp/text/node30.html#experfgrid">3.4</A> in Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<P>
+The design of an efficient agglomeration strategy can be difficult in
+problems with unstructured communications, such as the finite element
+problem of Figure <A HREF="node17.html#figfem" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#figfem">2.9</A>.  Specialized techniques that can be
+used in such cases are discussed in Section <A HREF="node19.html#seclbalgs" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html#seclbalgs">2.5.1</A>.
+<P>
+<H4><A NAME=SECTION02341020000000000000> Replicating Computation.</A></H4>
+<P>
+<A NAME=1493>&#160;</A>
+We can sometimes trade off replicated computation for reduced
+communication requirements and/or execution time.  For an example, we
+consider a variant of the summation problem presented in
+Section <A HREF="node17.html#seccommglobal" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#seccommglobal">2.3.2</A>, in which the sum must be replicated in
+each of the <em> N</em>
+ tasks that contribute to the sum.
+<P>
+<P><A NAME=2609>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img226.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img226.gif">
+<BR><STRONG>Figure 2.13:</STRONG> <em> Using an array (above) and a tree (below) to perform a
+summation and a broadcast.  On the left are the communications
+performed for the summation (s); on the right, the communications
+performed for the broadcast (b).  After <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img224.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img224.gif"> or <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img225.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img225.gif"> steps,
+respectively, the sum of the <b>N</b> values is replicated in each of the
+<b>N</b> tasks.</em><A NAME=figsb>&#160;</A><BR>
+<P>
+<P>
+A simple approach to distributing the sum is first to use either a
+ring- or tree-based algorithm to compute the sum in a single task, and
+then to <em> broadcast
+ </em> the sum to each of the
+<em> N</em>
+ tasks.  The broadcast can be performed using the same
+communication structure as the summation; hence, the complete
+operation can be performed in either <em> 2(N-1)</em>
+ or <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img227.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img227.gif"> steps,
+depending on which communication structure is used
+(Figure <A HREF="node18.html#figsb" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figsb">2.13</A>).
+<P>
+These algorithms are optimal in the sense that they do not perform any
+unnecessary computation or communication.  However, there also exist
+alternative algorithms that execute in less elapsed time, although at
+the expense of unnecessary (replicated) computation and communication.
+The basic idea is to perform multiple summations concurrently, with
+each concurrent summation producing a value in a different task.
+<P>
+<A NAME=1504>&#160;</A>
+We first consider a variant of the array summation algorithm based on
+this idea.  In this variant, tasks are connected in a <em> ring
+ </em>
+rather than an array, and all <em> N</em>
+ tasks execute the same algorithm
+so that <em> N</em>
+ partial sums are in motion simultaneously.  After
+<em> N-1</em>
+ steps, the complete sum is replicated in every task.  This
+strategy avoids the need for a subsequent broadcast operation, but at
+the expense of <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img228.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img228.gif"> redundant additions and <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img229.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img229.gif">
+unnecessary communications.  However, the summation and broadcast
+complete in <em> N-1</em>
+ rather than <em> 2(N-1)</em>
+ steps.  Hence, the
+strategy is faster if the processors would otherwise be idle waiting
+for the result of the summation.
+<P>
+The tree summation algorithm can be modified in a similar way to avoid
+the need for a separate broadcast.  That is, multiple tree summations
+are performed concurrently so that after <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img230.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img230.gif"> steps each task has
+a copy of the sum.  One might expect this approach to result in
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img231.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img231.gif"> additions and communications, as in the ring algorithm.
+However, in this case we can exploit redundancies in both computation
+and communication to perform the summation in just <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img232.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img232.gif">
+operations.  The resulting communication structure, termed a <em>
+butterfly</em>, is illustrated in Figure <A HREF="node18.html#figbflyN" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figbflyN">2.14</A>.  In each of the
+<IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img233.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img233.gif"> stages, each task receives data from two tasks, performs a
+single addition, and sends the result of this addition to two tasks in
+the next stage.
+<A NAME=1513>&#160;</A>
+<P>
+<P><A NAME=2634>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img238.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img238.gif">
+<BR><STRONG>Figure 2.14:</STRONG> <em> The butterfly communication structure
+can be used to sum <em> N</em>
+ values in <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img236.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img236.gif"> steps.  Numbers located
+in the bottom row of tasks are propagated up through <IMG BORDER=0 ALIGN=MIDDLE ALT="" SRC="img237.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img237.gif">
+intermediate stages, thereby producing the complete sum in each task
+in the top row.</em><A NAME=figbflyN>&#160;</A><BR>
+<P>
+<P>
+<P><A NAME=2651>&#160;</A><IMG BORDER=0 ALIGN=BOTTOM ALT="" SRC="img239.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/img239.gif">
+<BR><STRONG>Figure 2.15:</STRONG> <em> The communication structures that result when tasks at
+different levels in a tree or butterfly structure are agglomerated.
+From top to bottom: a tree, a butterfly, and an equivalent
+representation of the butterfly as a hypercube.  In each case,
+<em> N=8</em>
+, and each channel is labeled with the step in which it is
+used for communication.</em><A NAME=figsumsagglom>&#160;</A><BR>
+<P><H4><A NAME=SECTION02341030000000000000> Avoiding Communication.</A></H4>
+<P>
+Agglomeration is almost always beneficial if analysis of communication
+requirements reveals that a set of tasks cannot execute concurrently.
+For example, consider the tree and butterfly structures illustrated in
+Figures <A HREF="node17.html#figsum1" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html#figsum1">2.8</A> and <A HREF="node18.html#figbflyN" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figbflyN">2.14</A>.  When a single summation
+problem is performed, only tasks at the same level in the tree or
+butterfly can execute concurrently.  (Notice, however, that if many
+summations are to be performed, in principle all tasks can be kept
+<A NAME=1525>&#160;</A>
+busy by pipelining multiple summation operations.)  Hence, tasks at
+different levels can be agglomerated without reducing opportunities
+for concurrent execution, thereby yielding the communication
+structures represented in Figure <A HREF="node18.html#figsumsagglom" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#figsumsagglom">2.15</A>.  The hypercube
+structure shown in this figure is a fundamental communication
+structure that has many applications in parallel computing.  It is
+discussed in greater detail in Chapter <A HREF="node123.html#chapcube" tppabs="http://www.mcs.anl.gov/dbpp/text/node123.html#chapcube">11</A>.
+<P>
+<H2><A NAME=SECTION02342000000000000000>2.4.2 Preserving Flexibility</A></H2>
+<P>
+It is easy when agglomerating tasks to make design decisions that
+limit unnecessarily an algorithm's scalability.  For example, we might
+choose to decompose a multidimensional data structure in just a single
+dimension, reasoning that this provides more than enough concurrency
+for the number of processors available.  However, this strategy is
+shortsighted if our program must ultimately be ported to larger
+parallel computers.  It may also lead to a less efficient algorithm,
+as discussed in Section <A HREF="node18.html#secbfly" tppabs="http://www.mcs.anl.gov/dbpp/text/node18.html#secbfly">2.4.1</A>.
+<P>
+The ability to create a varying number of tasks is critical if a
+program is to be portable and scalable.  As discussed in
+Chapter <A HREF="node6.html#chap1" tppabs="http://www.mcs.anl.gov/dbpp/text/node6.html#chap1">1</A>, good parallel algorithms are designed to be
+resilient to changes in processor count.  This flexibility can also be
+useful when tuning a code for a particular computer.  If tasks often
+block waiting for remote data, it can be advantageous to map several
+tasks to a processor.  Then, a blocked task need not result in a
+processor becoming idle, since another task may be able to execute in
+its place.  In this way, one task's communication is overlapped with
+another task's computation.  This technique, termed <em> overlapping
+<A NAME=1531>&#160;</A>
+computation and communication,</em> is discussed in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<P>
+A third benefit of creating more tasks than processors is that doing so
+provides greater scope for mapping strategies that balance
+computational load over available processors.  As a general rule of
+thumb, we could require that there be at least an order of magnitude
+more tasks than processors.  This issue is discussed in the next
+section.
+<P>
+The optimal number of tasks is typically best determined by a
+combination of analytic modeling and empirical studies.  Flexibility
+does not necessarily require that a design always create a large
+number of tasks.  Granularity can be controlled by a compile-time or
+runtime parameter.  What is important is that a design not incorporate
+unnecessary limits on the number of tasks that can be created.
+<P>
+<H2><A NAME=SECTION02343000000000000000>2.4.3 Reducing Software Engineering Costs</A></H2>
+<P>
+So far, we have assumed that our choice of agglomeration strategy is
+determined solely by a desire to improve the efficiency and
+flexibility of a parallel algorithm.  An additional concern, which can
+be particularly important when parallelizing existing sequential
+codes, is the relative development costs associated with different
+partitioning strategies.  From this perspective, the most interesting
+strategies may be those that avoid extensive code changes.  For
+example, in a code that operates on a multidimensional grid, it may be
+advantageous to avoid partitioning altogether in one dimension, if
+doing so allows existing routines to be reused unchanged in a parallel
+program.
+<P>
+Frequently, we are concerned with designing a parallel algorithm that
+must execute as part of a larger system.  In this case, another
+software engineering issue that must be considered is the data
+distributions utilized by other program components.  For example, the
+best algorithm for some program component may require that an input
+array data structure be decomposed in three dimensions, while a
+preceding phase of the computation generates a two-dimensional
+decomposition.  Either one or both algorithms must be changed, or an
+explicit restructuring phase must be incorporated in the computation.
+Each approach has different performance characteristics.  These issues
+are discussed in Chapter <A HREF="node39.html#chapmod" tppabs="http://www.mcs.anl.gov/dbpp/text/node39.html#chapmod">4</A>.
+<P>
+<H2><A NAME=SECTION02344000000000000000>2.4.4 Agglomeration Design Checklist</A></H2>
+<P>
+<A NAME=1536>&#160;</A>
+We have now revised the partitioning and communication decisions
+<A NAME=1537>&#160;</A>
+developed in the first two design stages by agglomerating tasks and
+communication operations.  We may have agglomerated tasks because
+analysis of communication requirements shows that the original
+partition created tasks that cannot execute concurrently.
+Alternatively, we may have used agglomeration to increase computation
+and communication granularity and/or to decrease software engineering
+costs, even though opportunities for concurrent execution are reduced.
+At this stage, we evaluate our design with respect to the following
+checklist.  Several of these questions emphasize quantitative
+performance analysis, which becomes more important as we move from the
+abstract to the concrete; this topic is addressed in
+Chapter <A HREF="node26.html#chapperf" tppabs="http://www.mcs.anl.gov/dbpp/text/node26.html#chapperf">3</A>.
+<P>
+<OL><LI>
+Has agglomeration reduced communication costs by increasing locality?
+If not, examine your algorithm to determine whether this could be
+achieved using an alternative agglomeration strategy.
+<P>
+<LI>
+If agglomeration has replicated computation, have you verified that
+the benefits of this replication outweigh its costs, for a range of
+problem sizes and processor counts?
+<P>
+<LI>
+If agglomeration replicates data, have you verified that this does not
+compromise the scalability of your algorithm by restricting the range
+of problem sizes or processor counts that it can address?
+<P>
+<LI>
+Has agglomeration yielded tasks with similar computation and
+communication costs?  The larger the tasks created by agglomeration,
+the more important it is that they have similar costs.  If we have
+created just one task per processor, then these tasks should have
+nearly identical costs.
+<P>
+<LI>
+Does the number of tasks still scale with problem size?  If not, then
+your algorithm is no longer able to solve larger problems on larger
+parallel computers.
+<P>
+<LI>
+If agglomeration eliminated opportunities for concurrent execution,
+have you verified that there is sufficient concurrency for current and
+future target computers?  An algorithm with insufficient concurrency
+may still be the most efficient, if other algorithms have excessive
+communication costs; performance models can be used to quantify these
+tradeoffs.
+<P>
+<LI>
+Can the number of tasks be reduced still further, without introducing
+load imbalances, increasing software engineering costs, or reducing
+scalability?  Other things being equal, algorithms that create fewer
+larger-grained tasks are often simpler and more efficient than those
+that create many fine-grained tasks.
+<P>
+<LI>
+If you are parallelizing an existing sequential program, have you
+considered the cost of the modifications required to the sequential
+code?  If these costs are high, consider alternative agglomeration
+strategies that increase opportunities for code reuse.  If the
+resulting algorithms are less efficient, use performance modeling
+techniques to estimate cost tradeoffs.
+<P>
+</OL>
+<A NAME=1541>&#160;</A>
+<P>
+
+<BR> <HR><a href="../../../tppmsgs/msgs0.htm#1" tppabs="http://www.mcs.anl.gov/dbpp/"><img ALIGN=MIDDLE src="pictures//asm_color_tiny.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//asm_color_tiny.gif" alt="[DBPP]"></a>    <A NAME=tex2html2059 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html"><IMG ALIGN=MIDDLE ALT="previous" SRC="pictures//previous_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//previous_motif.gif"></A> <A NAME=tex2html2067 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html"><IMG ALIGN=MIDDLE ALT="next" SRC="pictures//next_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//next_motif.gif"></A> <A NAME=tex2html2065 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html"><IMG ALIGN=MIDDLE ALT="up" SRC="pictures//up_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//up_motif.gif"></A> <A NAME=tex2html2069 HREF="node1.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node1.html"><IMG ALIGN=MIDDLE ALT="contents" SRC="pictures//contents_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//contents_motif.gif"></A> <A NAME=tex2html2070 HREF="node133.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node133.html"><IMG ALIGN=MIDDLE ALT="index" SRC="pictures//index_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//index_motif.gif"></A> <a href="../../../tppmsgs/msgs0.htm#2" tppabs="http://www.mcs.anl.gov/dbpp/search.html"><img ALIGN=MIDDLE src="pictures//search_motif.gif" tppabs="http://www.mcs.anl.gov/dbpp/text/pictures//search_motif.gif" alt="[Search]"></a>   <BR>
+<B> Next:</B> <A NAME=tex2html2068 HREF="node19.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node19.html">2.5 Mapping</A>
+<B>Up:</B> <A NAME=tex2html2066 HREF="node14.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node14.html">2 Designing Parallel Algorithms</A>
+<B> Previous:</B> <A NAME=tex2html2060 HREF="node17.html" tppabs="http://www.mcs.anl.gov/dbpp/text/node17.html">2.3 Communication</A>
+<BR><HR><P>
+<P><ADDRESS>
+<I>&#169 Copyright 1995 by <A href="../../../tppmsgs/msgs0.htm#3" tppabs="http://www.mcs.anl.gov/people/foster/">Ian Foster</a></I>
+</ADDRESS>
+</BODY>
